@@ -1,0 +1,826 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: subham.biswas
+      changes:
+        - createTable:
+            tableName: mf_role
+            columns:
+              - column:
+                  name: pk_mf_role_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: role_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+
+  - changeSet:
+      id: 3
+      author: subham.biswas
+      changes:
+        - createTable:
+            tableName: mf_user
+            columns:
+              - column:
+                  name: pk_mf_user_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: fullname
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: email
+                  type: varchar(200)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: phonenumber
+                  type: varchar(200)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+
+  - changeSet:
+      id: 4
+      author: subham.biswas
+      changes:
+        - createTable:
+            tableName: map_role_user
+            columns:
+              - column:
+                  name: pk_map_role_user_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: fk_user_id
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: fk_role_id
+                  type: int
+                  constraints:
+                    nullable: true
+            foreignKeyConstraints:
+              - foreignKeyConstraint:
+                  baseColumnNames: fk_user_id
+                  baseTableName: map_role_user
+                  constraintName: map_role_user_fk_user_id_fk_role_id
+                  referencedColumnNames: pk_mf_user_id
+                  referencedTableName: mf_user
+              - foreignKeyConstraint:
+                  baseColumnNames: fk_role_id
+                  baseTableName: map_role_user
+                  constraintName: map_role_user_fk_user_id_fk_role_id
+                  referencedColumnNames: pk_mf_role_id
+                  referencedTableName: mf_role
+
+  - changeSet:
+      id: 5
+      author: subham.biswas
+      changes:
+        - createTable:
+            tableName: mutual_fund
+            columns:
+              - column:
+                  name: pk_mutual_fund_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: amc_name
+                  type: varchar(150)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: scheme_name
+                  type: varchar(150)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: option
+                  type: varchar(150)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: plan_type
+                  type: varchar(100)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: scheme_code
+                  type: varchar(100)
+                  constraints:
+                    nullable: true
+
+  - changeSet:
+      id: 6
+      author: subham.biswas
+      changes:
+        - createTable:
+            tableName: order_detail
+            columns:
+              - column:
+                  name: pk_order_detail_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: fk_mutual_fund_id
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: fk_user_id
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: side
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: amount
+                  type: double
+                  constraints:
+                    nullable: true
+              - column:
+                  name: nav
+                  type: double
+                  constraints:
+                    nullable: true
+              - column:
+                  name: units
+                  type: double
+                  constraints:
+                    nullable: true
+              - column:
+                  name: date_of_event
+                  type: date
+                  constraints:
+                    nullable: true
+            foreignKeyConstraints:
+              - foreignKeyConstraint:
+                  baseColumnNames: fk_mutual_fund_id
+                  baseTableName: order_detail
+                  constraintName: order_detail_fk_mutual_fund_id
+                  referencedColumnNames: pk_mutual_fund_id
+                  referencedTableName: mutual_fund
+              - foreignKeyConstraint:
+                  baseColumnNames: fk_user_id
+                  baseTableName: order_detail
+                  constraintName: order_detail_fk_user_id
+                  referencedColumnNames: pk_mf_user_id
+                  referencedTableName: mf_user
+
+  - changeSet:
+      id: 7
+      author: subham.biswas
+      changes:
+        - createTable:
+            tableName: credit_card
+            columns:
+              - column:
+                  name: pk_credit_card_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: fk_user_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: bank_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: credit_card_name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: statement_date
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: due_date
+                  type: int
+                  constraints:
+                    nullable: true
+            foreignKeyConstraints:
+              - foreignKeyConstraint:
+                  baseColumnNames: fk_user_id
+                  baseTableName: credit_card
+                  constraintName: credit_card_fk_user_id
+                  referencedColumnNames: pk_mf_user_id
+                  referencedTableName: mf_user
+
+  - changeSet:
+      id: 8
+      author: subham.biswas
+      changes:
+        - createTable:
+            tableName: expense
+            columns:
+              - column:
+                  name: pk_expense_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: fk_credit_card_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: amount
+                  type: decimal(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expense_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expense_time
+                  type: time
+                  constraints:
+                    nullable: true
+              - column:
+                  name: reason
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+            foreignKeyConstraints:
+              - foreignKeyConstraint:
+                  baseColumnNames: fk_credit_card_id
+                  baseTableName: expense
+                  constraintName: expense_fk_credit_card_id
+                  referencedColumnNames: pk_credit_card_id
+                  referencedTableName: credit_card
+
+  - changeSet:
+      id: 9
+      author: subham.biswas
+      changes:
+        - createTable:
+            tableName: budget_view
+            columns:
+              - column:
+                  name: pk_budget_view_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: fk_credit_card_id
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: budget_month
+                  type: varchar(100)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: budget_year
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: actual_amount
+                  type: decimal(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: remaining_amount
+                  type: decimal(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: update_date
+                  type: date
+                  constraints:
+                    nullable: true
+              - column:
+                  name: due_date
+                  type: date
+                  constraints:
+                    nullable: true
+            foreignKeyConstraints:
+              - foreignKeyConstraint:
+                  baseColumnNames: fk_credit_card_id
+                  baseTableName: budget_view
+                  constraintName: budget_view_fk_credit_card_id
+                  referencedColumnNames: pk_credit_card_id
+                  referencedTableName: credit_card
+
+  - changeSet:
+      id: 10
+      author: subham.biswas
+      changes:
+        - createProcedure:
+            procedureName: update_budget_view
+            comments: "Procedure to update the budget view"
+            procedureBody: |
+              CREATE PROCEDURE update_budget_view(IN update_date_param DATE, IN user_id INT)
+              BEGIN
+                DECLARE done INT DEFAULT FALSE;
+                DECLARE pid INT;
+                DECLARE act_amount DECIMAL(10, 2);
+                DECLARE rem_amount DECIMAL(10, 2);
+                DECLARE sum_amount DECIMAL(10, 2);
+                DECLARE st_day INT;
+                DECLARE d_day INT;
+                DECLARE month_of_budget VARCHAR(100);
+                DECLARE year_of_budget INT;
+                DECLARE lower_date DATE;
+                DECLARE temp_due_date DATE;
+                DECLARE credit_card_cursor CURSOR FOR SELECT pk_credit_card_id FROM credit_card WHERE fk_user_id = user_id;
+              
+                DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+              
+                OPEN credit_card_cursor;
+              
+                credit_card_loop: LOOP
+                  FETCH credit_card_cursor INTO pid;
+                  IF done THEN
+                    LEAVE credit_card_loop;
+                  END IF;
+              
+                  SELECT statement_date, due_date INTO st_day, d_day FROM credit_card WHERE pk_credit_card_id = pid;
+                  SET temp_due_date = CONCAT(DATE_FORMAT(update_date_param, '%Y-%m'), '-', LPAD(d_day, 2, '0'));
+                  IF st_day > d_day THEN
+                    SET temp_due_date = DATE_ADD(temp_due_date, INTERVAL 1 MONTH);
+                  END IF;
+              
+                  SET lower_date = CONCAT(DATE_FORMAT(update_date_param, '%Y-%m'), '-', LPAD(st_day, 2, '0'));
+              
+                  IF (DAY(update_date_param) < st_day) THEN
+                    SET lower_date = DATE_SUB(lower_date, INTERVAL 1 MONTH);
+                  ELSE
+                    SET temp_due_date = DATE_ADD(temp_due_date, INTERVAL 1 MONTH);
+                  END IF;
+              
+                  SET month_of_budget = MONTHNAME(temp_due_date);
+                  SET year_of_budget = YEAR(temp_due_date);
+              
+                  SELECT SUM(e.amount) INTO sum_amount
+                    FROM expense e
+                    WHERE e.fk_credit_card_id = pid AND e.expense_date BETWEEN lower_date AND update_date_param;
+              
+                  IF sum_amount IS NULL THEN
+                    SET sum_amount = 0;
+                  END IF;
+              
+                  IF EXISTS (SELECT 1 FROM budget_view WHERE fk_credit_card_id = pid AND budget_month = month_of_budget AND budget_year = year_of_budget) THEN
+                    SELECT actual_amount, remaining_amount INTO act_amount, rem_amount FROM budget_view 
+                    WHERE fk_credit_card_id = pid AND budget_month = month_of_budget AND budget_year = year_of_budget;
+                    SET rem_amount = sum_amount - act_amount + rem_amount;
+                    UPDATE budget_view
+                      SET actual_amount = sum_amount, remaining_amount = rem_amount, update_date = update_date_param
+                      WHERE fk_credit_card_id = pid AND budget_month = month_of_budget AND budget_year = year_of_budget;
+                  ELSE
+                    INSERT INTO budget_view (fk_credit_card_id, budget_month, budget_year, actual_amount, remaining_amount, update_date)
+                      VALUES (
+                          pid,
+                          month_of_budget,
+                          year_of_budget,
+                          sum_amount,
+                          sum_amount,
+                          update_date_param
+                      );
+                  END IF;
+              
+                END LOOP credit_card_loop;
+              
+                CLOSE credit_card_cursor;
+              
+              END;
+
+  - changeSet:
+      id: 11
+      author: subham.biswas
+      changes:
+        - insert:
+            tableName: mf_role
+            columns:
+              - column:
+                  name: pk_mf_role_id
+                  value: 1
+              - column:
+                  name: role_name
+                  value: admin
+        - insert:
+            tableName: mf_role
+            columns:
+              - column:
+                  name: pk_mf_role_id
+                  value: 2
+              - column:
+                  name: role_name
+                  value: customer
+
+  - changeSet:
+      id: 12
+      author: subham.biswas
+      changes:
+        - insert:
+            tableName: mf_user
+            columns:
+              - column:
+                  name: pk_mf_user_id
+                  value: 1
+              - column:
+                  name: username
+                  value: subhamb
+              - column:
+                  name: fullname
+                  value: Subham Biswas
+              - column:
+                  name: email
+                  value: subhambiswas0028@gmail.com
+              - column:
+                  name: phonenumber
+                  value: +919735493701
+              - column:
+                  name: password
+                  value: $2a$12$0nXA34l3UDm2826PmFS06uxkJD6KisBRPn6vKxAK/eNKzKv8fM9WK
+
+  - changeSet:
+      id: 13
+      author: subham.biswas
+      changes:
+        - insert:
+            tableName: map_role_user
+            columns:
+              - column:
+                  name: pk_map_role_user_id
+                  value: 1
+              - column:
+                  name: fk_user_id
+                  value: 1
+              - column:
+                  name: fk_role_id
+                  value: 1
+  - changeSet:
+      id: 14
+      author: subham.biswas
+      changes:
+        - addColumn:
+            tableName: mf_user
+            columns:
+              - column:
+                  name: is_active
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+                    primaryKey: false
+
+  - changeSet:
+      id: 15
+      author: subham.biswas
+      changes:
+        - addColumn:
+            tableName: mutual_fund
+            columns:
+              - column:
+                  name: current_nav
+                  type: double
+                  constraints:
+                    nullable: true
+                    primaryKey: false
+              - column:
+                  name: day_1_nav
+                  type: double
+                  constraints:
+                    nullable: true
+                    primaryKey: false
+              - column:
+                  name: week_1_nav
+                  type: double
+                  constraints:
+                    nullable: true
+                    primaryKey: false
+              - column:
+                  name: month_1_nav
+                  type: double
+                  constraints:
+                    nullable: true
+                    primaryKey: false
+              - column:
+                  name: month_6_nav
+                  type: double
+                  constraints:
+                    nullable: true
+                    primaryKey: false
+              - column:
+                  name: year_1_nav
+                  type: double
+                  constraints:
+                    nullable: true
+                    primaryKey: false
+              - column:
+                  name: year_3_nav
+                  type: double
+                  constraints:
+                    nullable: true
+                    primaryKey: false
+              - column:
+                  name: year_5_nav
+                  type: double
+                  constraints:
+                    nullable: true
+                    primaryKey: false
+              - column:
+                  name: first_nav
+                  type: double
+                  constraints:
+                    nullable: true
+                    primaryKey: false
+              - column:
+                  name: last_nav_date
+                  type: date
+                  constraints:
+                    nullable: true
+                    primaryKey: false
+
+  - changeSet:
+      id: 16
+      author: subham.biswas
+      changes:
+        - addUniqueConstraint:
+            tableName: mf_user
+            columnNames: username
+            constraintName: uq_username
+
+        - addUniqueConstraint:
+            tableName: mf_user
+            columnNames: email
+            constraintName: uq_email
+
+  - changeSet:
+      id: 17
+      author: subham.biswas
+      changes:
+        - update:
+            tableName: mf_user
+            columns:
+              - column:
+                  name: is_active
+                  valueBoolean: true
+            where:
+              - column:
+                  name: pk_mf_user_id
+                  value: 1
+
+  - changeSet:
+      id: 18
+      author: subham.biswas
+      changes:
+        - createTable:
+            tableName: loan
+            columns:
+              - column:
+                  name: pk_loan_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: fk_user_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: fk_credit_card_id
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: lender_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: last_4_digit
+                  type: INTEGER(4)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: total_amount
+                  type: decimal(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: loan_type
+                  type: ENUM('Reducing', 'flat')
+                  constraints:
+                    nullable: false
+                    defaultValue: 'Reducing'
+              - column:
+                  name: interest_rate
+                  type: decimal(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: no_cost_emi
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+                    defaultValueBoolean: false
+              - column:
+                  name: principal_amount
+                  type: decimal(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: interest_amount
+                  type: decimal(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: remaining_amount
+                  type: decimal(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: remaining_principal_amount
+                  type: decimal(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: remaining__interest_amount
+                  type: decimal(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: tenure
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: remaining_tenure
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: loan_start_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: emi_date_of_month
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: emi_amount
+                  type: decimal(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: update_lock
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+                    defaultValueBoolean: false
+
+  - changeSet:
+      id: 19
+      author: subham.biswas
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: map_role_user
+            baseColumnNames: fk_user_id
+            referencedTableName: mf_user
+            referencedColumnNames: pk_mf_user_id
+            constraintName: map_role_user_fk_user_id
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 20
+      author: subham.biswas
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: map_role_user
+            baseColumnNames: fk_role_id
+            referencedTableName: mf_role
+            referencedColumnNames: pk_mf_role_id
+            constraintName: map_role_user_fk_role_id
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 21
+      author: subham.biswas
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: order_detail
+            baseColumnNames: fk_mutual_fund_id
+            referencedTableName: mutual_fund
+            referencedColumnNames: pk_mutual_fund_id
+            constraintName: order_detail_fk_mutual_fund_id
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 22
+      author: subham.biswas
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: order_detail
+            baseColumnNames: fk_user_id
+            referencedTableName: mf_user
+            referencedColumnNames: pk_mf_user_id
+            constraintName: order_detail_fk_user_id
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 23
+      author: subham.biswas
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: credit_card
+            baseColumnNames: fk_user_id
+            referencedTableName: mf_user
+            referencedColumnNames: pk_mf_user_id
+            constraintName: credit_card_fk_user_id
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 24
+      author: subham.biswas
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: expense
+            baseColumnNames: fk_credit_card_id
+            referencedTableName: credit_card
+            referencedColumnNames: pk_credit_card_id
+            constraintName: expense_fk_credit_card_id
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 25
+      author: subham.biswas
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: budget_view
+            baseColumnNames: fk_credit_card_id
+            referencedTableName: credit_card
+            referencedColumnNames: pk_credit_card_id
+            constraintName: budget_view_fk_credit_card_id
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 26
+      author: subham.biswas
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: loan
+            baseColumnNames: fk_user_id
+            referencedTableName: mf_user
+            referencedColumnNames: pk_mf_user_id
+            constraintName: loan_fk_user_id
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 27
+      author: subham.biswas
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: loan
+            baseColumnNames: fk_credit_card_id
+            referencedTableName: credit_card
+            referencedColumnNames: pk_credit_card_id
+            constraintName: loan_fk_credit_card_id
+            onDelete: CASCADE
+
+  - include:
+      file: classpath:/db/changelog/db.changelog-mutual-funds.yaml

@@ -1,0 +1,81 @@
+DELIMITER //
+CREATE PROCEDURE update_budget_view(IN update_date_param DATE, IN user_id INT)
+BEGIN
+	DECLARE done INT DEFAULT FALSE;
+	DECLARE pid INT;
+	DECLARE act_amount DECIMAL(10, 2);
+	DECLARE rem_amount DECIMAL(10, 2);
+	DECLARE sum_amount DECIMAL(10, 2);
+	DECLARE st_day INT;
+	DECLARE d_day INT;
+	DECLARE month_of_budget VARCHAR(100);
+	DECLARE year_of_budget INT;
+	DECLARE lower_date DATE;
+	DECLARE temp_due_date DATE;
+	DECLARE credit_card_cursor CURSOR FOR SELECT pk_credit_card_id FROM credit_card WHERE fk_user_id = user_id;
+	
+	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+	
+	OPEN credit_card_cursor;
+	
+	credit_card_loop: LOOP
+		FETCH credit_card_cursor INTO pid;
+		IF done THEN
+			LEAVE credit_card_loop;
+		END IF;
+		
+		SELECT statement_date,due_date INTO st_day, d_day FROM credit_card WHERE pk_credit_card_id=pid;
+		SET temp_due_date = CONCAT(DATE_FORMAT(update_date_param, '%Y-%m'), '-', LPAD(d_day, 2, '0'));
+		IF st_day > d_day THEN
+			SET temp_due_date = DATE_ADD(temp_due_date, INTERVAL 1 MONTH);
+		END IF;
+		
+		SET lower_date = CONCAT(DATE_FORMAT(update_date_param, '%Y-%m'), '-', LPAD(st_day, 2, '0'));
+		
+		IF (DAY(update_date_param) < st_day) THEN
+			SET lower_date = DATE_SUB(lower_date, INTERVAL 1 MONTH);
+		ELSE
+			SET temp_due_date = DATE_ADD(temp_due_date, INTERVAL 1 MONTH);
+		END IF;
+		
+		SET month_of_budget = MONTHNAME(temp_due_date);
+		SET year_of_budget = YEAR(temp_due_date);
+		
+		SELECT SUM(e.amount) INTO sum_amount
+			FROM expense e
+			WHERE e.fk_credit_card_id = pid AND e.expense_date BETWEEN lower_date AND update_date_param;
+			
+		IF sum_amount IS NULL THEN
+			SET sum_amount = 0;
+		END IF;
+
+		IF EXISTS (SELECT 1 FROM budget_view WHERE fk_credit_card_id = pid AND budget_month = month_of_budget AND budget_year = year_of_budget) THEN
+			SELECT actual_amount, remaining_amount INTO act_amount, rem_amount FROM budget_view 
+			WHERE fk_credit_card_id = pid AND budget_month = month_of_budget AND budget_year = year_of_budget;
+			SET rem_amount = sum_amount - act_amount + rem_amount;
+			UPDATE budget_view
+				SET actual_amount = sum_amount, remaining_amount = rem_amount, update_date = update_date_param
+				WHERE fk_credit_card_id = pid AND budget_month = month_of_budget AND budget_year = year_of_budget;
+		ELSE
+			INSERT INTO budget_view (fk_credit_card_id, budget_month, budget_year, actual_amount, remaining_amount, update_date)
+				VALUES (
+				    pid,
+				    month_of_budget,
+				    year_of_budget,
+				    sum_amount,
+				    sum_amount,
+				    update_date_param
+				);
+		END IF;
+
+		
+	END LOOP credit_card_loop;
+
+	CLOSE credit_card_cursor;
+
+END //
+DELIMITER ;
+
+DROP PROCEDURE update_budget_view
+
+CALL update_budget_view('2024-02-26', 1);

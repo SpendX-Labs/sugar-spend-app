@@ -1,0 +1,390 @@
+databaseChangeLog:
+  - changeSet:
+      id: 10001
+      author: subham.biswas
+      changes:
+        - insert:
+            tableName: mutual_fund
+            columns:
+              - column:
+                  name: pk_mutual_fund_id
+                  value: 1
+              - column:
+                  name: amc_name
+                  value: Parag Parikh
+              - column:
+                  name: scheme_name
+                  value: Parag Parikh Flexi Cap Fund
+              - column:
+                  name: option
+                  value: Growth
+              - column:
+                  name: plan_type
+                  value: Direct
+              - column:
+                  name: scheme_code
+                  value: '122639'
+
+  - changeSet:
+      id: 10002
+      author: subham.biswas
+      changes:
+        - insert:
+            tableName: mutual_fund
+            columns:
+              - column:
+                  name: pk_mutual_fund_id
+                  value: 2
+              - column:
+                  name: amc_name
+                  value: HDFC
+              - column:
+                  name: scheme_name
+                  value: HDFC Defence Fund
+              - column:
+                  name: option
+                  value: Growth
+              - column:
+                  name: plan_type
+                  value: Direct
+              - column:
+                  name: scheme_code
+                  value: '151750'
+
+  - changeSet:
+      id: 10003
+      author: subham.biswas
+      changes:
+        - insert:
+            tableName: mutual_fund
+            columns:
+              - column:
+                  name: pk_mutual_fund_id
+                  value: 3
+              - column:
+                  name: amc_name
+                  value: NIPPON INDIA
+              - column:
+                  name: scheme_name
+                  value: NIPPON INDIA GOLD SAVINGS FUND
+              - column:
+                  name: option
+                  value: Growth
+              - column:
+                  name: plan_type
+                  value: Direct
+              - column:
+                  name: scheme_code
+                  value: '118663'
+
+  - changeSet:
+      id: 10004
+      author: subham.biswas
+      changes:
+        - insert:
+            tableName: mutual_fund
+            columns:
+              - column:
+                  name: pk_mutual_fund_id
+                  value: 4
+              - column:
+                  name: amc_name
+                  value: Quant
+              - column:
+                  name: scheme_name
+                  value: Quant Flexi Cap Fund
+              - column:
+                  name: option
+                  value: Growth
+              - column:
+                  name: plan_type
+                  value: Direct
+              - column:
+                  name: scheme_code
+                  value: '120843'
+
+  - changeSet:
+      id: 10005
+      author: subham.biswas
+      changes:
+        - insert:
+            tableName: mutual_fund
+            columns:
+              - column:
+                  name: pk_mutual_fund_id
+                  value: 5
+              - column:
+                  name: amc_name
+                  value: Mirae Asset
+              - column:
+                  name: scheme_name
+                  value: Mirae Asset Global X Artificial Intelligence & Technology ETF Fund of Fund
+              - column:
+                  name: option
+                  value: Growth
+              - column:
+                  name: plan_type
+                  value: Direct
+              - column:
+                  name: scheme_code
+                  value: '150597'
+
+  - changeSet:
+      id: 10006
+      author: subham.biswas
+      changes:
+        - insert:
+            tableName: mutual_fund
+            columns:
+              - column:
+                  name: pk_mutual_fund_id
+                  value: 6
+              - column:
+                  name: amc_name
+                  value: Mirae Asset
+              - column:
+                  name: scheme_name
+                  value: Mirae Asset Global Electric & Autonomous Vehicles ETFs Fund of Fund
+              - column:
+                  name: option
+                  value: Growth
+              - column:
+                  name: plan_type
+                  value: Direct
+              - column:
+                  name: scheme_code
+                  value: '150595'
+
+  - changeSet:
+      id: 10007
+      author: subham.biswas
+      changes:
+        - insert:
+            tableName: mutual_fund
+            columns:
+              - column:
+                  name: pk_mutual_fund_id
+                  value: 7
+              - column:
+                  name: amc_name
+                  value: ICICI Prudential
+              - column:
+                  name: scheme_name
+                  value: ICICI Prudential Bluechip Fund
+              - column:
+                  name: option
+                  value: Growth
+              - column:
+                  name: plan_type
+                  value: Direct
+              - column:
+                  name: scheme_code
+                  value: '120586'
+
+  - changeSet:
+      id: 10008
+      author: subham.biswas
+      changes:
+        - insert:
+            tableName: mutual_fund
+            columns:
+              - column:
+                  name: pk_mutual_fund_id
+                  value: 8
+              - column:
+                  name: amc_name
+                  value: Quant
+              - column:
+                  name: scheme_name
+                  value: Quant Small Cap Fund
+              - column:
+                  name: option
+                  value: Growth
+              - column:
+                  name: plan_type
+                  value: Direct
+              - column:
+                  name: scheme_code
+                  value: '120828'
+
+  - changeSet:
+      id: 10009
+      author: subham.biswas
+      changes:
+        - insert:
+            tableName: mutual_fund
+            columns:
+              - column:
+                  name: pk_mutual_fund_id
+                  value: 9
+              - column:
+                  name: amc_name
+                  value: Quant
+              - column:
+                  name: scheme_name
+                  value: Quant Active Fund
+              - column:
+                  name: option
+                  value: Growth
+              - column:
+                  name: plan_type
+                  value: Direct
+              - column:
+                  name: scheme_code
+                  value: '120823'
+
+  - changeSet:
+      id: 10010
+      author: subham.biswas
+      changes:
+        - insert:
+            tableName: mutual_fund
+            columns:
+              - column:
+                  name: pk_mutual_fund_id
+                  value: 10
+              - column:
+                  name: amc_name
+                  value: SBI
+              - column:
+                  name: scheme_name
+                  value: SBI Technology Opportunities Fund
+              - column:
+                  name: option
+                  value: Growth
+              - column:
+                  name: plan_type
+                  value: Direct
+              - column:
+                  name: scheme_code
+                  value: '120578'
+
+  - changeSet:
+      id: 10011
+      author: subham.biswas
+      changes:
+        - insert:
+            tableName: mutual_fund
+            columns:
+              - column:
+                  name: pk_mutual_fund_id
+                  value: 11
+              - column:
+                  name: amc_name
+                  value: ICICI Prudential
+              - column:
+                  name: scheme_name
+                  value: ICICI Prudential Technology Fund
+              - column:
+                  name: option
+                  value: Growth
+              - column:
+                  name: plan_type
+                  value: Direct
+              - column:
+                  name: scheme_code
+                  value: '120594'
+
+  - changeSet:
+      id: 10012
+      author: subham.biswas
+      changes:
+        - insert:
+            tableName: mutual_fund
+            columns:
+              - column:
+                  name: pk_mutual_fund_id
+                  value: 12
+              - column:
+                  name: amc_name
+                  value: Quant
+              - column:
+                  name: scheme_name
+                  value: quant ELSS Tax Saver Fund
+              - column:
+                  name: option
+                  value: Growth
+              - column:
+                  name: plan_type
+                  value: Direct
+              - column:
+                  name: scheme_code
+                  value: '120847'
+
+  - changeSet:
+      id: 10013
+      author: subham.biswas
+      changes:
+        - insert:
+            tableName: mutual_fund
+            columns:
+              - column:
+                  name: pk_mutual_fund_id
+                  value: 13
+              - column:
+                  name: amc_name
+                  value: NIPPON INDIA
+              - column:
+                  name: scheme_name
+                  value: NIPPON INDIA SMALL CAP FUND
+              - column:
+                  name: option
+                  value: Growth
+              - column:
+                  name: plan_type
+                  value: Direct
+              - column:
+                  name: scheme_code
+                  value: '113177'
+
+  - changeSet:
+      id: 10014
+      author: subham.biswas
+      changes:
+        - insert:
+            tableName: mutual_fund
+            columns:
+              - column:
+                  name: pk_mutual_fund_id
+                  value: 14
+              - column:
+                  name: amc_name
+                  value: Tata Digital
+              - column:
+                  name: scheme_name
+                  value: Tata Digital India Fund  Plan
+              - column:
+                  name: option
+                  value: Growth
+              - column:
+                  name: plan_type
+                  value: Direct
+              - column:
+                  name: scheme_code
+                  value: '135800'
+
+  - changeSet:
+      id: 10015
+      author: subham.biswas
+      changes:
+        - insert:
+            tableName: mutual_fund
+            columns:
+              - column:
+                  name: pk_mutual_fund_id
+                  value: 15
+              - column:
+                  name: amc_name
+                  value: DSP
+              - column:
+                  name: scheme_name
+                  value: DSP Small Cap Fund
+              - column:
+                  name: option
+                  value: Growth
+              - column:
+                  name: plan_type
+                  value: Direct
+              - column:
+                  name: scheme_code
+                  value: '119212'
