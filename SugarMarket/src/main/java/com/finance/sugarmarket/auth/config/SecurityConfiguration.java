@@ -29,8 +29,8 @@ public class SecurityConfiguration {
   private LogoutHandler logoutHandler;
   @Value("${cors.allowedOrigins}")
   private String allowedOrigins;
-  @Value("${spring.profiles.active}")
-  private String activeProfile;
+  @Value("${security.swagger.enabled:false}")
+  private boolean swaggerEnabled;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -39,11 +39,11 @@ public class SecurityConfiguration {
     http.csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
             auth -> {
-              if ("prod".equals(activeProfile)) {
-                auth.requestMatchers("/auth/*").permitAll()
+              if (swaggerEnabled) {
+                auth.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/auth/*").permitAll()
                     .anyRequest().authenticated();
               } else {
-                auth.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/auth/*").permitAll()
+                auth.requestMatchers("/auth/*").permitAll()
                     .anyRequest().authenticated();
               }
             })
