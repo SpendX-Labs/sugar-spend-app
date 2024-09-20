@@ -1,4 +1,4 @@
-package com.finance.sugarmarket.data.config;
+package com.finance.sugarmarket.base.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;

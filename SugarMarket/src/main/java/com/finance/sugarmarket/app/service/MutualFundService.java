@@ -13,7 +13,7 @@ import com.finance.sugarmarket.app.dto.MarketData;
 import com.finance.sugarmarket.app.model.MutualFund;
 import com.finance.sugarmarket.app.repo.MutualFundRepo;
 import com.finance.sugarmarket.app.utils.MarketDataUtil;
-import com.finance.sugarmarket.constants.MFConstants;
+import com.finance.sugarmarket.constants.AppConstants;
 
 @Service
 public class MutualFundService {
@@ -43,7 +43,7 @@ public class MutualFundService {
 				long updatedDateMillis = System.currentTimeMillis();
 				updatedDateMillis = sdf.parse(sdf.format(new Date(updatedDateMillis))).getTime();
 				while (marketData.getNavData().get(new Date(updatedDateMillis)) == null) {
-					updatedDateMillis = updatedDateMillis - MFConstants.ONE_DAY_IN_MILLIS;
+					updatedDateMillis = updatedDateMillis - AppConstants.ONE_DAY_IN_MILLIS;
 				}
 				Date updatedDate = new Date(updatedDateMillis);
 				if (marketData.getNavData().get(new Date(updatedDateMillis)) == null) {
@@ -53,64 +53,64 @@ public class MutualFundService {
 
 				// set historical data
 				// 1 day
-				updatedDateMillis = updatedDate.getTime() - MFConstants.ONE_DAY_IN_MILLIS;
+				updatedDateMillis = updatedDate.getTime() - AppConstants.ONE_DAY_IN_MILLIS;
 				if (marketData.getNavData().firstKey().before(new Date(updatedDateMillis))) {
 					while (marketData.getNavData().get(new Date(updatedDateMillis)) == null) {
-						updatedDateMillis = updatedDateMillis - MFConstants.ONE_DAY_IN_MILLIS;
+						updatedDateMillis = updatedDateMillis - AppConstants.ONE_DAY_IN_MILLIS;
 					}
 					fund.setDay1Nav(marketData.getNavData().get(new Date(updatedDateMillis)));
 				}
 
 				// 1 W
-				updatedDateMillis = updatedDate.getTime() - MFConstants.ONE_DAY_IN_MILLIS * 7;
+				updatedDateMillis = updatedDate.getTime() - AppConstants.ONE_DAY_IN_MILLIS * 7;
 				if (marketData.getNavData().firstKey().before(new Date(updatedDateMillis))) {
 					while (marketData.getNavData().get(new Date(updatedDateMillis)) == null) {
-						updatedDateMillis = updatedDateMillis - MFConstants.ONE_DAY_IN_MILLIS;
+						updatedDateMillis = updatedDateMillis - AppConstants.ONE_DAY_IN_MILLIS;
 					}
 					fund.setWeek1Nav(marketData.getNavData().get(new Date(updatedDateMillis)));
 				}
 
 				// 1 M
-				updatedDateMillis = updatedDate.getTime() - MFConstants.ONE_DAY_IN_MILLIS * 30;
+				updatedDateMillis = updatedDate.getTime() - AppConstants.ONE_DAY_IN_MILLIS * 30;
 				if (marketData.getNavData().firstKey().before(new Date(updatedDateMillis))) {
 					while (marketData.getNavData().get(new Date(updatedDateMillis)) == null) {
-						updatedDateMillis = updatedDateMillis - MFConstants.ONE_DAY_IN_MILLIS;
+						updatedDateMillis = updatedDateMillis - AppConstants.ONE_DAY_IN_MILLIS;
 					}
 					fund.setMonth1Nav(marketData.getNavData().get(new Date(updatedDateMillis)));
 				}
 
 				// 6 M
-				updatedDateMillis = updatedDate.getTime() - MFConstants.ONE_DAY_IN_MILLIS * 30 * 6;
+				updatedDateMillis = updatedDate.getTime() - AppConstants.ONE_DAY_IN_MILLIS * 30 * 6;
 				if (marketData.getNavData().firstKey().before(new Date(updatedDateMillis))) {
 					while (marketData.getNavData().get(new Date(updatedDateMillis)) == null) {
-						updatedDateMillis = updatedDateMillis - MFConstants.ONE_DAY_IN_MILLIS;
+						updatedDateMillis = updatedDateMillis - AppConstants.ONE_DAY_IN_MILLIS;
 					}
 					fund.setMonth6Nav(marketData.getNavData().get(new Date(updatedDateMillis)));
 				}
 
 				// 1 Y
-				updatedDateMillis = updatedDate.getTime() - MFConstants.ONE_DAY_IN_MILLIS * 30 * 12;
+				updatedDateMillis = updatedDate.getTime() - AppConstants.ONE_DAY_IN_MILLIS * 30 * 12;
 				if (marketData.getNavData().firstKey().before(new Date(updatedDateMillis))) {
 					while (marketData.getNavData().get(new Date(updatedDateMillis)) == null) {
-						updatedDateMillis = updatedDateMillis - MFConstants.ONE_DAY_IN_MILLIS;
+						updatedDateMillis = updatedDateMillis - AppConstants.ONE_DAY_IN_MILLIS;
 					}
 					fund.setYear1Nav(marketData.getNavData().get(new Date(updatedDateMillis)));
 				}
 
 				// 3 Y
-				updatedDateMillis = updatedDate.getTime() - MFConstants.ONE_DAY_IN_MILLIS * 30 * 12 * 3;
+				updatedDateMillis = updatedDate.getTime() - AppConstants.ONE_DAY_IN_MILLIS * 30 * 12 * 3;
 				if (marketData.getNavData().firstKey().before(new Date(updatedDateMillis))) {
 					while (marketData.getNavData().get(new Date(updatedDateMillis)) == null) {
-						updatedDateMillis = updatedDateMillis - MFConstants.ONE_DAY_IN_MILLIS;
+						updatedDateMillis = updatedDateMillis - AppConstants.ONE_DAY_IN_MILLIS;
 					}
 					fund.setYear3Nav(marketData.getNavData().get(new Date(updatedDateMillis)));
 				}
 
 				// 5 Y
-				updatedDateMillis = updatedDate.getTime() - MFConstants.ONE_DAY_IN_MILLIS * 30 * 12 * 5;
+				updatedDateMillis = updatedDate.getTime() - AppConstants.ONE_DAY_IN_MILLIS * 30 * 12 * 5;
 				if (marketData.getNavData().firstKey().before(new Date(updatedDateMillis))) {
 					while (marketData.getNavData().get(new Date(updatedDateMillis)) == null) {
-						updatedDateMillis = updatedDateMillis - MFConstants.ONE_DAY_IN_MILLIS;
+						updatedDateMillis = updatedDateMillis - AppConstants.ONE_DAY_IN_MILLIS;
 					}
 					fund.setYear5Nav(marketData.getNavData().get(new Date(updatedDateMillis)));
 				}

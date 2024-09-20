@@ -7,6 +7,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.finance.sugarmarket.auth.model.MFRole;
 import com.finance.sugarmarket.auth.repo.MapRoleUserRepo;
+import com.finance.sugarmarket.auth.service.JwtCacheService;
 import com.finance.sugarmarket.auth.service.JwtService;
 
 @RestController
@@ -16,6 +17,8 @@ public class BaseController {
 	private JwtService jwtService;
 	@Autowired
 	private MapRoleUserRepo mapRoleUserRepo;
+	@Autowired
+	private JwtCacheService jwtCacheService;
 	
 	private String getToken() {
 		String token = null;
@@ -24,7 +27,7 @@ public class BaseController {
 		if (requestAttributes != null) {
 			token = requestAttributes.getRequest().getHeader("Authorization");
 		}
-		return token;
+		return jwtCacheService.extractJwtFromHeader(token);
 	}
 
 	public String getUserName() {

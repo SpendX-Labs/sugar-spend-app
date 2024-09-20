@@ -21,17 +21,15 @@ import com.finance.sugarmarket.auth.dto.GenericResponse;
 import com.finance.sugarmarket.auth.dto.SignUpRequestDTO;
 import com.finance.sugarmarket.auth.dto.SignUpResponseDTO;
 import com.finance.sugarmarket.auth.dto.UserDetailsDTO;
-import com.finance.sugarmarket.auth.memory.Tokens;
 import com.finance.sugarmarket.auth.memory.UserOTPs;
 import com.finance.sugarmarket.auth.model.MFRole;
 import com.finance.sugarmarket.auth.model.MFUser;
 import com.finance.sugarmarket.auth.model.MapRoleUser;
 import com.finance.sugarmarket.auth.model.OTPDetails;
-import com.finance.sugarmarket.auth.model.Token;
 import com.finance.sugarmarket.auth.repo.MFUserRepo;
 import com.finance.sugarmarket.auth.repo.MapRoleUserRepo;
 import com.finance.sugarmarket.auth.repo.RoleRepo;
-import com.finance.sugarmarket.constants.MFConstants;
+import com.finance.sugarmarket.constants.AppConstants;
 import com.finance.sugarmarket.sms.service.EmailService;
 
 @Service
@@ -54,7 +52,9 @@ public class AuthenticationService {
 	@Autowired
 	private EmailService emailService;
 	@Autowired
-    private PasswordEncoder passwordEncoder;
+	private PasswordEncoder passwordEncoder;
+	@Autowired
+	private JwtCacheService jtwCacheService;
 
 	private static final SecureRandom secureRandom = new SecureRandom();
 	private static final int OTP_LENGTH = 6;
@@ -63,10 +63,11 @@ public class AuthenticationService {
 	public AuthenticationResponse authenticate(AuthenticationRequest request) {
 		authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+
 		UserDetails user = userDetailsService.loadUserByUsername(request.getUsername());
-		var jwtToken = jwtService.generateToken(user);
-		saveUserToken(user, jwtToken);
 		removeUserPassword(user);
+		String jwtToken = jwtService.generateToken(user);
+		jtwCacheService.saveUserToken(jwtToken, user);
 		return new AuthenticationResponse(jwtToken, user);
 	}
 
@@ -78,27 +79,11 @@ public class AuthenticationService {
 		}
 	}
 
-	private void saveUserToken(UserDetails user, String jwtToken) {
-		Token token = new Token();
-		token.setToken(jwtToken);
-		token.setUser(user);
-		token.setExpired(false);
-		Tokens.tokenMap.put(jwtToken, token);
-	}
-
-	public UserDetails getUserDetailsByToken(String token) throws Exception {
-		if (Tokens.tokenMap.get(token) == null) {
-			throw new Exception("token not found");
-		}
-		String userName = jwtService.extractUsername(token);
-		return getUserDetailsByUserName(userName);
-	}
-
 	public SignUpResponseDTO signup(SignUpRequestDTO request) {
 		if (userRepo.existsByUsernameAndIsActive(request.getUsername(), true)) {
 			return new SignUpResponseDTO(request.getUsername() + " already exists", false);
 		}
-		if(userRepo.existsByEmailAndIsActive(request.getEmailId(), true)) {
+		if (userRepo.existsByEmailAndIsActive(request.getEmailId(), true)) {
 			return new SignUpResponseDTO(request.getEmailId() + " already exists", false);
 		}
 
@@ -131,7 +116,7 @@ public class AuthenticationService {
 		try {
 			log.info("sending otp for " + username);
 			OTPDetails otp = new OTPDetails(generateOTP(), OTP_EXPIRATION_TIME_MS);
-			UserOTPs.getInstance().addOtp(username, otp); //add otp
+			UserOTPs.getInstance().addOtp(username, otp); // add otp
 			String subject = fullName + "! Here is your OTP";
 			String body = otp.getOtp() + " is your OTP for Sugar Spend. Please do not share to anyone.\nArigato";
 			emailService.sendSMS(emailId, subject, body);
@@ -157,68 +142,62 @@ public class AuthenticationService {
 
 	public SignUpResponseDTO verifyotp(SignUpRequestDTO request) {
 		OTPDetails otp = UserOTPs.getInstance().getOtp(request.getUsername());
-		if(otp != null && 
-				(otp.getExpirationTime() > System.currentTimeMillis() 
-						|| otp.getOtp().equals(request.getOtp()))) {
+		if (otp != null
+				&& (otp.getExpirationTime() > System.currentTimeMillis() || otp.getOtp().equals(request.getOtp()))) {
 			MFUser user = userRepo.findByUsername(request.getUsername());
 			user.setIsActive(true);
 			userRepo.save(user);
 			UserOTPs.getInstance().removeOtp(request.getUsername());
-			return new SignUpResponseDTO(request.getUsername(), request.getEmailId(),
-					"Signup successful please login", true);
-		}
-		else if(otp != null && otp.getExpirationTime() < System.currentTimeMillis()) {
+			return new SignUpResponseDTO(request.getUsername(), request.getEmailId(), "Signup successful please login",
+					true);
+		} else if (otp != null && otp.getExpirationTime() < System.currentTimeMillis()) {
 			UserOTPs.getInstance().removeOtp(request.getUsername());
-			return new SignUpResponseDTO(request.getUsername(), request.getEmailId(),
-					"OTP Expired", false);
+			return new SignUpResponseDTO(request.getUsername(), request.getEmailId(), "OTP Expired", false);
 		}
-		return new SignUpResponseDTO(request.getUsername(), request.getEmailId(),
-				"incorrect OTP", false);
+		return new SignUpResponseDTO(request.getUsername(), request.getEmailId(), "incorrect OTP", false);
 	}
-	
+
 	public UserDetails saveUserDetails(UserDetailsDTO userDto, String userName) {
 		MFUser user = userRepo.findByUsername(userName);
 		user.setFullname(userDto.getFullName());
 		user.setPhonenumber(user.getPhonenumber());
 		OTPDetails otp = UserOTPs.getInstance().getOtp(userName);
-		if(otp != null && 
-				(otp.getExpirationTime() > System.currentTimeMillis() 
-						|| otp.getOtp().equals(userDto.getOtp()))) {
-			if(StringUtils.isNotBlank(userDto.getEmail())) {
+		if (otp != null
+				&& (otp.getExpirationTime() > System.currentTimeMillis() || otp.getOtp().equals(userDto.getOtp()))) {
+			if (StringUtils.isNotBlank(userDto.getEmail())) {
 				user.setEmail(userDto.getEmail());
 			}
-			if(StringUtils.isNotBlank(userName))
-			user.setPassword(userDto.getPassword());
+			if (StringUtils.isNotBlank(userName))
+				user.setPassword(userDto.getPassword());
 		}
 		userRepo.saveAndFlush(user);
 		return getUserDetailsByUserName(userName);
 	}
-	
+
 	private UserDetails getUserDetailsByUserName(String userName) {
 		UserDetails user = userDetailsService.loadUserByUsername(userName);
 		removeUserPassword(user);
 		return user;
 	}
-	
+
 	public GenericResponse forgetPassword(Map<String, String> request) {
 		MFUser user = null;
-		if(request.get(MFConstants.REQUEST_ID).contains("@")) {
-			user = userRepo.findByEmail(request.get(MFConstants.REQUEST_ID));
+		if (request.get(AppConstants.REQUEST_ID).contains("@")) {
+			user = userRepo.findByEmail(request.get(AppConstants.REQUEST_ID));
+		} else {
+			user = userRepo.findByUsername(request.get(AppConstants.REQUEST_ID));
 		}
-		else {
-			user = userRepo.findByUsername(request.get(MFConstants.REQUEST_ID));
-		}
-		
-		if(user == null) {
+
+		if (user == null) {
 			return new GenericResponse("User doesn't exits", false);
 		}
-		
-		if(!sendOTPEmailandSave(user.getEmail(), user.getUsername(), user.getFullname())) {
+
+		if (!sendOTPEmailandSave(user.getEmail(), user.getUsername(), user.getFullname())) {
 			return new GenericResponse("Failed to send OTP, Please try later", false);
 		}
-		
+
 		return new GenericResponse("OTP sent to your email", true);
-		
+
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.finance.sugarmarket.data.config;
+package com.finance.sugarmarket.base.config;
 
 import javax.sql.DataSource;
 

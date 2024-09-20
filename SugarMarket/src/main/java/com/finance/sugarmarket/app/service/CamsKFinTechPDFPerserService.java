@@ -20,7 +20,7 @@ import com.finance.sugarmarket.app.dto.CamsKFinTechDto;
 import com.finance.sugarmarket.app.model.MutualFund;
 import com.finance.sugarmarket.app.model.OrderDetail;
 import com.finance.sugarmarket.auth.model.MFUser;
-import com.finance.sugarmarket.constants.MFConstants;
+import com.finance.sugarmarket.constants.AppConstants;
 
 @Service
 public class CamsKFinTechPDFPerserService extends SaveOrderService {
@@ -145,14 +145,14 @@ public class CamsKFinTechPDFPerserService extends SaveOrderService {
 				ord.setMutualFund(mf);
 				ord.setUser(user);
 				if (value.toLowerCase().contains("purchase") || value.toLowerCase().contains("investment")) {
-					ord.setSide(MFConstants.BUY);
+					ord.setSide(AppConstants.BUY);
 					String[] parts = value.split("\\s+");
 					ord.setDateOfEvent(dateFormat.parse(parts[0]));
 					ord.setAmount(Double.parseDouble(parts[parts.length - 4].replaceAll(",", "")));
 					ord.setUnits(Double.parseDouble(parts[parts.length - 3].replaceAll(",", "")));
 					ord.setNav(Double.parseDouble(parts[parts.length - 2].replaceAll(",", "")));
 				} else if (value.toLowerCase().contains("redemption") || value.toLowerCase().contains("redeem")) {
-					ord.setSide(MFConstants.SELL);
+					ord.setSide(AppConstants.SELL);
 					String[] parts = value.split("\\s+");
 					ord.setDateOfEvent(dateFormat.parse(parts[0]));
 					ord.setAmount(Double.parseDouble(

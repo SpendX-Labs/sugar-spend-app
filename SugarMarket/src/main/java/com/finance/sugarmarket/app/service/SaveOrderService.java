@@ -13,7 +13,7 @@ import com.finance.sugarmarket.app.repo.MutualFundRepo;
 import com.finance.sugarmarket.app.repo.OrderRepo;
 import com.finance.sugarmarket.app.utils.MarketDataUtil;
 import com.finance.sugarmarket.auth.model.MFUser;
-import com.finance.sugarmarket.constants.MFConstants;
+import com.finance.sugarmarket.constants.AppConstants;
 
 import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
@@ -58,7 +58,7 @@ public class SaveOrderService {
 			detail.setUnits(detail.getAmount() / nav);
 		}
 		orderRepo.save(detail);
-		return MFConstants.SUCCESS;
+		return AppConstants.SUCCESS;
 	}
 
 	public void saveFile(File file, MFUser user, String password) throws Exception {

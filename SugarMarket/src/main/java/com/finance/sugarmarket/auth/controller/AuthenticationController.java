@@ -22,6 +22,8 @@ import com.finance.sugarmarket.auth.dto.GenericResponse;
 import com.finance.sugarmarket.auth.dto.SignUpRequestDTO;
 import com.finance.sugarmarket.auth.dto.SignUpResponseDTO;
 import com.finance.sugarmarket.auth.service.AuthenticationService;
+import com.finance.sugarmarket.auth.service.JwtCacheService;
+import com.finance.sugarmarket.constants.AppConstants;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -29,6 +31,8 @@ import com.finance.sugarmarket.auth.service.AuthenticationService;
 public class AuthenticationController {
 	@Autowired
 	private AuthenticationService authenticationService;
+	@Autowired
+	private JwtCacheService jwtCacheService;
 
 	private static final Logger log = LoggerFactory.getLogger(AuthenticationService.class);
 
@@ -46,7 +50,8 @@ public class AuthenticationController {
 	@GetMapping("/userinfo")
 	public ResponseEntity<UserDetails> getUserDetailsByJWT(@RequestHeader Map<String, String> request) {
 		try {
-			return ResponseEntity.ok(authenticationService.getUserDetailsByToken(request.get("authorization")));
+			String jwt = jwtCacheService.extractJwtFromHeader(request.get(AppConstants.AUTHORIZATION));
+			return ResponseEntity.ok(jwtCacheService.getUserDetailsByToken(jwt));
 		} catch (Exception e) {
 			log.error("getUserDetailsByJWT failed", e.getMessage());
 		}
