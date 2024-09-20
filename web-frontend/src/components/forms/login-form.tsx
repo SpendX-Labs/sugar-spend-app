@@ -10,8 +10,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useLoginMutation } from "@/store/auth/authApi";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -23,16 +24,22 @@ const loginSchema = z.object({
 type LoginFormValue = z.infer<typeof loginSchema>;
 
 const LoginForm = () => {
+  const [login, { isLoading, data, error }] = useLoginMutation();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
   const form = useForm<LoginFormValue>({
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data: LoginFormValue) => {
-    console.log("Login data:", data);
-    // Handle login logic here
+  const onSubmit = async (data: { username: string; password: string }) => {
+    await login({
+      username: data.username,
+      password: data.password,
+    }).unwrap();
   };
+
+  if (data) router.push(callbackUrl || "/dashboard");
 
   return (
     <Form {...form}>
@@ -73,9 +80,10 @@ const LoginForm = () => {
           )}
         />
 
-        <Button className="ml-auto w-full" type="submit">
-          Login
+        <Button className="ml-auto w-full" type="submit" disabled={isLoading}>
+          {isLoading ? "Logging in..." : "Login"}
         </Button>
+        {error && <p>Error: Login failed</p>}
       </form>
     </Form>
   );
