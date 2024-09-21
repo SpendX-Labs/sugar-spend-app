@@ -19,7 +19,7 @@ import com.finance.sugarmarket.app.model.Expense;
 import com.finance.sugarmarket.app.service.CreditCardService;
 import com.finance.sugarmarket.app.service.ExpenseService;
 import com.finance.sugarmarket.base.controller.BaseController;
-import com.finance.sugarmarket.constants.MFConstants;
+import com.finance.sugarmarket.constants.AppConstants;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -47,9 +47,9 @@ private static final Logger log = LoggerFactory.getLogger(ExpenseController.clas
 		} catch (Exception e) {
 			log.error("error while saving expense: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(MFConstants.FAILED);
+                    .body(AppConstants.FAILED);
 		}
-		return ResponseEntity.ok(MFConstants.SUCCESS);
+		return ResponseEntity.ok(AppConstants.SUCCESS);
 	}
 	
 	@PostMapping("/delete-expense")
@@ -59,8 +59,8 @@ private static final Logger log = LoggerFactory.getLogger(ExpenseController.clas
 		} catch (Exception e) {
 			log.error("error while deleting expense: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(MFConstants.FAILED);
+                    .body(AppConstants.FAILED);
 		}
-		return ResponseEntity.ok(MFConstants.SUCCESS);
+		return ResponseEntity.ok(AppConstants.SUCCESS);
 	}
 }

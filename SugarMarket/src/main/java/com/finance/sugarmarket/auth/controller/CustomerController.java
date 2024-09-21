@@ -26,7 +26,7 @@ public class CustomerController extends BaseController {
 	
 	private static final Logger log = LoggerFactory.getLogger(CustomerController.class);
 	
-	@PostMapping("/authenticate")
+	@PostMapping("/update-userinfo")
 	public ResponseEntity<UserDetails> updateUserInfo(@RequestBody UserDetailsDTO request) {
 		try {
 			return ResponseEntity.ok(authenticationService.saveUserDetails(request, getUserName()));
@@ -34,6 +34,6 @@ public class CustomerController extends BaseController {
 		catch (Exception e) {
 			log.error("updateUserInfo failed", e.getMessage());
 		}
-		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new UserPrincipal("Incorrect Username or password."));
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new UserPrincipal("Error while saving User details."));
 	}
 }

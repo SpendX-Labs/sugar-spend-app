@@ -19,7 +19,7 @@ import com.finance.sugarmarket.app.model.MutualFund;
 import com.finance.sugarmarket.app.service.MutualFundService;
 import com.finance.sugarmarket.app.utils.MarketDataUtil;
 import com.finance.sugarmarket.base.controller.BaseController;
-import com.finance.sugarmarket.constants.MFConstants;
+import com.finance.sugarmarket.constants.AppConstants;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -51,9 +51,9 @@ public class MutualFundController extends BaseController {
 		} catch (Exception e) {
 			log.error("error while saving mutual fund: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(MFConstants.FAILED);
+                    .body(AppConstants.FAILED);
 		}
-		return ResponseEntity.ok(MFConstants.SUCCESS);
+		return ResponseEntity.ok(AppConstants.SUCCESS);
 	}
 	
 	@PostMapping("/trigger-update-nav")
@@ -65,9 +65,9 @@ public class MutualFundController extends BaseController {
 		catch (Exception e) {
 			log.error("error while triggering update nav: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(MFConstants.FAILED);
+                    .body(AppConstants.FAILED);
 		}
 		
-		return ResponseEntity.ok(MFConstants.SUCCESS);
+		return ResponseEntity.ok(AppConstants.SUCCESS);
 	}
 }

@@ -18,7 +18,7 @@ import com.finance.sugarmarket.app.dto.LoanDto;
 import com.finance.sugarmarket.app.dto.ModifyLoanDto;
 import com.finance.sugarmarket.app.service.LoanService;
 import com.finance.sugarmarket.base.controller.BaseController;
-import com.finance.sugarmarket.constants.MFConstants;
+import com.finance.sugarmarket.constants.AppConstants;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -42,9 +42,9 @@ public class LoanController extends BaseController {
 		} catch (Exception e) {
 			log.error("error while saving credit card: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(MFConstants.FAILED);
+                    .body(AppConstants.FAILED);
 		}
-		return ResponseEntity.ok(MFConstants.SUCCESS);
+		return ResponseEntity.ok(AppConstants.SUCCESS);
 	}
 	
 	@PostMapping("/modify-loan")
@@ -54,8 +54,8 @@ public class LoanController extends BaseController {
 		} catch (Exception e) {
 			log.error("error while saving credit card: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(MFConstants.FAILED);
+                    .body(AppConstants.FAILED);
 		}
-		return ResponseEntity.ok(MFConstants.SUCCESS);
+		return ResponseEntity.ok(AppConstants.SUCCESS);
 	}
 }

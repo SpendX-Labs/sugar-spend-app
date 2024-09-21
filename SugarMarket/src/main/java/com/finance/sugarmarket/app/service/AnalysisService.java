@@ -17,7 +17,7 @@ import com.finance.sugarmarket.app.dto.MarketData;
 import com.finance.sugarmarket.app.model.OrderDetail;
 import com.finance.sugarmarket.app.repo.OrderRepo;
 import com.finance.sugarmarket.app.utils.MarketDataUtil;
-import com.finance.sugarmarket.constants.MFConstants;
+import com.finance.sugarmarket.constants.AppConstants;
 
 @Service
 public class AnalysisService {
@@ -96,7 +96,7 @@ public class AnalysisService {
 
 				while (orderDetailMap.get(code).size() > 0 && !orderDetailMap.get(code).firstKey().after(date)) {
 					for (OrderDetail ord : orderDetailMap.get(code).get(orderDetailMap.get(code).firstKey())) {
-						if (ord.getSide().equals(MFConstants.BUY)) {
+						if (ord.getSide().equals(AppConstants.BUY)) {
 							queue.offer(ord);
 							totalUnits += ord.getUnits();
 							investedAmount += ord.getAmount();
@@ -117,7 +117,7 @@ public class AnalysisService {
 			dto.setCurrentAmount(totalCurrentAmount);
 			dto.setInvestedAmount(totalInvestedAmount);
 			list.add(dto);
-			date = new Date(date.getTime() + MFConstants.ONE_DAY_IN_MILLIS);
+			date = new Date(date.getTime() + AppConstants.ONE_DAY_IN_MILLIS);
 		}
 
 		return list;

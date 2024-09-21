@@ -20,7 +20,7 @@ import com.finance.sugarmarket.app.model.MutualFund;
 import com.finance.sugarmarket.app.model.OrderDetail;
 import com.finance.sugarmarket.app.repo.OrderRepo;
 import com.finance.sugarmarket.app.utils.MathUtil;
-import com.finance.sugarmarket.constants.MFConstants;
+import com.finance.sugarmarket.constants.AppConstants;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -118,13 +118,13 @@ public class OrderService {
 		Queue<OrderDetail> queue = new LinkedList<>();
 		for (OrderDetail ord : orderDetails) {
 			ord.setUser(null);
-			if (ord.getSide().equals(MFConstants.BUY)) {
+			if (ord.getSide().equals(AppConstants.BUY)) {
 				queue.offer(ord);
 				investedAmount += ord.getAmount();
 				totalUnits += ord.getUnits();
 				amounts.add(ord.getAmount());
 			}
-			if (ord.getSide().equals(MFConstants.SELL)) {
+			if (ord.getSide().equals(AppConstants.SELL)) {
 				investedAmount -= getSellInvestedAmount(ord.getAmount(), queue, ord.getUnits());
 				totalUnits -= ord.getUnits();
 				amounts.add(-1 * ord.getAmount());
@@ -230,7 +230,7 @@ public class OrderService {
 				continue;
 			for (OrderDetail orderDetail : data.getOrderDetails()) {
 				dateToTotalAmount.merge(orderDetail.getDateOfEvent(),
-						orderDetail.getSide().equals(MFConstants.BUY) ? orderDetail.getAmount()
+						orderDetail.getSide().equals(AppConstants.BUY) ? orderDetail.getAmount()
 								: -1 * orderDetail.getAmount(),
 						Double::sum);
 			}
@@ -239,7 +239,7 @@ public class OrderService {
 		List<Date> dates = new ArrayList<>(dateToTotalAmount.keySet());
 		List<Double> amounts = new ArrayList<>(dateToTotalAmount.values());
 
-		dates.add(new Date(System.currentTimeMillis() - MFConstants.ONE_DAY_IN_MILLIS));
+		dates.add(new Date(System.currentTimeMillis() - AppConstants.ONE_DAY_IN_MILLIS));
 		amounts.add(currentAmount * -1);
 
 		return MathUtil.findXIRR(0.1, amounts, dates);

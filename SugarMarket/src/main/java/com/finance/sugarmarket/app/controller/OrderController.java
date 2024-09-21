@@ -29,7 +29,7 @@ import com.finance.sugarmarket.app.service.OrderService;
 import com.finance.sugarmarket.app.service.SaveOrderService;
 import com.finance.sugarmarket.auth.service.MFUserService;
 import com.finance.sugarmarket.base.controller.BaseController;
-import com.finance.sugarmarket.constants.MFConstants;
+import com.finance.sugarmarket.constants.AppConstants;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -65,9 +65,9 @@ public class OrderController extends BaseController {
 			data = saveOrderService.saveInvestment(request);
 		} catch (Exception e) {
 			log.error("error while saving fund data: ", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(MFConstants.FAILED);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(AppConstants.FAILED);
 		}
-		if (!data.equals(MFConstants.SUCCESS))
+		if (!data.equals(AppConstants.SUCCESS))
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(data);
 		return ResponseEntity.ok("order detail saved");
 	}
@@ -79,7 +79,7 @@ public class OrderController extends BaseController {
 			
 			saveOrderService = context.getBean(CamsKFinTechPDFPerserService.class);
 
-			String uploadDirectory = MFConstants.FILE_UPLOAD_DIR;
+			String uploadDirectory = AppConstants.FILE_UPLOAD_DIR;
 
 			File directory = new File(uploadDirectory);
 			if (!directory.exists()) {

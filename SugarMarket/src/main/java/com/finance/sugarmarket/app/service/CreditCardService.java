@@ -12,7 +12,7 @@ import com.finance.sugarmarket.app.dto.CreditCardDto;
 import com.finance.sugarmarket.app.model.CreditCard;
 import com.finance.sugarmarket.app.repo.CreditCardRepo;
 import com.finance.sugarmarket.app.repo.ExpenseRepo;
-import com.finance.sugarmarket.constants.MFConstants;
+import com.finance.sugarmarket.constants.AppConstants;
 
 @Service
 public class CreditCardService {
@@ -45,7 +45,7 @@ public class CreditCardService {
 			return DELETE_MSG;
 		}
 		creditCardRepo.deleteById(id);
-		return MFConstants.SUCCESS;
+		return AppConstants.SUCCESS;
 	}
 
 }
