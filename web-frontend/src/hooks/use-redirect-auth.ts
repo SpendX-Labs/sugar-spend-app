@@ -11,7 +11,7 @@ export function useRedirectAuth() {
 
   useEffect(() => {
     if (token && user?.enabled) {
-      router.push("/dashboard");
+      router.push("/");
     }
   }, [token, user, isLoading, router]);
 }

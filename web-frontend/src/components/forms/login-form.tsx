@@ -34,7 +34,7 @@ const LoginForm = () => {
     resolver: zodResolver(loginSchema),
   });
 
-  if (isSuccess) router.push(callbackUrl || "/dashboard");
+  if (isSuccess) router.push(callbackUrl || "/");
 
   const onSubmit = (data: { username: string; password: string }) => {
     login(data);

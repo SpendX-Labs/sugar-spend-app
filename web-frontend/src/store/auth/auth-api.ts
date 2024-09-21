@@ -37,7 +37,25 @@ export type SignupResponse = {
   emailI: string;
 };
 
-export type UserDetails = {
+export type UserInfoResponse = {
+  username: string;
+  password: null;
+  fullName: string;
+  authorities: [
+    {
+      authority: string;
+    }
+  ];
+  message: string | null;
+  email: string;
+  phoneNumber: string;
+  enabled: boolean;
+  accountNonExpired: boolean;
+  accountNonLocked: boolean;
+  credentialsNonExpired: boolean;
+};
+
+export type AuthDataResponse = {
   enabled: boolean;
   password: string;
   accountNonExpired: boolean;
@@ -53,7 +71,7 @@ export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: authBaseQuery,
   endpoints: (builder) => ({
-    getAuthData: builder.query<UserDetails, void>({
+    getAuthData: builder.query<AuthDataResponse, void>({
       query: () => ({
         url: "/auth/userinfo",
         method: "GET",
@@ -85,6 +103,12 @@ export const authApi = createApi({
         body: data,
       }),
     }),
+    userInfo: builder.query<UserInfoResponse, void>({
+      query: () => ({
+        url: "/auth/userinfo",
+        method: "GET",
+      }),
+    }),
     verifyOtp: builder.mutation<SignupResponse, SignupRequestBody>({
       query: (data) => ({
         url: `/auth/verifyotp`,
@@ -100,5 +124,6 @@ export const {
   useLoginMutation,
   useLogoutMutation,
   useSignupMutation,
+  useUserInfoQuery,
   useVerifyOtpMutation,
 } = authApi;

@@ -2,9 +2,11 @@ import type { Action, ThunkAction } from "@reduxjs/toolkit";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { authSlice } from "./auth/auth-slice";
 import { authApi } from "./auth/auth-api";
+import { sidebarSlice } from "./sidebar/sidebar-slice";
 
 const rootReducer = combineReducers({
   auth: authSlice.reducer,
+  sidebar: sidebarSlice.reducer,
   [authApi.reducerPath]: authApi.reducer,
 });
 export type RootState = ReturnType<AppStore["getState"]>;
