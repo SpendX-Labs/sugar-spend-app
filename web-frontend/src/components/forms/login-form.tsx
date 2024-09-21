@@ -10,6 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useRedirectAuth } from "@/hooks/use-redirect-auth";
 import { useLoginMutation } from "@/store/auth/auth-api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -24,6 +25,7 @@ const loginSchema = z.object({
 type LoginFormValue = z.infer<typeof loginSchema>;
 
 const LoginForm = () => {
+  useRedirectAuth();
   const [login, { isLoading, isSuccess, isError }] = useLoginMutation();
   const router = useRouter();
   const searchParams = useSearchParams();

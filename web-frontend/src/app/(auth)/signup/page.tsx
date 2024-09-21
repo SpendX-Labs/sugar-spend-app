@@ -21,7 +21,7 @@ export default function SignupPage() {
           </span>
         </div>
       </div>
-      <Link href="/">
+      <Link href="/login">
         <Button className="w-full" variant="outline" type="button">
           Login
         </Button>

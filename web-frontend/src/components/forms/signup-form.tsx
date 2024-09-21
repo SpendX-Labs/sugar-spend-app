@@ -16,6 +16,7 @@ import * as z from "zod";
 import { Modal } from "../ui/modal";
 import { useSignupMutation, useVerifyOtpMutation } from "@/store/auth/auth-api";
 import { useRouter } from "next/navigation";
+import { useRedirectAuth } from "@/hooks/use-redirect-auth";
 
 const signupSchema = z
   .object({
@@ -39,6 +40,7 @@ const signupSchema = z
 type SignupFormValue = z.infer<typeof signupSchema>;
 
 const SignupForm = () => {
+  useRedirectAuth();
   const router = useRouter();
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
   const [signupData, setSignupData] = useState<SignupFormValue | undefined>();
