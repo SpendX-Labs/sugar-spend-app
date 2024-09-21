@@ -6,6 +6,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.finance.sugarmarket.constants.RedisConstants;
+
 @Service
 public class JwtCacheService {
 	
@@ -16,17 +18,17 @@ public class JwtCacheService {
 	    return null;
 	}
 	
-	@CachePut(value = "jwtTokens", key = "#jwtToken")
+	@CachePut(value = RedisConstants.JWT_TOKEN, key = "#jwtToken")
 	public UserDetails saveUserToken(String jwtToken, UserDetails user) {
 		return user;
 	}
 
-	@Cacheable(value = "jwtTokens", key = "#jwtToken")
+	@Cacheable(value = RedisConstants.JWT_TOKEN, key = "#jwtToken")
 	public UserDetails getUserDetailsByToken(String jwtToken) throws Exception {
 		throw new Exception("Token not found");
 	}
 
-	@CacheEvict(value = "jwtTokens", key = "#jwtToken")
+	@CacheEvict(value = RedisConstants.JWT_TOKEN, key = "#jwtToken")
 	public void removeToken(String jwtToken) {
 
 	}

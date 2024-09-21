@@ -20,6 +20,8 @@ import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import com.finance.sugarmarket.constants.RedisConstants;
+
 import io.micrometer.common.util.StringUtils;
 
 @Configuration
@@ -30,25 +32,27 @@ public class RedisCacheConfig {
 	private String redisHost;
 	@Value("${env.redis.port:6480}")
 	private int redisPort;
-	@Value("${env.redis.username:null}")
+	@Value("${env.redis.username:}")
 	private String redisUsername;
-	@Value("${env.redis.password:null}")
+	@Value("${env.redis.password:}")
 	private String redisPassword;
+	@Value("${env.namespace:local}")
+	private String cacheNamespace;
 
 	@Bean
 	public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
 		RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig()
-				.entryTtl(Duration.ofMinutes(5)) // Default TTL is 5 minutes
+				.entryTtl(Duration.ofMinutes(5))
 				.serializeKeysWith(
-						RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()));
+						RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+				.prefixCacheNameWith(cacheNamespace + " ");
 
 		Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
-		cacheConfigurations.put("creditCards",
+		cacheConfigurations.put(cacheNamespace + " " + RedisConstants.CREDIT_CARD,
 				RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(1)));
 
-		cacheConfigurations.put("jwtTokens",
-				RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofHours(24))); // JWT tokens valid for 24
-																								// hours
+		cacheConfigurations.put(cacheNamespace + " " + RedisConstants.JWT_TOKEN,
+				RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofHours(24)));
 
 		return RedisCacheManager.builder(redisConnectionFactory).cacheDefaults(defaultConfig)
 				.withInitialCacheConfigurations(cacheConfigurations).build();
