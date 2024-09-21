@@ -1,7 +1,7 @@
 import type { Action, ThunkAction } from "@reduxjs/toolkit";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import { authSlice } from "./auth/authSlice";
-import { authApi } from "./auth/authApi";
+import { authSlice } from "./auth/auth-slice";
+import { authApi } from "./auth/auth-api";
 
 const rootReducer = combineReducers({
   auth: authSlice.reducer,

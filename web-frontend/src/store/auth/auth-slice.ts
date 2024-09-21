@@ -1,6 +1,7 @@
 import { setCookie, deleteCookie } from "cookies-next";
 import { createSlice } from "@reduxjs/toolkit";
-import { authApi } from "./authApi";
+import { authApi } from "./auth-api";
+import { COOKIES_TOKEN_NAME } from "@/lib/constants";
 
 export type AuthState = {
   token: string;
@@ -23,7 +24,7 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     logout: () => {
-      deleteCookie("auth_token");
+      deleteCookie(COOKIES_TOKEN_NAME);
       return {};
     },
   },
@@ -31,7 +32,7 @@ export const authSlice = createSlice({
     builder.addMatcher(
       authApi.endpoints.login.matchFulfilled,
       (_state, { payload }) => {
-        setAuthCookie(payload.token, "auth_token");
+        setAuthCookie(payload.token, COOKIES_TOKEN_NAME);
         return payload;
       }
     );

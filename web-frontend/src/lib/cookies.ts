@@ -1,6 +1,6 @@
 import { getCookie } from "cookies-next";
+import { COOKIES_TOKEN_NAME } from "./constants";
 
-// helpers to get cookies
 const getAuthCookie = (name: string) => {
   const cookie = getCookie(name);
 
@@ -10,7 +10,7 @@ const getAuthCookie = (name: string) => {
 };
 
 export const getValidAuthTokens = () => {
-  const token = getAuthCookie("auth_token");
+  const token = getAuthCookie(COOKIES_TOKEN_NAME);
 
   return { token };
 };

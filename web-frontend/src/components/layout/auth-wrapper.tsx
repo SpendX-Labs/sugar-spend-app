@@ -1,11 +1,10 @@
 "use client";
 
-import { getValidAuthTokens } from "@/lib/cookies";
-import { useGetAuthDataQuery } from "@/store/auth/authApi";
-import { useEffect } from "react";
-import { logout, selectUserName } from "@/store/auth/authSlice";
-import { useAppDispatch, useAppSelector } from "@/hooks/use-app";
+import { useGetAuthDataQuery } from "@/store/auth/auth-api";
+import { logout } from "@/store/auth/auth-slice";
+import { useAppDispatch } from "@/hooks/use-app";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 type Props = {
   children?: React.ReactNode;
@@ -13,24 +12,22 @@ type Props = {
 
 export const AuthWrapper = ({ children }: Props) => {
   const dispatch = useAppDispatch();
-  const userName = useAppSelector(selectUserName);
   const router = useRouter();
 
-  const { token } = getValidAuthTokens();
+  const { isLoading, isSuccess, isError } = useGetAuthDataQuery();
 
-  const { data, error, isLoading } = useGetAuthDataQuery(
-    { token: token || "" },
-    {
-      skip: !!userName || !token,
-    }
-  );
+  const isAuthPage = ["/", "/signup"].includes(window.location.pathname);
 
   useEffect(() => {
-    if (!token) {
-      router.push("/login");
+    if (isError) {
       dispatch(logout());
+      router.push("/");
     }
-  }, [token, router.push]);
+
+    if (isSuccess && isAuthPage) {
+      router.push("/dashboard");
+    }
+  }, [isSuccess, isError, router, dispatch, isAuthPage]);
 
   if (isLoading) {
     return <div>Loading...</div>;
