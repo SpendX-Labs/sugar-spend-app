@@ -1,5 +1,6 @@
 package com.finance.sugarmarket.base.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.jpa.domain.Specification;
@@ -10,6 +11,16 @@ import jakarta.persistence.criteria.From;
 import jakarta.persistence.criteria.Path;
 
 public class SpecificationService<T> {
+	
+	public Specification<T> getSpecificationFilters(List<Filter> filters, Map<String, String> filterMap) {
+		Specification<T> specificationFilters = Specification.where(null);
+		for (Filter filter: filters) {
+			Specification<T> spec = createSpecificationFromFilter(filter, filterMap);
+			specificationFilters = specificationFilters.and(spec);
+		}
+		
+		return specificationFilters;
+	}
 
 	public Specification<T> createSpecificationFromFilter(Filter filter, Map<String, String> filterMap) {
 		String column = filterMap.get(filter.getColumn()) != null ? filterMap.get(filter.getColumn())

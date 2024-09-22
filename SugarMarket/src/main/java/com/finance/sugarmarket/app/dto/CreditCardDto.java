@@ -7,21 +7,20 @@ public class CreditCardDto {
     private String creditCardName;
     private Integer statementDate;
     private Integer dueDate;
+    private Integer last4Digit;
 
-    // Constructors
-    public CreditCardDto(Integer id, String bankName, String creditCardName, Integer statementDate, Integer dueDate) {
+    public CreditCardDto(Integer id, String bankName, String creditCardName, Integer statementDate, Integer dueDate, Integer last4Digit) {
         this.id = id;
         this.bankName = bankName;
         this.creditCardName = creditCardName;
         this.statementDate = statementDate;
         this.dueDate = dueDate;
+        this.last4Digit = last4Digit;
     }
 
     public CreditCardDto() {
-        // Default constructor
     }
 
-    // Getters and Setters
     public Integer getId() {
         return id;
     }
@@ -61,4 +60,12 @@ public class CreditCardDto {
     public void setDueDate(Integer dueDate) {
         this.dueDate = dueDate;
     }
+
+	public Integer getLast4Digit() {
+		return last4Digit;
+	}
+
+	public void setLast4Digit(Integer last4Digit) {
+		this.last4Digit = last4Digit;
+	}
 }

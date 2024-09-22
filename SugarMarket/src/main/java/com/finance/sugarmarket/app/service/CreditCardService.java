@@ -43,12 +43,7 @@ public class CreditCardService extends SpecificationService<CreditCard> {
 	}
 	
 	public List<CreditCardDto> findAllCreditCard(PageRequest pageRequest, List<Filter> filters) {
-		Specification<CreditCard> specificationFilters = Specification.where(null);
-		for (Filter filter: filters) {
-			Specification<CreditCard> spec = createSpecificationFromFilter(filter, filterMap);
-			specificationFilters = specificationFilters.and(spec);
-		}
-		
+		Specification<CreditCard> specificationFilters = getSpecificationFilters(filters, filterMap);
 		List<CreditCard> list = creditCardRepo.findAll(specificationFilters, pageRequest).getContent();
 		Type listType = new TypeToken<List<CreditCardDto>>() {}.getType();
 		return modelMapper.map(list, listType);
