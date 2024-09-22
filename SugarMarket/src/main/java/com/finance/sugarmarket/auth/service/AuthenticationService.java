@@ -29,6 +29,7 @@ import com.finance.sugarmarket.auth.model.OTPDetails;
 import com.finance.sugarmarket.auth.repo.MFUserRepo;
 import com.finance.sugarmarket.auth.repo.MapRoleUserRepo;
 import com.finance.sugarmarket.auth.repo.RoleRepo;
+import com.finance.sugarmarket.auth.util.AuthenticationUtil;
 import com.finance.sugarmarket.constants.AppConstants;
 import com.finance.sugarmarket.sms.service.EmailService;
 
@@ -182,10 +183,10 @@ public class AuthenticationService {
 
 	public GenericResponse forgetPassword(Map<String, String> request) {
 		MFUser user = null;
-		if (request.get(AppConstants.REQUEST_ID).contains("@")) {
-			user = userRepo.findByEmail(request.get(AppConstants.REQUEST_ID));
+		if (AuthenticationUtil.getInstance().isValidEmail(request.get(AppConstants.REQUEST_ID))) {
+			user = userRepo.findByEmailAndISActive(request.get(AppConstants.REQUEST_ID));
 		} else {
-			user = userRepo.findByUsername(request.get(AppConstants.REQUEST_ID));
+			user = userRepo.findBYUsernameAndISActive(request.get(AppConstants.REQUEST_ID));
 		}
 
 		if (user == null) {

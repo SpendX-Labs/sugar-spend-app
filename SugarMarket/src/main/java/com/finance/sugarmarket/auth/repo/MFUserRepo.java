@@ -13,6 +13,9 @@ public interface MFUserRepo extends JpaRepository<MFUser, Integer> {
 	
 	public MFUser findByEmail(String email);
 	
+	@Query("SELECT user FROM MFUser user WHERE user.email=:email AND user.isActive=true")
+	public MFUser findByEmailAndISActive(@Param("email") String email);
+	
 	@Query("SELECT user FROM MFUser user WHERE user.username=:username AND user.isActive=true")
 	public MFUser findBYUsernameAndISActive(@Param("username") String username);
 	
