@@ -5,71 +5,81 @@ import java.time.LocalTime;
 import java.util.Date;
 
 public class ExpenseDto {
-    private Integer id;
-    private CreditCardDto creditCard;
-    private BigDecimal amount;
-    private Date expenseDate;
-    private LocalTime expenseTime;
-    private String reason;
+	private Integer id;
+	private Integer crediCardId;
+	private String creditCardName;
+	private BigDecimal amount;
+	private Date expenseDate;
+	private LocalTime expenseTime;
+	private String reason;
 
-    // Constructors, getters, and setters
+	public ExpenseDto() {
+	}
 
-    public ExpenseDto() {}
+	public ExpenseDto(Integer id, Integer crediCardId, String creditCardName, BigDecimal amount, Date expenseDate,
+			LocalTime expenseTime, String reason) {
+		this.id = id;
+		this.crediCardId = crediCardId;
+		this.creditCardName = creditCardName;
+		this.amount = amount;
+		this.expenseDate = expenseDate;
+		this.expenseTime = expenseTime;
+		this.reason = reason;
+	}
 
-    public ExpenseDto(Integer id, CreditCardDto creditCard, BigDecimal amount, Date expenseDate, LocalTime expenseTime, String reason) {
-        this.id = id;
-        this.creditCard = creditCard;
-        this.amount = amount;
-        this.expenseDate = expenseDate;
-        this.expenseTime = expenseTime;
-        this.reason = reason;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public Integer getId() {
-        return id;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public Integer getCrediCardId() {
+		return crediCardId;
+	}
 
-    public CreditCardDto getCreditCard() {
-        return creditCard;
-    }
+	public void setCrediCardId(Integer crediCardId) {
+		this.crediCardId = crediCardId;
+	}
 
-    public void setCreditCard(CreditCardDto creditCard) {
-        this.creditCard = creditCard;
-    }
+	public String getCreditCardName() {
+		return creditCardName;
+	}
 
-    public BigDecimal getAmount() {
-        return amount;
-    }
+	public void setCreditCardName(String creditCardName) {
+		this.creditCardName = creditCardName;
+	}
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
+	public BigDecimal getAmount() {
+		return amount;
+	}
 
-    public Date getExpenseDate() {
-        return expenseDate;
-    }
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
+	}
 
-    public void setExpenseDate(Date expenseDate) {
-        this.expenseDate = expenseDate;
-    }
+	public Date getExpenseDate() {
+		return expenseDate;
+	}
 
-    public LocalTime getExpenseTime() {
-        return expenseTime;
-    }
+	public void setExpenseDate(Date expenseDate) {
+		this.expenseDate = expenseDate;
+	}
 
-    public void setExpenseTime(LocalTime expenseTime) {
-        this.expenseTime = expenseTime;
-    }
+	public LocalTime getExpenseTime() {
+		return expenseTime;
+	}
 
-    public String getReason() {
-        return reason;
-    }
+	public void setExpenseTime(LocalTime expenseTime) {
+		this.expenseTime = expenseTime;
+	}
 
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
 }

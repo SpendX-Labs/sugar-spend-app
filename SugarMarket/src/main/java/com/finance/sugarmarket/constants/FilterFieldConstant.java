@@ -7,5 +7,6 @@ public class FilterFieldConstant {
 	public static String SORT_COLUMN = "sortColumn";
 	public static String ID = "id";
 	public static String USER_ID = "userId";
+	public static String CREDIT_CARD_ID = "crediCardId";
 	public static String FILTERS = "filters";
 }

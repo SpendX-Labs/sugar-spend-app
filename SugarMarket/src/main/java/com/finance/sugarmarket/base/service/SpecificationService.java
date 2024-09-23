@@ -1,11 +1,14 @@
 package com.finance.sugarmarket.base.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.jpa.domain.Specification;
 
 import com.finance.sugarmarket.base.dto.Filter;
+import com.finance.sugarmarket.base.enums.FilterOperation;
+import com.finance.sugarmarket.constants.FilterFieldConstant;
 
 import jakarta.persistence.criteria.From;
 import jakarta.persistence.criteria.Path;
@@ -50,5 +53,12 @@ public class SpecificationService<T> {
 				throw new UnsupportedOperationException("Operation not supported: " + filter.getOperation());
 			}
 		};
+	}
+	
+	public Specification<T> getAuditSpecificationFilters(Map<String, String> filterMap, Integer id, Integer userId) {
+		List<Filter> filters = new ArrayList<>();
+		filters.add(new Filter(FilterFieldConstant.ID, FilterOperation.EQUAL, id.toString()));
+		filters.add(new Filter(FilterFieldConstant.USER_ID, FilterOperation.EQUAL, userId.toString()));
+ 		return getSpecificationFilters(filters, filterMap);
 	}
 }

@@ -47,18 +47,19 @@ public class CreditCardController extends BaseController {
 			creditCardService.saveCreditCard(cardDetailDto, getUserId());
 		} catch (Exception e) {
 			log.error("error while saving credit card: ", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(AppConstants.FAILED);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
 		return ResponseEntity.ok(AppConstants.SUCCESS);
 	}
-	
+
 	@PatchMapping("update/{id}")
-	public ResponseEntity<String> updateCreditCard(@PathVariable("id") Integer id, @RequestBody CreditCardDto cardDetailDto) {
+	public ResponseEntity<String> updateCreditCard(@PathVariable("id") Integer id,
+			@RequestBody CreditCardDto cardDetailDto) {
 		try {
-			creditCardService.updateCreditCard(cardDetailDto, id);
+			creditCardService.updateCreditCard(cardDetailDto, id, getUserId());
 		} catch (Exception e) {
 			log.error("error while saving credit card: ", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(AppConstants.FAILED);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
 		return ResponseEntity.ok(AppConstants.SUCCESS);
 	}
@@ -66,10 +67,10 @@ public class CreditCardController extends BaseController {
 	@DeleteMapping("delete/{id}")
 	public ResponseEntity<String> deleteCreditCard(@PathVariable("id") Integer id) {
 		try {
-			return ResponseEntity.ok(creditCardService.deleteCreditCard(id));
+			return ResponseEntity.ok(creditCardService.deleteCreditCard(id, getUserId()));
 		} catch (Exception e) {
 			log.error("error while saving credit card: ", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(AppConstants.FAILED);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
 	}
 

@@ -24,7 +24,7 @@ import com.finance.sugarmarket.constants.FilterFieldConstant;
 
 @Service
 public class CreditCardService extends SpecificationService<CreditCard> {
-	
+
 	@Autowired
 	private CreditCardRepo creditCardRepo;
 	@Autowired
@@ -33,45 +33,52 @@ public class CreditCardService extends SpecificationService<CreditCard> {
 	private MFUserRepo userRepo;
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	private static final String DELETE_MSG = "Can not delete as it reffered in child table";
-	
+
 	private static final Map<String, String> filterMap = new HashMap<String, String>();
-	
+
 	static {
 		filterMap.put(FilterFieldConstant.USER_ID, "user.id");
 	}
-	
+
 	public List<CreditCardDto> findAllCreditCard(PageRequest pageRequest, List<Filter> filters) {
 		Specification<CreditCard> specificationFilters = getSpecificationFilters(filters, filterMap);
 		List<CreditCard> list = creditCardRepo.findAll(specificationFilters, pageRequest).getContent();
-		Type listType = new TypeToken<List<CreditCardDto>>() {}.getType();
+		Type listType = new TypeToken<List<CreditCardDto>>() {
+		}.getType();
 		return modelMapper.map(list, listType);
 	}
-	
+
 	public void saveCreditCard(CreditCardDto cardDeatilDto, Integer userId) {
 		CreditCard creditCard = modelMapper.map(cardDeatilDto, CreditCard.class);
 		creditCard.setUser(userRepo.findById(userId).get());
 		creditCardRepo.save(creditCard);
 	}
-	
-	public void updateCreditCard(CreditCardDto cardDetailDto, Integer pkId) {
-		CreditCard existingCard = creditCardRepo.findById(pkId).get();
-        modelMapper.map(cardDetailDto, existingCard);
-        existingCard.setId(pkId);
-        creditCardRepo.save(existingCard);
-	}
-	
-	public CreditCard findByCreditCardId(Integer id) {
-		return creditCardRepo.findById(id).get();
-	}
-	
-	public String deleteCreditCard(Integer id) {
-		if(expenseRepo.findByCreditCardId(id).size() > 0) {
-			return DELETE_MSG;
+
+	public void updateCreditCard(CreditCardDto cardDetailDto, Integer id, Integer userId) throws Exception {
+		Specification<CreditCard> specificationFilters = getAuditSpecificationFilters(filterMap, id, userId);
+		List<CreditCard> creditCardList = creditCardRepo.findAll(specificationFilters);
+		if (creditCardList.isEmpty()) {
+			throw new Exception("You are not authorised to modify");
 		}
-		creditCardRepo.deleteById(id);
-		return AppConstants.SUCCESS;
+		CreditCard existingCard = creditCardList.get(0);
+		modelMapper.map(cardDetailDto, existingCard);
+		existingCard.setId(id);
+		creditCardRepo.save(existingCard);
 	}
 
+	public String deleteCreditCard(Integer id, Integer userId) throws Exception {
+		Specification<CreditCard> specificationFilters = getAuditSpecificationFilters(filterMap, id, userId);
+		List<CreditCard> creditCardList = creditCardRepo.findAll(specificationFilters);
+		if (creditCardList.isEmpty()) {
+			throw new Exception("You are not authorised to modify");
+		}
+		CreditCard existingCard = creditCardList.get(0);
+		if (expenseRepo.findByCreditCardId(id).size() > 0) {
+			return DELETE_MSG;
+		}
+		creditCardRepo.deleteById(existingCard.getId());
+		return AppConstants.SUCCESS;
+	}
 }
