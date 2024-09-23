@@ -16,7 +16,7 @@ export const authBaseQuery = async (
   const { token } = getValidAuthTokens();
 
   const headers = {
-    ...(token ? { Authorization: token } : {}),
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
     "Content-Type": "application/json",
   };
 
