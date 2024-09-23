@@ -29,6 +29,8 @@ public class CreditCard {
     private Integer statementDate;
     @Column(name = "due_date")
     private Integer dueDate;
+    @Column(name = "last_4_digit")
+    private Integer last4Digit;
 	public Integer getId() {
 		return id;
 	}
@@ -65,9 +67,15 @@ public class CreditCard {
 	public void setDueDate(Integer dueDate) {
 		this.dueDate = dueDate;
 	}
+	public Integer getLast4Digit() {
+		return last4Digit;
+	}
+	public void setLast4Digit(Integer last4Digit) {
+		this.last4Digit = last4Digit;
+	}
 	
 	public CreditCard(Integer id, MFUser user, String bankName, String creditCardName,
-			Integer statementDate, Integer dueDate) {
+			Integer statementDate, Integer dueDate, Integer last4Digit) {
 		super();
 		this.id = id;
 		this.user = user;
@@ -75,6 +83,7 @@ public class CreditCard {
 		this.creditCardName = creditCardName;
 		this.statementDate = statementDate;
 		this.dueDate = dueDate;
+		this.last4Digit = last4Digit;
 	}
 
     public CreditCard() {

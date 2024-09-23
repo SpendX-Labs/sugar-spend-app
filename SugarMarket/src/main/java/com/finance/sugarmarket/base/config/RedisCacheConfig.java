@@ -42,16 +42,15 @@ public class RedisCacheConfig {
 	@Bean
 	public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
 		RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig()
-				.entryTtl(Duration.ofMinutes(5))
+				.entryTtl(Duration.ofHours(10))
 				.serializeKeysWith(
-						RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-				.prefixCacheNameWith(cacheNamespace + " ");
+						RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()));
 
 		Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
-		cacheConfigurations.put(cacheNamespace + " " + RedisConstants.CREDIT_CARD,
-				RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(1)));
+		cacheConfigurations.put(RedisConstants.CREDIT_CARD,
+				RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofHours(5)));
 
-		cacheConfigurations.put(cacheNamespace + " " + RedisConstants.JWT_TOKEN,
+		cacheConfigurations.put(RedisConstants.JWT_TOKEN,
 				RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofHours(24)));
 
 		return RedisCacheManager.builder(redisConnectionFactory).cacheDefaults(defaultConfig)
