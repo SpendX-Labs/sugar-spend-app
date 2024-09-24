@@ -4,16 +4,16 @@ export const COOKIES_TOKEN_NAME = "auth_token";
 
 export const navItems: NavItem[] = [
   {
-    title: "Budget",
+    title: "Dashboard",
     href: "/",
     icon: "dashboard",
-    label: "Budget",
+    label: "Dashboard",
   },
   {
-    title: "Mutual Funds",
-    href: "/mutual-fund",
-    icon: "mutualFunds",
-    label: "Mutual Funds",
+    title: "Credit Card",
+    href: "/credit-card",
+    icon: "creditCard",
+    label: "CreditCard",
   },
   {
     title: "Expense",
@@ -28,10 +28,10 @@ export const navItems: NavItem[] = [
     label: "Loan",
   },
   {
-    title: "All Mutual Funds",
-    href: "/all-mutual-fund",
-    icon: "allMutualFunds",
-    label: "All Mutual Funds",
+    title: "Mutual Fund",
+    href: "/mutual-fund",
+    icon: "mutualFunds",
+    label: "Mutual Fund",
   },
   // {
   //   title: "Profile",
