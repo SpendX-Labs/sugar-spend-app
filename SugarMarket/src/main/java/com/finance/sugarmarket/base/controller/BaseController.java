@@ -71,9 +71,6 @@ public class BaseController {
 				.getRequest();
 		int page = 0;
 		int size = 10;
-		String orderby = "asc";
-		String sortColumn = null;
-		String filtersParam = null;
 
 		String pageParam = request.getParameter(FilterFieldConstant.PAGE);
 		if (pageParam != null && !pageParam.isEmpty()) {
@@ -93,11 +90,11 @@ public class BaseController {
 			}
 		}
 
-		orderby = request.getParameter(FilterFieldConstant.ORDER_BY);
+		String orderby = request.getParameter(FilterFieldConstant.ORDER_BY);
 
-		sortColumn = request.getParameter(FilterFieldConstant.SORT_COLUMN);
+		String sortColumn = request.getParameter(FilterFieldConstant.SORT_COLUMN);
 
-		filtersParam = request.getParameter(FilterFieldConstant.FILTERS);
+		String filtersParam = request.getParameter(FilterFieldConstant.FILTERS);
 
 		Sort.Direction direction = (orderby != null && orderby.equalsIgnoreCase("desc")) ? Sort.Direction.DESC
 				: Sort.Direction.ASC;

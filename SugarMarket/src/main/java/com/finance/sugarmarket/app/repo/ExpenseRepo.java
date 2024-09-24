@@ -4,11 +4,12 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import com.finance.sugarmarket.app.model.Expense;
 
-public interface ExpenseRepo extends JpaRepository<Expense, Integer> {
+public interface ExpenseRepo extends JpaRepository<Expense, Integer>, JpaSpecificationExecutor<Expense> {
 
 	@Query("SELECT o FROM Expense o WHERE o.creditCard.user.username = :username")
 	public List<Expense> findByUsername(String username);
