@@ -41,7 +41,7 @@ public class CreditCardController extends BaseController {
 		return creditCardService.findAllCreditCard(pair.getFirst(), pair.getSecond());
 	}
 
-	@PostMapping("save")
+	@PostMapping
 	public ResponseEntity<String> saveCreditCard(@RequestBody CreditCardDto cardDetailDto) {
 		try {
 			creditCardService.saveCreditCard(cardDetailDto, getUserId());
@@ -52,7 +52,7 @@ public class CreditCardController extends BaseController {
 		return ResponseEntity.ok(AppConstants.SUCCESS);
 	}
 
-	@PatchMapping("update/{id}")
+	@PatchMapping("{id}")
 	public ResponseEntity<String> updateCreditCard(@PathVariable("id") Integer id,
 			@RequestBody CreditCardDto cardDetailDto) {
 		try {
@@ -64,7 +64,7 @@ public class CreditCardController extends BaseController {
 		return ResponseEntity.ok(AppConstants.SUCCESS);
 	}
 
-	@DeleteMapping("delete/{id}")
+	@DeleteMapping("{id}")
 	public ResponseEntity<String> deleteCreditCard(@PathVariable("id") Integer id) {
 		try {
 			return ResponseEntity.ok(creditCardService.deleteCreditCard(id, getUserId()));

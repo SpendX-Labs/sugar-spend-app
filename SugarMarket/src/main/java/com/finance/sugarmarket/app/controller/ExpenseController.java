@@ -41,7 +41,7 @@ private static final Logger log = LoggerFactory.getLogger(ExpenseController.clas
 		return expenseService.findAllExpense(pair.getFirst(), pair.getSecond());
 	}
 	
-	@PostMapping("save")
+	@PostMapping
 	public ResponseEntity<String> saveExpense(@RequestBody ExpenseDto expenseDto) {
 		try {
 			expenseService.saveExpense(expenseDto, getUserId());
@@ -53,7 +53,7 @@ private static final Logger log = LoggerFactory.getLogger(ExpenseController.clas
 		return ResponseEntity.ok(AppConstants.SUCCESS);
 	}
 	
-	@PatchMapping("update/{id}")
+	@PatchMapping("{id}")
 	public ResponseEntity<String> updateExpense(@PathVariable("id") Integer id, @RequestBody ExpenseDto expenseDto) {
 		try {
 			expenseService.updateExpense(expenseDto, id, getUserId());
@@ -65,7 +65,7 @@ private static final Logger log = LoggerFactory.getLogger(ExpenseController.clas
 		return ResponseEntity.ok(AppConstants.SUCCESS);
 	}
 	
-	@DeleteMapping("delete/{id}")
+	@DeleteMapping("{id}")
 	public ResponseEntity<String> deleteById(@PathVariable("id") Integer id) {
 		try {
 			expenseService.deleteExpense(id, getUserId());
