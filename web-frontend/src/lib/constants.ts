@@ -1,5 +1,7 @@
 import { NavItem } from "./types";
 
+export const CURRENCY_RUPEE_SYMBOL = "₹";
+
 export const COOKIES_TOKEN_NAME = "auth_token";
 
 export const navItems: NavItem[] = [
