@@ -5,7 +5,7 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Trash } from "lucide-react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,8 +21,10 @@ import { Heading } from "@/components/ui/heading";
 import { useToast } from "../ui/use-toast";
 import {
   useAddCreditCardMutation,
+  useDeleteCreditCardMutation,
   useEditCreditCardMutation,
 } from "@/store/credit-card/credit-card-api";
+import { AlertModal } from "../modal/alert-modal";
 
 const formSchema = z.object({
   bankName: z
@@ -53,8 +55,8 @@ interface AddCreditCardFormProps {
 
 export const AddCreditCardForm: React.FC<AddCreditCardFormProps> = ({ id }) => {
   const [addCreditCard] = useAddCreditCardMutation();
+  const [deleteCreditCard] = useDeleteCreditCardMutation();
   const [editCreditCard] = useEditCreditCardMutation();
-  const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
@@ -127,7 +129,6 @@ export const AddCreditCardForm: React.FC<AddCreditCardFormProps> = ({ id }) => {
         title: toastMessage,
       });
     } catch (error: any) {
-      console.log(error);
       toast({
         variant: "destructive",
         title: "Uh oh! Something went wrong.",
@@ -141,10 +142,15 @@ export const AddCreditCardForm: React.FC<AddCreditCardFormProps> = ({ id }) => {
   const onDelete = async () => {
     try {
       setLoading(true);
-      //   await axios.delete(`/api/${params.storeId}/products/${params.productId}`);
+      await deleteCreditCard(initialData?.id ? Number(initialData.id) : 0);
       router.refresh();
-      router.push(`/${params.storeId}/products`);
+      router.push(`/credit-card`);
     } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+      });
     } finally {
       setLoading(false);
       setOpen(false);
@@ -153,6 +159,12 @@ export const AddCreditCardForm: React.FC<AddCreditCardFormProps> = ({ id }) => {
 
   return (
     <>
+      <AlertModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        onConfirm={onDelete}
+        loading={loading}
+      />
       <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
         {initialData && (

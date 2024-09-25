@@ -23,6 +23,7 @@ const creditCardUrl = "/app/credit-card";
 export const creditCardApi = createApi({
   reducerPath: "creditCardApi",
   baseQuery: authBaseQuery,
+  tagTypes: ["CreditCard"],
   endpoints: (builder) => ({
     addCreditCard: builder.mutation<any, CreditCardRequestBody>({
       query: (data) => ({
@@ -31,6 +32,15 @@ export const creditCardApi = createApi({
         body: data,
         responseHandler: "text",
       }),
+      invalidatesTags: ["CreditCard"],
+    }),
+    deleteCreditCard: builder.mutation<any, number>({
+      query: (id) => ({
+        url: `${creditCardUrl}/${id}`,
+        method: "DELETE",
+        responseHandler: "text",
+      }),
+      invalidatesTags: ["CreditCard"],
     }),
     editCreditCard: builder.mutation<any, CreditCardRequestBody>({
       query: (data) => ({
@@ -39,18 +49,21 @@ export const creditCardApi = createApi({
         body: data,
         responseHandler: "text",
       }),
+      invalidatesTags: ["CreditCard"],
     }),
     getCreditCards: builder.query<CreditCardsResponse, void>({
       query: () => ({
         url: creditCardUrl,
         method: "GET",
       }),
+      providesTags: ["CreditCard"],
     }),
   }),
 });
 
 export const {
   useAddCreditCardMutation,
+  useDeleteCreditCardMutation,
   useEditCreditCardMutation,
   useGetCreditCardsQuery,
 } = creditCardApi;
