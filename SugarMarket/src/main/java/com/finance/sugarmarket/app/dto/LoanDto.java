@@ -6,8 +6,8 @@ import java.util.Date;
 import com.finance.sugarmarket.app.enums.LoanType;
 
 public class LoanDto {
-	private Integer id;
-	private Integer creditCardId;
+	private Long id;
+	private Long creditCardId;
 	private String creditCardName;
 	private CreditCardDto creditCardDTO;
 	private String lenderName;
@@ -28,16 +28,16 @@ public class LoanDto {
 	private BigDecimal remainingInterestAmount;
 	private BigDecimal emiAmount;
 	
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
-	public Integer getCreditCardId() {
+	public Long getCreditCardId() {
 		return creditCardId;
 	}
-	public void setCreditCardId(Integer creditCardId) {
+	public void setCreditCardId(Long creditCardId) {
 		this.creditCardId = creditCardId;
 	}
 	public String getCreditCardName() {

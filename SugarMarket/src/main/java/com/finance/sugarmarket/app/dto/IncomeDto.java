@@ -1,25 +1,23 @@
 package com.finance.sugarmarket.app.dto;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalTime;
-import java.util.Date;
 
 import com.finance.sugarmarket.app.enums.CashFlowType;
 
-public class ExpenseDto {
+public class IncomeDto {
+	
 	private Long id;
-	private CashFlowType expenseType;
+	private CashFlowType incomeType;
 	private Long crediCardId;
 	private String creditCardName;
 	private Long bankAccountId;
 	private String bankAccountName;
 	private BigDecimal amount;
-	private Date expenseDate;
-	private LocalTime expenseTime;
-	private String reason;
-
-	public ExpenseDto() {
-	}
+	private Date dateOfEvent;
+	private LocalTime timeOfEvent;
+	private String message;
 
 	public Long getId() {
 		return id;
@@ -29,12 +27,12 @@ public class ExpenseDto {
 		this.id = id;
 	}
 
-	public CashFlowType getExpenseType() {
-		return expenseType;
+	public CashFlowType getIncomeType() {
+		return incomeType;
 	}
 
-	public void setExpenseType(CashFlowType expenseType) {
-		this.expenseType = expenseType;
+	public void setIncomeType(CashFlowType incomeType) {
+		this.incomeType = incomeType;
 	}
 
 	public Long getCrediCardId() {
@@ -77,27 +75,28 @@ public class ExpenseDto {
 		this.amount = amount;
 	}
 
-	public Date getExpenseDate() {
-		return expenseDate;
+	public Date getDateOfEvent() {
+		return dateOfEvent;
 	}
 
-	public void setExpenseDate(Date expenseDate) {
-		this.expenseDate = expenseDate;
+	public void setDateOfEvent(Date dateOfEvent) {
+		this.dateOfEvent = dateOfEvent;
 	}
 
-	public LocalTime getExpenseTime() {
-		return expenseTime;
+	public LocalTime getTimeOfEvent() {
+		return timeOfEvent;
 	}
 
-	public void setExpenseTime(LocalTime expenseTime) {
-		this.expenseTime = expenseTime;
+	public void setTimeOfEvent(LocalTime timeOfEvent) {
+		this.timeOfEvent = timeOfEvent;
 	}
 
-	public String getReason() {
-		return reason;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setReason(String reason) {
-		this.reason = reason;
+	public void setMessage(String message) {
+		this.message = message;
 	}
+
 }

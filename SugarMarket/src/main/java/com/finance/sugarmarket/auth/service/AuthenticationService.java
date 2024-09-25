@@ -106,7 +106,7 @@ public class AuthenticationService {
 	}
 
 	private MapRoleUser saveMapRoleUser(MFUser user) {
-		MFRole role = roleRepo.getReferenceById(2);
+		MFRole role = roleRepo.getReferenceById(2L);
 		MapRoleUser mapRoleUser = new MapRoleUser();
 		mapRoleUser.setRole(role);
 		mapRoleUser.setUser(user);

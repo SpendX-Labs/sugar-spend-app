@@ -9,30 +9,30 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.finance.sugarmarket.app.model.Expense;
 
-public interface ExpenseRepo extends JpaRepository<Expense, Integer>, JpaSpecificationExecutor<Expense> {
+public interface ExpenseRepo extends JpaRepository<Expense, Long>, JpaSpecificationExecutor<Expense> {
 
 	@Query("SELECT o FROM Expense o WHERE o.creditCard.user.username = :username")
 	public List<Expense> findByUsername(String username);
 
 	@Query("SELECT o FROM Expense o WHERE o.creditCard.id = :id")
-	public List<Expense> findByCreditCardId(Integer id);
+	public List<Expense> findByCreditCardId(Long id);
 
-	@Query("SELECT e.expenseDate, SUM(e.amount) FROM Expense e WHERE e.creditCard.user.username = :username "
+	@Query("SELECT e.expenseDate, SUM(e.amount) FROM Expense e WHERE e.creditCard.user.id = :userId "
 			+ "AND YEAR(e.expenseDate) = :year AND MONTHNAME(e.expenseDate) = :month GROUP BY e.expenseDate")
-	List<Object[]> getMonthlyExpenseSummary(Integer year, String month, String username);
+	List<Object[]> getMonthlyExpenseSummary(Integer year, String month, Long userId);
 
-	@Query("SELECT MONTHNAME(e.expenseDate), SUM(e.amount) FROM Expense e WHERE e.creditCard.user.username = :username "
+	@Query("SELECT MONTHNAME(e.expenseDate), SUM(e.amount) FROM Expense e WHERE e.creditCard.user.id = :userId "
 			+ "AND YEAR(e.expenseDate) = :year GROUP BY MONTHNAME(e.expenseDate)")
-	List<Object[]> getYearlyExpenseSummary(Integer year, String username);
+	List<Object[]> getYearlyExpenseSummary(Integer year, Long userId);
 
-	@Query("SELECT e.creditCard, SUM(e.amount) FROM Expense e WHERE e.creditCard.user.username = :username "
+	@Query("SELECT e.creditCard, SUM(e.amount) FROM Expense e WHERE e.creditCard.user.id = :userId "
 			+ "AND YEAR(e.expenseDate) = :year "
 			+ "AND (:month IS NULL OR :month='' OR MONTHNAME(e.expenseDate) = :month) " + "GROUP BY e.creditCard.id")
-	List<Object[]> getCardExpenseSummary(Integer year, String month, String username);
+	List<Object[]> getCardExpenseSummary(Integer year, String month, Long userId);
 
-	@Query("SELECT SUM(e.amount) FROM Expense e WHERE e.creditCard.user.username = :username "
+	@Query("SELECT SUM(e.amount) FROM Expense e WHERE e.creditCard.user.id = :userId "
 			+ "AND YEAR(e.expenseDate) = :year "
 			+ "AND (:month IS NULL OR :month='' OR MONTHNAME(e.expenseDate) = :month)")
-	BigDecimal getSumAmount(Integer year, String month, String username);
+	BigDecimal getSumAmount(Integer year, String month, Long userId);
 
 }

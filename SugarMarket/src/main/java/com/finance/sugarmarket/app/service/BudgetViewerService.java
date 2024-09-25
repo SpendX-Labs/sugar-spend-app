@@ -31,20 +31,20 @@ public class BudgetViewerService {
 	@Autowired
 	private ExpenseRepo expenseRepo;
 
-	public ExpenseReportDto getExpenseReport(Integer userId, String month, Integer year) {
+	public ExpenseReportDto getExpenseReport(Long userId, String month, Integer year) {
 		ExpenseReportDto reportDto = new ExpenseReportDto();
-		
+		expenseRepo.getSumAmount(year, month, userId);
 		return reportDto;
 	}
 
-	public List<BudgetView> findAllBudget(Integer budgetYear, String budgetMonth, String userName) {
+	public List<BudgetView> findAllBudget(Integer budgetYear, String budgetMonth, Long userId) {
 		List<BudgetView> budgets = new ArrayList<>();
 		if(StringUtils.isNotEmpty(budgetMonth)) {
-			budgets = budgetViewRepo.findAllByMonthAndYear(budgetYear, budgetMonth, userName);
+			budgets = budgetViewRepo.findAllByMonthAndYear(budgetYear, budgetMonth, userId);
 		}
 		else {
-			List<Object[]> list = budgetViewRepo.findAllByYear(budgetYear, userName);
-			int id = 1;
+			List<Object[]> list = budgetViewRepo.findAllByYear(budgetYear, userId);
+			Long id = 1L;
 			for(Object[] ob : list) {
 				BudgetView budget = new BudgetView(id,
 						(CreditCard) ob[0], "All", budgetYear,
@@ -57,7 +57,7 @@ public class BudgetViewerService {
 		return budgets;
 	}
 
-	public BudgetView findBudgetById(Integer id) {
+	public BudgetView findBudgetById(Long id) {
 		return budgetViewRepo.findById(id).get();
 	}
 
@@ -65,12 +65,12 @@ public class BudgetViewerService {
 		budgetViewRepo.save(budget);
 	}
 
-	public List<TimeBasedSummary> getBudgetChart(Integer budgetYear, String budgetMonth, String userName) {
+	public List<TimeBasedSummary> getBudgetChart(Integer budgetYear, String budgetMonth, Long userId) {
 		List<TimeBasedSummary> budgetViewList = new ArrayList<>();
 		Map<String, BigDecimal> map = new HashMap<>();
 		List<Object[]> list = StringUtils.isNotEmpty(budgetMonth) ?
-				expenseRepo.getMonthlyExpenseSummary(budgetYear, budgetMonth, userName)
-				: expenseRepo.getYearlyExpenseSummary(budgetYear, userName);
+				expenseRepo.getMonthlyExpenseSummary(budgetYear, budgetMonth, userId)
+				: expenseRepo.getYearlyExpenseSummary(budgetYear, userId);
 		for(Object[] ob : list) {
 			String key = null;
 			if(ob[0] instanceof Date) {
@@ -96,22 +96,22 @@ public class BudgetViewerService {
 		return budgetViewList;
 	}
 
-	public List<TimeBasedSummary> getPieChart(Integer budgetYear, String budgetMonth, String userName) {
+	public List<TimeBasedSummary> getPieChart(Integer budgetYear, String budgetMonth, Long userId) {
 		List<TimeBasedSummary> pieList = new ArrayList<>();
-		List<Object[]> list = expenseRepo.getCardExpenseSummary(budgetYear, budgetMonth, userName);
+		List<Object[]> list = expenseRepo.getCardExpenseSummary(budgetYear, budgetMonth, userId);
 		list.forEach(x->pieList.add(new TimeBasedSummary(
 				((CreditCard)x[0]).getBankName() + " " + ((CreditCard)x[0]).getCreditCardName()
 				, (BigDecimal) x[1])));
 		return pieList;
 	}
 
-	public Map<String, BigDecimal> getTotalAmount(Integer budgetYear, String budgetMonth, String userName) {
+	public Map<String, BigDecimal> getTotalAmount(Integer budgetYear, String budgetMonth, Long userId) {
 		Map<String, BigDecimal> map = new HashMap<>();
-		map.put("totalSpend", expenseRepo.getSumAmount(budgetYear, budgetMonth, userName));
+		map.put("totalSpend", expenseRepo.getSumAmount(budgetYear, budgetMonth, userId));
 		return map;
 	}
 
-	public void updateBudgetView(Date date, Integer userId) {
+	public void updateBudgetView(Date date, Long userId) {
 		budgetViewRepo.updateBudgetView(date, userId);
 	}
 

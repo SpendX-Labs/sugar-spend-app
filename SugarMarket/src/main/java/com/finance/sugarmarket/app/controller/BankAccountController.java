@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.finance.sugarmarket.app.dto.CreditCardDto;
-import com.finance.sugarmarket.app.service.CreditCardService;
+import com.finance.sugarmarket.app.dto.BankAccountDto;
+import com.finance.sugarmarket.app.service.BankAccountService;
 import com.finance.sugarmarket.base.controller.BaseController;
 import com.finance.sugarmarket.base.dto.Filter;
 import com.finance.sugarmarket.base.dto.ListViewDto;
@@ -28,24 +28,24 @@ import com.finance.sugarmarket.constants.AppConstants;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
-@RequestMapping("/app/credit-card")
-public class CreditCardController extends BaseController {
+@RequestMapping("/app/bank-account")
+public class BankAccountController extends BaseController {
 
 	@Autowired
-	private CreditCardService creditCardService;
+	private BankAccountService bankAccountService;
 
 	private static final Logger log = LoggerFactory.getLogger(CreditCardController.class);
 
 	@GetMapping
-	public ListViewDto<CreditCardDto> findAllCreditCard() {
+	public ListViewDto<BankAccountDto> findAllBankAccount() {
 		Pair<PageRequest, List<Filter>> pair = getPageRequestAndFilters();
-		return creditCardService.findAllCreditCard(pair.getFirst(), pair.getSecond());
+		return bankAccountService.findAllBankAccount(pair.getFirst(), pair.getSecond());
 	}
 
 	@PostMapping
-	public ResponseEntity<String> saveCreditCard(@RequestBody CreditCardDto cardDetailDto) {
+	public ResponseEntity<String> saveBankAccount(@RequestBody BankAccountDto bankAccountDto) {
 		try {
-			creditCardService.saveCreditCard(cardDetailDto, getUserId());
+			bankAccountService.saveBankAccount(bankAccountDto, getUserId());
 		} catch (Exception e) {
 			log.error("error while saving credit card: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -54,10 +54,10 @@ public class CreditCardController extends BaseController {
 	}
 
 	@PatchMapping("{id}")
-	public ResponseEntity<String> updateCreditCard(@PathVariable("id") Long id,
-			@RequestBody CreditCardDto cardDetailDto) {
+	public ResponseEntity<String> updateBankAccount(@PathVariable("id") Long id,
+			@RequestBody BankAccountDto bankAccountDto) {
 		try {
-			creditCardService.updateCreditCard(cardDetailDto, id, getUserId());
+			bankAccountService.updateBankAccount(bankAccountDto, id, getUserId());
 		} catch (Exception e) {
 			log.error("error while saving credit card: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -66,9 +66,9 @@ public class CreditCardController extends BaseController {
 	}
 
 	@DeleteMapping("{id}")
-	public ResponseEntity<String> deleteCreditCard(@PathVariable("id") Long id) {
+	public ResponseEntity<String> deleteBankAccount(@PathVariable("id") Long id) {
 		try {
-			return ResponseEntity.ok(creditCardService.deleteCreditCard(id, getUserId()));
+			return ResponseEntity.ok(bankAccountService.deleteBankAccount(id, getUserId()));
 		} catch (Exception e) {
 			log.error("error while saving credit card: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

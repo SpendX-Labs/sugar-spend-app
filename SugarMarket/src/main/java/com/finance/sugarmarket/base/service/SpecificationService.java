@@ -55,7 +55,7 @@ public class SpecificationService<T> {
 		};
 	}
 	
-	public Specification<T> getAuditSpecificationFilters(Map<String, String> filterMap, Integer id, Integer userId) {
+	public Specification<T> getAuditSpecificationFilters(Map<String, String> filterMap, Long id, Long userId) {
 		List<Filter> filters = new ArrayList<>();
 		filters.add(new Filter(FilterFieldConstant.ID, FilterOperation.EQUAL, id.toString()));
 		filters.add(new Filter(FilterFieldConstant.USER_ID, FilterOperation.EQUAL, userId.toString()));

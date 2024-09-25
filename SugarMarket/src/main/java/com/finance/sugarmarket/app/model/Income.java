@@ -1,12 +1,5 @@
 package com.finance.sugarmarket.app.model;
 
-import java.math.BigDecimal;
-import java.time.LocalTime;
-import java.util.Date;
-
-import com.finance.sugarmarket.app.enums.CashFlowType;
-import com.finance.sugarmarket.auth.model.MFUser;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -17,20 +10,27 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.time.LocalTime;
+
+import com.finance.sugarmarket.app.enums.CashFlowType;
+import com.finance.sugarmarket.auth.model.MFUser;
+
 @Entity
-public class Expense {
+public class Income {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "expenseId")
+	@Column(name = "incomeId")
 	private Long id;
 
 	@ManyToOne
 	@JoinColumn(name = "userId", referencedColumnName = "userId")
 	private MFUser user;
-	
+
 	@Enumerated(EnumType.STRING)
-	private CashFlowType expenseType;
+	private CashFlowType incomeType;
 
 	@ManyToOne
 	@JoinColumn(name = "bankAccountId", referencedColumnName = "bankAccountId")
@@ -42,11 +42,11 @@ public class Expense {
 
 	private BigDecimal amount;
 
-	private Date expenseDate;
+	private Date dateOfEvent;
 
-	private LocalTime expenseTime;
+	private LocalTime timeOfEvent;
 
-	private String reason;
+	private String message;
 
 	public Long getId() {
 		return id;
@@ -64,12 +64,12 @@ public class Expense {
 		this.user = user;
 	}
 
-	public CashFlowType getExpenseType() {
-		return expenseType;
+	public CashFlowType getIncomeType() {
+		return incomeType;
 	}
 
-	public void setExpenseType(CashFlowType expenseType) {
-		this.expenseType = expenseType;
+	public void setIncomeType(CashFlowType incomeType) {
+		this.incomeType = incomeType;
 	}
 
 	public BankAccount getBankAccount() {
@@ -96,31 +96,27 @@ public class Expense {
 		this.amount = amount;
 	}
 
-	public Date getExpenseDate() {
-		return expenseDate;
+	public Date getDateOfEvent() {
+		return dateOfEvent;
 	}
 
-	public void setExpenseDate(Date expenseDate) {
-		this.expenseDate = expenseDate;
+	public void setDateOfEvent(Date dateOfEvent) {
+		this.dateOfEvent = dateOfEvent;
 	}
 
-	public LocalTime getExpenseTime() {
-		return expenseTime;
+	public LocalTime getTimeOfEvent() {
+		return timeOfEvent;
 	}
 
-	public void setExpenseTime(LocalTime expenseTime) {
-		this.expenseTime = expenseTime;
+	public void setTimeOfEvent(LocalTime timeOfEvent) {
+		this.timeOfEvent = timeOfEvent;
 	}
 
-	public String getReason() {
-		return reason;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setReason(String reason) {
-		this.reason = reason;
-	}
-
-	public Expense() {
-		super();
+	public void setMessage(String message) {
+		this.message = message;
 	}
 }

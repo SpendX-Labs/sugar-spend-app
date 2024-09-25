@@ -7,7 +7,7 @@ import java.util.Map;
 import com.finance.sugarmarket.app.model.OrderDetail;
 
 public class FundData {
-	private Integer id;
+	private Long id;
 	private String fundName;
 	private Double investedAmount;
 	private Double currentAmount;
@@ -30,10 +30,10 @@ public class FundData {
 	public List<OrderDetail> orderDetails;
 	public Date updatedDate;
 	
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getFundName() {

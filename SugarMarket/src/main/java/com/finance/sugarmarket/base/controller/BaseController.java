@@ -49,8 +49,8 @@ public class BaseController {
 		return jwtService.extractUsername(getToken());
 	}
 
-	protected Integer getUserId() {
-		return Integer.parseInt(jwtService.extractUserId(getToken()));
+	protected Long getUserId() {
+		return Long.parseLong(jwtService.extractUserId(getToken()));
 	}
 
 	protected void checkAdminRole() throws Exception {
