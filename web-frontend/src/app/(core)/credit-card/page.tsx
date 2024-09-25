@@ -1,3 +1,5 @@
+"use client";
+
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import PageContainer from "@/components/layout/page-container";
 import { columns } from "@/components/tables/credit-card-table/columns";
@@ -6,10 +8,10 @@ import { buttonVariants } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { CreditCard } from "@/lib/types";
+import { useGetCreditCardsQuery } from "@/store/credit-card/credit-card-api";
 import { Plus } from "lucide-react";
 import Link from "next/link";
-import { CreditCard } from "@/lib/types";
-import { creditCardsResponse } from "@/lib/simulates";
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/dashboard" },
@@ -22,14 +24,14 @@ type paramsProps = {
   };
 };
 
-export default async function page({ searchParams }: paramsProps) {
+export default function page({ searchParams }: paramsProps) {
   const page = Number(searchParams.page) || 1;
   const pageLimit = Number(searchParams.limit) || 10;
 
-  const creditCardRes = await creditCardsResponse;
-  const totalUsers = creditCardRes.total; //1000
-  const pageCount = Math.ceil(totalUsers / pageLimit);
-  const creditCard: CreditCard[] = creditCardRes.creditCards || [];
+  const { data: creditCardRes } = useGetCreditCardsQuery();
+  const totalCreditCards = creditCardRes?.total || 0;
+  const pageCount = Math.ceil(totalCreditCards / pageLimit);
+  const creditCards: CreditCard[] = creditCardRes?.data || [];
 
   return (
     <PageContainer>
@@ -38,7 +40,7 @@ export default async function page({ searchParams }: paramsProps) {
 
         <div className="flex items-start justify-between">
           <Heading
-            title={`Credit Card (${totalUsers})`}
+            title={`Credit Card (${totalCreditCards})`}
             description="Manage credit cards"
           />
 
@@ -52,11 +54,11 @@ export default async function page({ searchParams }: paramsProps) {
         <Separator />
 
         <CreditCardTable
-          searchKey="card"
+          searchKey="creditCardName"
           pageNo={page}
           columns={columns}
-          totalUsers={totalUsers}
-          data={creditCard}
+          totalCount={totalCreditCards}
+          data={creditCards}
           pageCount={pageCount}
         />
       </div>

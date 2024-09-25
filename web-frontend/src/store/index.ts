@@ -3,11 +3,13 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { authSlice } from "./auth/auth-slice";
 import { authApi } from "./auth/auth-api";
 import { sidebarSlice } from "./sidebar/sidebar-slice";
+import { creditCardApi } from "./credit-card/credit-card-api";
 
 const rootReducer = combineReducers({
   auth: authSlice.reducer,
   sidebar: sidebarSlice.reducer,
   [authApi.reducerPath]: authApi.reducer,
+  [creditCardApi.reducerPath]: creditCardApi.reducer,
 });
 export type RootState = ReturnType<AppStore["getState"]>;
 
@@ -15,7 +17,10 @@ export const makeStore = () => {
   return configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) => {
-      return getDefaultMiddleware().concat(authApi.middleware);
+      return getDefaultMiddleware().concat(
+        authApi.middleware,
+        creditCardApi.middleware
+      );
     },
   });
 };

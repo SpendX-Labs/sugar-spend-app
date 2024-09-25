@@ -40,7 +40,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   searchKey: string;
   pageNo: number;
-  totalUsers: number;
+  totalCount: number;
   pageSizeOptions?: number[];
   pageCount: number;
   searchParams?: {
@@ -53,7 +53,7 @@ export function CreditCardTable<TData, TValue>({
   data,
   pageNo,
   searchKey,
-  totalUsers,
+  totalCount,
   pageCount,
   pageSizeOptions = [10, 20, 30, 40, 50],
 }: DataTableProps<TData, TValue>) {
@@ -156,7 +156,8 @@ export function CreditCardTable<TData, TValue>({
   return (
     <>
       <Input
-        placeholder={`Search ${searchKey}...`}
+        disabled={true}
+        placeholder={`Search Card...`}
         value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
         onChange={(event) =>
           table.getColumn(searchKey)?.setFilterValue(event.target.value)

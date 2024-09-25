@@ -1,6 +1,7 @@
+import { CreditCardsResponse } from "@/store/credit-card/credit-card-api";
 import { CreditCard } from "./types";
 
-export function simulateApi(simulatedData: any) {
+export function simulateApi(simulatedData: CreditCardsResponse) {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(simulatedData);
@@ -95,11 +96,9 @@ const creditCards: CreditCard[] = [
   },
 ];
 
-export const creditCardsResponse: any = simulateApi({
-  success: true,
-  message: "Sample data for testing and learning purposes",
+export const creditCardsResponse: CreditCardsResponse = {
   total: 100,
   offset: 0,
   limit: 10,
   data: creditCards.splice(0, 10),
-});
+};
