@@ -2,7 +2,7 @@ package com.finance.sugarmarket.app.dto;
 
 import java.math.BigDecimal;
 
-public class BudgetDto {
+public class TimeBasedSummary {
 	private String dataKey;
 	private BigDecimal amount;
 	
@@ -19,12 +19,12 @@ public class BudgetDto {
 		this.amount = amount;
 	}
 	
-	public BudgetDto(String dataKey, BigDecimal amount) {
+	public TimeBasedSummary(String dataKey, BigDecimal amount) {
 		super();
 		this.dataKey = dataKey;
 		this.amount = amount;
 	}
-	public BudgetDto() {
+	public TimeBasedSummary() {
 		super();
 	}
 }

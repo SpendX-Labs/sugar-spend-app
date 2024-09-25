@@ -831,7 +831,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: last_4_digit
-                  type: int
+                  type: VARCHAR(4)
                   constraints:
                     nullable: false
                     primaryKey: false
