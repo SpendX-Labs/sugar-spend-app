@@ -23,56 +23,54 @@ import com.finance.sugarmarket.app.dto.ExpenseDto;
 import com.finance.sugarmarket.app.service.ExpenseService;
 import com.finance.sugarmarket.base.controller.BaseController;
 import com.finance.sugarmarket.base.dto.Filter;
+import com.finance.sugarmarket.base.dto.ListViewDto;
 import com.finance.sugarmarket.constants.AppConstants;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/app/expense")
 public class ExpenseController extends BaseController {
-	
+
 	@Autowired
 	private ExpenseService expenseService;
-	
-private static final Logger log = LoggerFactory.getLogger(ExpenseController.class);
-	
+
+	private static final Logger log = LoggerFactory.getLogger(ExpenseController.class);
+
 	@GetMapping
-	public List<ExpenseDto> findAllExpense() {
+	public ListViewDto<ExpenseDto> findAllExpense() {
 		Pair<PageRequest, List<Filter>> pair = getPageRequestAndFilters();
 		return expenseService.findAllExpense(pair.getFirst(), pair.getSecond());
 	}
-	
+
 	@PostMapping
 	public ResponseEntity<String> saveExpense(@RequestBody ExpenseDto expenseDto) {
 		try {
 			expenseService.saveExpense(expenseDto, getUserId());
 		} catch (Exception e) {
 			log.error("error while saving expense: ", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
 		return ResponseEntity.ok(AppConstants.SUCCESS);
 	}
-	
+
 	@PatchMapping("{id}")
 	public ResponseEntity<String> updateExpense(@PathVariable("id") Integer id, @RequestBody ExpenseDto expenseDto) {
 		try {
 			expenseService.updateExpense(expenseDto, id, getUserId());
 		} catch (Exception e) {
 			log.error("error while saving expense: ", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
 		return ResponseEntity.ok(AppConstants.SUCCESS);
 	}
-	
+
 	@DeleteMapping("{id}")
 	public ResponseEntity<String> deleteById(@PathVariable("id") Integer id) {
 		try {
 			expenseService.deleteExpense(id, getUserId());
 		} catch (Exception e) {
 			log.error("error while deleting expense: ", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
 		return ResponseEntity.ok(AppConstants.SUCCESS);
 	}

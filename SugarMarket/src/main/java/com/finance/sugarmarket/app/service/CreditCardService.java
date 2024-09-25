@@ -8,6 +8,7 @@ import java.util.Map;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import com.finance.sugarmarket.app.repo.CreditCardRepo;
 import com.finance.sugarmarket.app.repo.ExpenseRepo;
 import com.finance.sugarmarket.auth.repo.MFUserRepo;
 import com.finance.sugarmarket.base.dto.Filter;
+import com.finance.sugarmarket.base.dto.ListViewDto;
 import com.finance.sugarmarket.base.service.SpecificationService;
 import com.finance.sugarmarket.constants.AppConstants;
 import com.finance.sugarmarket.constants.FilterFieldConstant;
@@ -42,12 +44,14 @@ public class CreditCardService extends SpecificationService<CreditCard> {
 		filterMap.put(FilterFieldConstant.USER_ID, "user.id");
 	}
 
-	public List<CreditCardDto> findAllCreditCard(PageRequest pageRequest, List<Filter> filters) {
+	public ListViewDto<CreditCardDto> findAllCreditCard(PageRequest pageRequest, List<Filter> filters) {
 		Specification<CreditCard> specificationFilters = getSpecificationFilters(filters, filterMap);
-		List<CreditCard> list = creditCardRepo.findAll(specificationFilters, pageRequest).getContent();
+		Page<CreditCard> pages = creditCardRepo.findAll(specificationFilters, pageRequest);
+
 		Type listType = new TypeToken<List<CreditCardDto>>() {
 		}.getType();
-		return modelMapper.map(list, listType);
+		return new ListViewDto<CreditCardDto>(modelMapper.map(pages.getContent(), listType), pages.getTotalElements(),
+				pageRequest.getOffset(), pageRequest.getPageSize());
 	}
 
 	public void saveCreditCard(CreditCardDto cardDeatilDto, Integer userId) {

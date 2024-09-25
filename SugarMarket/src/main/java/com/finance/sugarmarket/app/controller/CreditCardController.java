@@ -23,6 +23,7 @@ import com.finance.sugarmarket.app.dto.CreditCardDto;
 import com.finance.sugarmarket.app.service.CreditCardService;
 import com.finance.sugarmarket.base.controller.BaseController;
 import com.finance.sugarmarket.base.dto.Filter;
+import com.finance.sugarmarket.base.dto.ListViewDto;
 import com.finance.sugarmarket.constants.AppConstants;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -36,7 +37,7 @@ public class CreditCardController extends BaseController {
 	private static final Logger log = LoggerFactory.getLogger(CreditCardController.class);
 
 	@GetMapping
-	public List<CreditCardDto> findAllCreditCard() {
+	public ListViewDto<CreditCardDto> findAllCreditCard() {
 		Pair<PageRequest, List<Filter>> pair = getPageRequestAndFilters();
 		return creditCardService.findAllCreditCard(pair.getFirst(), pair.getSecond());
 	}

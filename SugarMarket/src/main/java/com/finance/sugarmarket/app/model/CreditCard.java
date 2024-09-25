@@ -9,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "credit_card")
@@ -29,8 +31,10 @@ public class CreditCard {
     private Integer statementDate;
     @Column(name = "due_date")
     private Integer dueDate;
+    @Size(min = 4, max = 4, message = "Last 4 digits must be exactly 4 characters")
+    @Pattern(regexp = "\\d{4}", message = "Last 4 digits must be numeric")
     @Column(name = "last_4_digit")
-    private Integer last4Digit;
+    private String last4Digit;
 	public Integer getId() {
 		return id;
 	}
@@ -67,15 +71,15 @@ public class CreditCard {
 	public void setDueDate(Integer dueDate) {
 		this.dueDate = dueDate;
 	}
-	public Integer getLast4Digit() {
+	public String getLast4Digit() {
 		return last4Digit;
 	}
-	public void setLast4Digit(Integer last4Digit) {
+	public void setLast4Digit(String last4Digit) {
 		this.last4Digit = last4Digit;
 	}
 	
 	public CreditCard(Integer id, MFUser user, String bankName, String creditCardName,
-			Integer statementDate, Integer dueDate, Integer last4Digit) {
+			Integer statementDate, Integer dueDate, String last4Digit) {
 		super();
 		this.id = id;
 		this.user = user;

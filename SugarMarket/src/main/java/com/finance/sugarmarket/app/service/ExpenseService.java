@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import com.finance.sugarmarket.app.model.Expense;
 import com.finance.sugarmarket.app.repo.CreditCardRepo;
 import com.finance.sugarmarket.app.repo.ExpenseRepo;
 import com.finance.sugarmarket.base.dto.Filter;
+import com.finance.sugarmarket.base.dto.ListViewDto;
 import com.finance.sugarmarket.base.service.SpecificationService;
 import com.finance.sugarmarket.constants.AppConstants;
 import com.finance.sugarmarket.constants.FilterFieldConstant;
@@ -38,11 +40,11 @@ public class ExpenseService extends SpecificationService<Expense> {
 		filterMap.put(FilterFieldConstant.CREDIT_CARD_ID, "creditCard.id");
 	}
 
-	public List<ExpenseDto> findAllExpense(PageRequest pageRequest, List<Filter> filters) {
+	public ListViewDto<ExpenseDto> findAllExpense(PageRequest pageRequest, List<Filter> filters) {
 		Specification<Expense> specificationFilters = getSpecificationFilters(filters, filterMap);
-		List<Expense> list = expenseRepo.findAll(specificationFilters, pageRequest).getContent();
+		Page<Expense> pages = expenseRepo.findAll(specificationFilters, pageRequest);
 		List<ExpenseDto> listDto = new ArrayList<>();
-		for (Expense expense : list) {
+		for (Expense expense : pages.getContent()) {
 			ExpenseDto expenseDto = modelMapper.map(expense, ExpenseDto.class);
 			expenseDto.setCrediCardId(expense.getCreditCard().getId());
 			String crediCardName = expense.getCreditCard().getBankName() + expense.getCreditCard().getCreditCardName()
@@ -50,7 +52,8 @@ public class ExpenseService extends SpecificationService<Expense> {
 			expenseDto.setCreditCardName(crediCardName);
 			listDto.add(expenseDto);
 		}
-		return listDto;
+		return new ListViewDto<ExpenseDto>(listDto, pages.getTotalElements(), pageRequest.getOffset(),
+				pageRequest.getPageSize());
 	}
 
 	public void saveExpense(ExpenseDto expenseDto, Integer userId) throws Exception {
