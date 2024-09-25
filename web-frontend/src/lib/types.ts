@@ -9,3 +9,12 @@ export interface NavItem {
   label?: string;
   description?: string;
 }
+
+export type CreditCard = {
+  id: number;
+  bankName: string;
+  creditCardName: string;
+  statementDate: number;
+  dueDate: number;
+  last4Digit: number;
+};

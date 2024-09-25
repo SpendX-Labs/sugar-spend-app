@@ -53,3 +53,16 @@ const quotes: Quote[] = [
 
 export const getRandomQuote = (): Quote =>
   quotes[Math.floor(Math.random() * quotes.length)];
+
+export const createQueryString = (params: Record<string, any>): string => {
+  const queryString = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    // Ensure the value is not undefined or null
+    if (value !== undefined && value !== null) {
+      queryString.append(key, String(value)); // Convert value to string
+    }
+  });
+
+  return queryString.toString();
+};
