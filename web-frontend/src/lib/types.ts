@@ -18,3 +18,18 @@ export type CreditCard = {
   dueDate: number;
   last4Digit: number;
 };
+
+export type Expense = {
+  id: number;
+  creditCardId: number;
+  creditCardName: string;
+  amount: number;
+  expenseDate: string;
+  expenseTime: {
+    hour: number;
+    minute: number;
+    second: number;
+    nano: number;
+  };
+  reason: string;
+};
