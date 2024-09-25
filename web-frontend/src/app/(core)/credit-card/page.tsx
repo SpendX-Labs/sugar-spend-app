@@ -12,25 +12,32 @@ import { CreditCard } from "@/lib/types";
 import { useGetCreditCardsQuery } from "@/store/credit-card/credit-card-api";
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/" },
   { title: "Credit Card", link: "/credit-card" },
 ];
 
-type paramsProps = {
-  searchParams: {
-    [key: string]: string | string[] | undefined;
-  };
-};
+export default function page() {
+  const searchParams = useSearchParams();
+  const page = Number(searchParams.get("page")) || 1;
+  const size = Number(searchParams.get("size")) || 10;
 
-export default function page({ searchParams }: paramsProps) {
-  const page = Number(searchParams.page) || 1;
-  const pageLimit = Number(searchParams.limit) || 10;
+  const {
+    data: creditCardRes,
+    error,
+    isLoading,
+  } = useGetCreditCardsQuery({
+    page: page - 1,
+    size,
+  });
 
-  const { data: creditCardRes } = useGetCreditCardsQuery();
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error fetching credit cards</div>;
+
   const totalCreditCards = creditCardRes?.total || 0;
-  const pageCount = Math.ceil(totalCreditCards / pageLimit);
+  const pageCount = Math.ceil(totalCreditCards / size);
   const creditCards: CreditCard[] = creditCardRes?.data || [];
 
   return (

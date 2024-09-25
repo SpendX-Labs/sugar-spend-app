@@ -1,6 +1,7 @@
 import { authBaseQuery } from "@/lib/api-queries";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { CreditCard } from "@/lib/types";
+import { createQueryString } from "@/lib/utils";
 
 type CreditCardRequestBody = {
   id?: number;
@@ -51,9 +52,12 @@ export const creditCardApi = createApi({
       }),
       invalidatesTags: ["CreditCard"],
     }),
-    getCreditCards: builder.query<CreditCardsResponse, void>({
-      query: () => ({
-        url: creditCardUrl,
+    getCreditCards: builder.query<
+      CreditCardsResponse,
+      { page: number; size: number }
+    >({
+      query: ({ page, size }) => ({
+        url: `${creditCardUrl}?${createQueryString({ page, size })}`,
         method: "GET",
       }),
       providesTags: ["CreditCard"],
