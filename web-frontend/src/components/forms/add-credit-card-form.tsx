@@ -5,7 +5,7 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Trash } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -48,14 +48,10 @@ const formSchema = z.object({
 type AddCreditCardFormValues = z.infer<typeof formSchema>;
 
 interface AddCreditCardFormProps {
-  initialData: any | null;
-  categories: any;
+  id: string | number;
 }
 
-export const AddCreditCardForm: React.FC<AddCreditCardFormProps> = ({
-  initialData,
-  categories,
-}) => {
+export const AddCreditCardForm: React.FC<AddCreditCardFormProps> = ({ id }) => {
   const [addCreditCard] = useAddCreditCardMutation();
   const [editCreditCard] = useEditCreditCardMutation();
   const params = useParams();
@@ -63,7 +59,29 @@ export const AddCreditCardForm: React.FC<AddCreditCardFormProps> = ({
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [imgLoading, setImgLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const bankName = searchParams.get("bankName");
+  const creditCardName = searchParams.get("creditCardName");
+  const statementDate = searchParams.get("statementDate");
+  const dueDate = searchParams.get("dueDate");
+  const last4Digit = searchParams.get("last4Digit");
+  const initialData =
+    bankName &&
+    creditCardName &&
+    statementDate &&
+    dueDate &&
+    statementDate &&
+    last4Digit
+      ? {
+          id,
+          bankName,
+          creditCardName,
+          statementDate,
+          dueDate,
+          last4Digit,
+        }
+      : null;
+
   const title = initialData ? "Edit Credit Card" : "Add Credit Card";
   const description = initialData
     ? "Edit a credit card."
@@ -76,14 +94,14 @@ export const AddCreditCardForm: React.FC<AddCreditCardFormProps> = ({
   const defaultValues = initialData
     ? initialData
     : {
-        name: "",
-        description: "",
-        price: 0,
-        imgUrl: [],
-        category: "",
+        bankName: "",
+        creditCardName: "",
+        statementDate: null,
+        dueDate: null,
+        last4Digit: "",
       };
 
-  const form = useForm<AddCreditCardFormValues>({
+  const form = useForm<any>({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
@@ -92,16 +110,21 @@ export const AddCreditCardForm: React.FC<AddCreditCardFormProps> = ({
     try {
       setLoading(true);
       if (initialData) {
-        await editCreditCard({ id: initialData.id, ...data }).unwrap();
+        console.log(initialData.id);
+        console.log(typeof initialData.id);
+        console.log(data);
+        await editCreditCard({
+          id: Number(initialData.id),
+          ...data,
+        }).unwrap();
       } else {
         await addCreditCard(data).unwrap();
       }
       router.refresh();
       router.push(`/credit-card`);
       toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
+        variant: "default",
+        title: toastMessage,
       });
     } catch (error: any) {
       console.log(error);

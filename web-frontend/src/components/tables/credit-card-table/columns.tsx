@@ -41,6 +41,10 @@ export const columns: ColumnDef<CreditCard>[] = [
     header: "Due Date",
   },
   {
+    accessorKey: "last4Digit",
+    header: "Last Four Digit",
+  },
+  {
     id: "actions",
     cell: ({ row }) => <CellAction data={row.original} />,
   },

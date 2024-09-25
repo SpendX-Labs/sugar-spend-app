@@ -16,4 +16,5 @@ export type CreditCard = {
   creditCardName: string;
   statementDate: number;
   dueDate: number;
+  last4Digit: number;
 };
