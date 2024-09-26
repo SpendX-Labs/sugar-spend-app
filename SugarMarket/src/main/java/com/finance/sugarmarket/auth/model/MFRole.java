@@ -1,36 +1,37 @@
 package com.finance.sugarmarket.auth.model;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "mf_role")
 public class MFRole {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "pk_mf_role_id")
-	private Integer id;
-	@Column(name = "role_name")
+	@Column(name = "roleId")
+	private Long id;
 	private String roleName;
-	public Integer getId() {
+
+	public Long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+
+	public void setId(Long id) {
 		this.id = id;
 	}
+
 	public String getRoleName() {
 		return roleName;
 	}
+
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
 	}
-	
-	public enum Role{
-		admin,
-		customer
+
+	public enum Role {
+		admin, customer
 	}
-	
+
 }

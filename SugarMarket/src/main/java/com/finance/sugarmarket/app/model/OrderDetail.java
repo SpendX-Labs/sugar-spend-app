@@ -11,37 +11,29 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
 @Entity
-@Table(name = "order_detail")
 public class OrderDetail {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "pk_order_detail_id")
+	@Column(name = "orderDetailId")
 	private Integer id;
 	@ManyToOne
-	@JoinColumn(name = "fk_mutual_fund_id", referencedColumnName = "pk_mutual_fund_id")
+	@JoinColumn(name = "mutualFundId", referencedColumnName = "mutualFundId")
 	private MutualFund mutualFund;
 	@ManyToOne
-	@JoinColumn(name = "fk_user_id", referencedColumnName = "pk_mf_user_id")
+	@JoinColumn(name = "userId", referencedColumnName = "userId")
 	private MFUser user;
-	@Column(name = "side") // buy or sell
-	private String side;
-	@Column(name = "amount")
+	private String side; // buy or sell
 	private Double amount;
-	@Column(name = "nav")
 	private Double nav;
-	@Column(name = "units")
 	private Double units;
-	@Column(name = "date_of_event")
 	private Date dateOfEvent;
 	@Transient
 	private String totalReturn;
 	@Transient
 	private Double currenValue;
-	
 
 	public Integer getId() {
 		return id;

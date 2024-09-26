@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.finance.sugarmarket.app.model.Loan;
 
-public interface LoanRepo extends JpaRepository<Loan, Integer>{
+public interface LoanRepo extends JpaRepository<Loan, Long>{
 	@Query("SELECT l FROM Loan l WHERE l.user.username = :username")
 	public List<Loan> findByUsername(String username);
 }

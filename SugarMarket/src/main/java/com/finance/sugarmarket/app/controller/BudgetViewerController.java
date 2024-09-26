@@ -44,25 +44,25 @@ public class BudgetViewerController extends BaseController {
 	@PostMapping("/get-budgets")
 	public List<BudgetView> findAllBudget(@RequestBody Map<String, String> map) {
 		return budgetViewerService.findAllBudget(Integer.parseInt(map.get("budgetYear")), map.get("budgetMonth"),
-				getUserName());
+				getUserId());
 	}
 
 	@PostMapping("/time-based-summary")
 	public List<TimeBasedSummary> getBudgetChart(@RequestBody Map<String, String> map) {
 		return budgetViewerService.getBudgetChart(Integer.parseInt(map.get("budgetYear")), map.get("budgetMonth"),
-				getUserName());
+				getUserId());
 	}
 
 	@PostMapping("/get-pie-chart")
 	public List<TimeBasedSummary> getPieChart(@RequestBody Map<String, String> map) {
 		return budgetViewerService.getPieChart(Integer.parseInt(map.get("budgetYear")), map.get("budgetMonth"),
-				getUserName());
+				getUserId());
 	}
 
 	@PostMapping("/get-total-amount")
 	public Map<String, BigDecimal> getTotalAmount(@RequestBody Map<String, String> map) {
 		return budgetViewerService.getTotalAmount(Integer.parseInt(map.get("budgetYear")), map.get("budgetMonth"),
-				getUserName());
+				getUserId());
 	}
 
 	@PostMapping("/update-budget-data")

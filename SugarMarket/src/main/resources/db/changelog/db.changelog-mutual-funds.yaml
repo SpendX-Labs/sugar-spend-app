@@ -1,390 +1,390 @@
 databaseChangeLog:
   - changeSet:
-      id: 10001
+      id: "parag_parikh_flexi_cap_fund"
       author: subham.biswas
       changes:
         - insert:
-            tableName: mutual_fund
+            tableName: MutualFund
             columns:
               - column:
-                  name: pk_mutual_fund_id
-                  value: 1
+                  name: mutualFundId
+                  value: "1"
               - column:
-                  name: amc_name
-                  value: Parag Parikh
+                  name: amcName
+                  value: "Parag Parikh"
               - column:
-                  name: scheme_name
-                  value: Parag Parikh Flexi Cap Fund
+                  name: schemeName
+                  value: "Parag Parikh Flexi Cap Fund"
               - column:
                   name: option
-                  value: Growth
+                  value: "Growth"
               - column:
-                  name: plan_type
-                  value: Direct
+                  name: planType
+                  value: "Direct"
               - column:
-                  name: scheme_code
-                  value: '122639'
+                  name: schemeCode
+                  value: "122639"
 
   - changeSet:
-      id: 10002
+      id: "hdfc_defence_fund"
       author: subham.biswas
       changes:
         - insert:
-            tableName: mutual_fund
+            tableName: MutualFund
             columns:
               - column:
-                  name: pk_mutual_fund_id
-                  value: 2
+                  name: mutualFundId
+                  value: "2"
               - column:
-                  name: amc_name
-                  value: HDFC
+                  name: amcName
+                  value: "HDFC"
               - column:
-                  name: scheme_name
-                  value: HDFC Defence Fund
+                  name: schemeName
+                  value: "HDFC Defence Fund"
               - column:
                   name: option
-                  value: Growth
+                  value: "Growth"
               - column:
-                  name: plan_type
-                  value: Direct
+                  name: planType
+                  value: "Direct"
               - column:
-                  name: scheme_code
-                  value: '151750'
+                  name: schemeCode
+                  value: "151750"
 
   - changeSet:
-      id: 10003
+      id: "nippon_india_gold_savings_fund"
       author: subham.biswas
       changes:
         - insert:
-            tableName: mutual_fund
+            tableName: MutualFund
             columns:
               - column:
-                  name: pk_mutual_fund_id
-                  value: 3
+                  name: mutualFundId
+                  value: "3"
               - column:
-                  name: amc_name
-                  value: NIPPON INDIA
+                  name: amcName
+                  value: "NIPPON INDIA"
               - column:
-                  name: scheme_name
-                  value: NIPPON INDIA GOLD SAVINGS FUND
+                  name: schemeName
+                  value: "NIPPON INDIA GOLD SAVINGS FUND"
               - column:
                   name: option
-                  value: Growth
+                  value: "Growth"
               - column:
-                  name: plan_type
-                  value: Direct
+                  name: planType
+                  value: "Direct"
               - column:
-                  name: scheme_code
-                  value: '118663'
+                  name: schemeCode
+                  value: "118663"
 
   - changeSet:
-      id: 10004
+      id: "quant_flexi_cap_fund"
       author: subham.biswas
       changes:
         - insert:
-            tableName: mutual_fund
+            tableName: MutualFund
             columns:
               - column:
-                  name: pk_mutual_fund_id
-                  value: 4
+                  name: mutualFundId
+                  value: "4"
               - column:
-                  name: amc_name
-                  value: Quant
+                  name: amcName
+                  value: "Quant"
               - column:
-                  name: scheme_name
-                  value: Quant Flexi Cap Fund
+                  name: schemeName
+                  value: "Quant Flexi Cap Fund"
               - column:
                   name: option
-                  value: Growth
+                  value: "Growth"
               - column:
-                  name: plan_type
-                  value: Direct
+                  name: planType
+                  value: "Direct"
               - column:
-                  name: scheme_code
-                  value: '120843'
+                  name: schemeCode
+                  value: "120843"
 
   - changeSet:
-      id: 10005
+      id: "mirae_asset_global_x_artificial_intelligence_fund"
       author: subham.biswas
       changes:
         - insert:
-            tableName: mutual_fund
+            tableName: MutualFund
             columns:
               - column:
-                  name: pk_mutual_fund_id
-                  value: 5
+                  name: mutualFundId
+                  value: "5"
               - column:
-                  name: amc_name
-                  value: Mirae Asset
+                  name: amcName
+                  value: "Mirae Asset"
               - column:
-                  name: scheme_name
-                  value: Mirae Asset Global X Artificial Intelligence & Technology ETF Fund of Fund
+                  name: schemeName
+                  value: "Mirae Asset Global X Artificial Intelligence & Technology ETF Fund of Fund"
               - column:
                   name: option
-                  value: Growth
+                  value: "Growth"
               - column:
-                  name: plan_type
-                  value: Direct
+                  name: planType
+                  value: "Direct"
               - column:
-                  name: scheme_code
-                  value: '150597'
+                  name: schemeCode
+                  value: "150597"
 
   - changeSet:
-      id: 10006
+      id: "mirae_asset_global_electric_autonomous_vehicles_fund"
       author: subham.biswas
       changes:
         - insert:
-            tableName: mutual_fund
+            tableName: MutualFund
             columns:
               - column:
-                  name: pk_mutual_fund_id
-                  value: 6
+                  name: mutualFundId
+                  value: "6"
               - column:
-                  name: amc_name
-                  value: Mirae Asset
+                  name: amcName
+                  value: "Mirae Asset"
               - column:
-                  name: scheme_name
-                  value: Mirae Asset Global Electric & Autonomous Vehicles ETFs Fund of Fund
+                  name: schemeName
+                  value: "Mirae Asset Global Electric & Autonomous Vehicles ETFs Fund of Fund"
               - column:
                   name: option
-                  value: Growth
+                  value: "Growth"
               - column:
-                  name: plan_type
-                  value: Direct
+                  name: planType
+                  value: "Direct"
               - column:
-                  name: scheme_code
-                  value: '150595'
+                  name: schemeCode
+                  value: "150595"
 
   - changeSet:
-      id: 10007
+      id: "icici_prudential_bluechip_fund"
       author: subham.biswas
       changes:
         - insert:
-            tableName: mutual_fund
+            tableName: MutualFund
             columns:
               - column:
-                  name: pk_mutual_fund_id
-                  value: 7
+                  name: mutualFundId
+                  value: "7"
               - column:
-                  name: amc_name
-                  value: ICICI Prudential
+                  name: amcName
+                  value: "ICICI Prudential"
               - column:
-                  name: scheme_name
-                  value: ICICI Prudential Bluechip Fund
+                  name: schemeName
+                  value: "ICICI Prudential Bluechip Fund"
               - column:
                   name: option
-                  value: Growth
+                  value: "Growth"
               - column:
-                  name: plan_type
-                  value: Direct
+                  name: planType
+                  value: "Direct"
               - column:
-                  name: scheme_code
-                  value: '120586'
+                  name: schemeCode
+                  value: "120586"
 
   - changeSet:
-      id: 10008
+      id: "quant_small_cap_fund"
       author: subham.biswas
       changes:
         - insert:
-            tableName: mutual_fund
+            tableName: MutualFund
             columns:
               - column:
-                  name: pk_mutual_fund_id
-                  value: 8
+                  name: mutualFundId
+                  value: "8"
               - column:
-                  name: amc_name
-                  value: Quant
+                  name: amcName
+                  value: "Quant"
               - column:
-                  name: scheme_name
-                  value: Quant Small Cap Fund
+                  name: schemeName
+                  value: "Quant Small Cap Fund"
               - column:
                   name: option
-                  value: Growth
+                  value: "Growth"
               - column:
-                  name: plan_type
-                  value: Direct
+                  name: planType
+                  value: "Direct"
               - column:
-                  name: scheme_code
-                  value: '120828'
+                  name: schemeCode
+                  value: "120828"
 
   - changeSet:
-      id: 10009
+      id: "quant_active_fund"
       author: subham.biswas
       changes:
         - insert:
-            tableName: mutual_fund
+            tableName: MutualFund
             columns:
               - column:
-                  name: pk_mutual_fund_id
-                  value: 9
+                  name: mutualFundId
+                  value: "9"
               - column:
-                  name: amc_name
-                  value: Quant
+                  name: amcName
+                  value: "Quant"
               - column:
-                  name: scheme_name
-                  value: Quant Active Fund
+                  name: schemeName
+                  value: "Quant Active Fund"
               - column:
                   name: option
-                  value: Growth
+                  value: "Growth"
               - column:
-                  name: plan_type
-                  value: Direct
+                  name: planType
+                  value: "Direct"
               - column:
-                  name: scheme_code
-                  value: '120823'
+                  name: schemeCode
+                  value: "120823"
 
   - changeSet:
-      id: 10010
+      id: "sbi_technology_opportunities_fund"
       author: subham.biswas
       changes:
         - insert:
-            tableName: mutual_fund
+            tableName: MutualFund
             columns:
               - column:
-                  name: pk_mutual_fund_id
-                  value: 10
+                  name: mutualFundId
+                  value: "10"
               - column:
-                  name: amc_name
-                  value: SBI
+                  name: amcName
+                  value: "SBI"
               - column:
-                  name: scheme_name
-                  value: SBI Technology Opportunities Fund
+                  name: schemeName
+                  value: "SBI Technology Opportunities Fund"
               - column:
                   name: option
-                  value: Growth
+                  value: "Growth"
               - column:
-                  name: plan_type
-                  value: Direct
+                  name: planType
+                  value: "Direct"
               - column:
-                  name: scheme_code
-                  value: '120578'
+                  name: schemeCode
+                  value: "120578"
 
   - changeSet:
-      id: 10011
+      id: "icici_prudential_technology_fund"
       author: subham.biswas
       changes:
         - insert:
-            tableName: mutual_fund
+            tableName: MutualFund
             columns:
               - column:
-                  name: pk_mutual_fund_id
-                  value: 11
+                  name: mutualFundId
+                  value: "11"
               - column:
-                  name: amc_name
-                  value: ICICI Prudential
+                  name: amcName
+                  value: "ICICI Prudential"
               - column:
-                  name: scheme_name
-                  value: ICICI Prudential Technology Fund
+                  name: schemeName
+                  value: "ICICI Prudential Technology Fund"
               - column:
                   name: option
-                  value: Growth
+                  value: "Growth"
               - column:
-                  name: plan_type
-                  value: Direct
+                  name: planType
+                  value: "Direct"
               - column:
-                  name: scheme_code
-                  value: '120594'
+                  name: schemeCode
+                  value: "120594"
 
   - changeSet:
-      id: 10012
+      id: "quant_elss_tax_saver_fund"
       author: subham.biswas
       changes:
         - insert:
-            tableName: mutual_fund
+            tableName: MutualFund
             columns:
               - column:
-                  name: pk_mutual_fund_id
-                  value: 12
+                  name: mutualFundId
+                  value: "12"
               - column:
-                  name: amc_name
-                  value: Quant
+                  name: amcName
+                  value: "Quant"
               - column:
-                  name: scheme_name
-                  value: quant ELSS Tax Saver Fund
+                  name: schemeName
+                  value: "Quant ELSS Tax Saver Fund"
               - column:
                   name: option
-                  value: Growth
+                  value: "Growth"
               - column:
-                  name: plan_type
-                  value: Direct
+                  name: planType
+                  value: "Direct"
               - column:
-                  name: scheme_code
-                  value: '120847'
+                  name: schemeCode
+                  value: "120847"
 
   - changeSet:
-      id: 10013
+      id: "nippon_india_small_cap_fund"
       author: subham.biswas
       changes:
         - insert:
-            tableName: mutual_fund
+            tableName: MutualFund
             columns:
               - column:
-                  name: pk_mutual_fund_id
-                  value: 13
+                  name: mutualFundId
+                  value: "13"
               - column:
-                  name: amc_name
-                  value: NIPPON INDIA
+                  name: amcName
+                  value: "NIPPON INDIA"
               - column:
-                  name: scheme_name
-                  value: NIPPON INDIA SMALL CAP FUND
+                  name: schemeName
+                  value: "NIPPON INDIA SMALL CAP FUND"
               - column:
                   name: option
-                  value: Growth
+                  value: "Growth"
               - column:
-                  name: plan_type
-                  value: Direct
+                  name: planType
+                  value: "Direct"
               - column:
-                  name: scheme_code
-                  value: '113177'
+                  name: schemeCode
+                  value: "113177"
 
   - changeSet:
-      id: 10014
+      id: "tata_digital_india_fund_plan"
       author: subham.biswas
       changes:
         - insert:
-            tableName: mutual_fund
+            tableName: MutualFund
             columns:
               - column:
-                  name: pk_mutual_fund_id
-                  value: 14
+                  name: mutualFundId
+                  value: "14"
               - column:
-                  name: amc_name
-                  value: Tata Digital
+                  name: amcName
+                  value: "Tata Digital"
               - column:
-                  name: scheme_name
-                  value: Tata Digital India Fund  Plan
+                  name: schemeName
+                  value: "Tata Digital India Fund Plan"
               - column:
                   name: option
-                  value: Growth
+                  value: "Growth"
               - column:
-                  name: plan_type
-                  value: Direct
+                  name: planType
+                  value: "Direct"
               - column:
-                  name: scheme_code
-                  value: '135800'
+                  name: schemeCode
+                  value: "135800"
 
   - changeSet:
-      id: 10015
+      id: "dsp_small_cap_fund"
       author: subham.biswas
       changes:
         - insert:
-            tableName: mutual_fund
+            tableName: MutualFund
             columns:
               - column:
-                  name: pk_mutual_fund_id
-                  value: 15
+                  name: mutualFundId
+                  value: "15"
               - column:
-                  name: amc_name
-                  value: DSP
+                  name: amcName
+                  value: "DSP"
               - column:
-                  name: scheme_name
-                  value: DSP Small Cap Fund
+                  name: schemeName
+                  value: "DSP Small Cap Fund"
               - column:
                   name: option
-                  value: Growth
+                  value: "Growth"
               - column:
-                  name: plan_type
-                  value: Direct
+                  name: planType
+                  value: "Direct"
               - column:
-                  name: scheme_code
-                  value: '119212'
+                  name: schemeCode
+                  value: "119212"

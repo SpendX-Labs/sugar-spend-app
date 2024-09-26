@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.finance.sugarmarket.auth.model.MFUser;
 
-public interface MFUserRepo extends JpaRepository<MFUser, Integer> {
+public interface MFUserRepo extends JpaRepository<MFUser, Long> {
 	public MFUser findByUsername(String username);
 	
 	public MFUser findByEmail(String email);

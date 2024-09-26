@@ -15,75 +15,56 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "loan")
 public class Loan {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "pk_loan_id")
+	@Column(name = "loanId")
 	private Integer id;
 
 	@ManyToOne
-	@JoinColumn(name = "fk_user_id")
+	@JoinColumn(name = "userId")
 	private MFUser user;
 
 	@ManyToOne
-	@JoinColumn(name = "fk_credit_card_id")
+	@JoinColumn(name = "creditCardId")
 	private CreditCard creditCard;
 
-	@Column(name = "lender_name", length = 255)
 	private String lenderName;
 
-	@Column(name = "last_4_digit")
 	private Integer last4Digit;
 
-	@Column(name = "total_amount")
 	private BigDecimal totalAmount;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "loan_type")
 	private LoanType loanType;
 
-	@Column(name = "interest_rate")
 	private BigDecimal interestRate;
 
-	@Column(name = "no_cost_emi")
 	private boolean noCostEmi = false;
 
-	@Column(name = "principal_amount")
 	private BigDecimal principalAmount;
 
-	@Column(name = "interest_amount")
 	private BigDecimal interestAmount;
 
-	@Column(name = "remaining_amount")
 	private BigDecimal remainingAmount;
 
-	@Column(name = "remaining_principal_amount")
 	private BigDecimal remainingPrincipalAmount;
 
-	@Column(name = "remaining__interest_amount")
 	private BigDecimal remainingInterestAmount;
 
-	@Column(name = "tenure")
 	private Integer tenure;
 
-	@Column(name = "remaining_tenure")
 	private Integer remainingTenure;
 
-	@Column(name = "loan_start_date")
 	private Date loanStartDate;
-	
-	@Column(name = "emi_date_of_month")
+
 	private Integer emiDateOfMonth;
-	
-	@Column(name = "emi_amount")
+
 	private BigDecimal emiAmount;
-	
-	@Column(name = "update_lock")
+
 	private boolean updateLock = false;
 
 	public Integer getId() {
@@ -246,5 +227,4 @@ public class Loan {
 		this.updateLock = updateLock;
 	}
 
-	
 }

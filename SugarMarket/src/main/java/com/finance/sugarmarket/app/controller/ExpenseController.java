@@ -54,7 +54,7 @@ public class ExpenseController extends BaseController {
 	}
 
 	@PatchMapping("{id}")
-	public ResponseEntity<String> updateExpense(@PathVariable("id") Integer id, @RequestBody ExpenseDto expenseDto) {
+	public ResponseEntity<String> updateExpense(@PathVariable("id") Long id, @RequestBody ExpenseDto expenseDto) {
 		try {
 			expenseService.updateExpense(expenseDto, id, getUserId());
 		} catch (Exception e) {
@@ -65,7 +65,7 @@ public class ExpenseController extends BaseController {
 	}
 
 	@DeleteMapping("{id}")
-	public ResponseEntity<String> deleteById(@PathVariable("id") Integer id) {
+	public ResponseEntity<String> deleteById(@PathVariable("id") Long id) {
 		try {
 			expenseService.deleteExpense(id, getUserId());
 		} catch (Exception e) {

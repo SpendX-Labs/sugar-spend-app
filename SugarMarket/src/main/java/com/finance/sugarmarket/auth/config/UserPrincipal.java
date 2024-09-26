@@ -17,7 +17,7 @@ public class UserPrincipal implements UserDetails {
 	 */
 	private static final long serialVersionUID = -600742086637082954L;
 
-	private final Integer id;
+	private final Long id;
 	private final String username;
 	private String password;
 	private String fullName;
@@ -26,7 +26,7 @@ public class UserPrincipal implements UserDetails {
 	private String email;
 	private String phoneNumber;
 
-	public UserPrincipal(Integer id, String username, String password, String role, String fullName, String email, String phoneNumber) {
+	public UserPrincipal(Long id, String username, String password, String role, String fullName, String email, String phoneNumber) {
 		this.id = id;
 		this.username = username;
 		this.password = password;
@@ -48,7 +48,7 @@ public class UserPrincipal implements UserDetails {
 	}
 
 	@JsonIgnore
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 

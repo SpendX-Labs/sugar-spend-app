@@ -5,7 +5,8 @@ import java.math.BigDecimal;
 public class ExpenseReportDto {
 	private BigDecimal totalAmount;
 	private BigDecimal autoDebitAmount;
-	private BigDecimal directSpendAmount;
+	private BigDecimal manualSpendAmount;
+	private BigDecimal crediCardSpend;
 	private BigDecimal availableAmount;
 	private AutoDebitDto remainingAutoDebit;
 
@@ -13,12 +14,13 @@ public class ExpenseReportDto {
 		super();
 	}
 
-	public ExpenseReportDto(BigDecimal totalAmount, BigDecimal autoDebitAmount, BigDecimal directSpendAmount,
-			BigDecimal availableAmount, AutoDebitDto remainingAutoDebit) {
+	public ExpenseReportDto(BigDecimal totalAmount, BigDecimal autoDebitAmount, BigDecimal manualSpendAmount,
+			BigDecimal crediCardSpend, BigDecimal availableAmount, AutoDebitDto remainingAutoDebit) {
 		super();
 		this.totalAmount = totalAmount;
 		this.autoDebitAmount = autoDebitAmount;
-		this.directSpendAmount = directSpendAmount;
+		this.manualSpendAmount = manualSpendAmount;
+		this.crediCardSpend = crediCardSpend;
 		this.availableAmount = availableAmount;
 		this.remainingAutoDebit = remainingAutoDebit;
 	}
@@ -39,12 +41,20 @@ public class ExpenseReportDto {
 		this.autoDebitAmount = autoDebitAmount;
 	}
 
-	public BigDecimal getDirectSpendAmount() {
-		return directSpendAmount;
+	public BigDecimal getManualSpendAmount() {
+		return manualSpendAmount;
 	}
 
-	public void setDirectSpendAmount(BigDecimal directSpendAmount) {
-		this.directSpendAmount = directSpendAmount;
+	public void setManualSpendAmount(BigDecimal manualSpendAmount) {
+		this.manualSpendAmount = manualSpendAmount;
+	}
+
+	public BigDecimal getCrediCardSpend() {
+		return crediCardSpend;
+	}
+
+	public void setCrediCardSpend(BigDecimal crediCardSpend) {
+		this.crediCardSpend = crediCardSpend;
 	}
 
 	public BigDecimal getAvailableAmount() {

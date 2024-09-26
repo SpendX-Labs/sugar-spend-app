@@ -5,67 +5,72 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "mf_user")
 public class MFUser {
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "pk_mf_user_id")
-	private Integer id;
-	@Column(name = "username")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "userId")
+	private Long id;
 	private String username;
-	@Column(name = "fullname")
 	private String fullname;
-	@Column(name = "email")
 	private String email;
-	@Column(name = "phonenumber")
 	private String phonenumber;
-	@Column(name = "password")
 	private String password;
-	@Column(name = "is_active")
 	private Boolean isActive;
-	
-	public Integer getId() {
+
+	public Long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+
+	public void setId(Long id) {
 		this.id = id;
 	}
+
 	public String getUsername() {
 		return username;
 	}
+
 	public void setUsername(String username) {
 		this.username = username;
 	}
+
 	public String getFullname() {
 		return fullname;
 	}
+
 	public void setFullname(String fullname) {
 		this.fullname = fullname;
 	}
+
 	public String getEmail() {
 		return email;
 	}
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
 	public String getPhonenumber() {
 		return phonenumber;
 	}
+
 	public void setPhonenumber(String phonenumber) {
 		this.phonenumber = phonenumber;
 	}
+
 	public String getPassword() {
 		return password;
 	}
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
 	public Boolean getIsActive() {
 		return isActive;
 	}
+
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
 	}

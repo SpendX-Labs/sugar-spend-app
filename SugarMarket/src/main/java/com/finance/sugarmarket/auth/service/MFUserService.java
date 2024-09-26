@@ -26,7 +26,7 @@ public class MFUserService {
 		return userRepo.findActiveUserList();
 	}
 	
-	public MFUser findById(Integer id) {
+	public MFUser findById(Long id) {
 		return userRepo.findById(id).get();
 	}
 }

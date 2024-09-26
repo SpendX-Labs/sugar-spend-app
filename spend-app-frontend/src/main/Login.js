@@ -85,7 +85,8 @@ const Login = () => {
                 let expires = new Date();
                 expires.setTime(expires.getTime() + (1000 * 60 * 60 * 24 * 2))
                 navigate('/dashboard');
-                setCookie('access_token', response.data.token, { expires });
+                var token = 'Bearer ' + response.data.token;
+                setCookie('access_token', token, { expires });
                 actions.loginAction(response.data.userDetails);
             }
             else {

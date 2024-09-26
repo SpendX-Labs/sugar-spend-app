@@ -84,7 +84,7 @@ public class OrderService {
 			futures.add(future);
 		}
 
-		Integer id = 1;
+		Long id = 1L;
 		for (Future<FundData> future : futures) {
 			try {
 				FundData data = future.get();

@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.finance.sugarmarket.app.model.CreditCard;
 
-public interface CreditCardRepo extends JpaRepository<CreditCard, Integer>, JpaSpecificationExecutor<CreditCard> {
+public interface CreditCardRepo extends JpaRepository<CreditCard, Long>, JpaSpecificationExecutor<CreditCard> {
 	
 	@Query("SELECT o FROM CreditCard o WHERE o.user.username = :username")
 	public List<CreditCard> findByUsername(String username);

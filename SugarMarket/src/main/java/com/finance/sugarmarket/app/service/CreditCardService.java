@@ -36,7 +36,7 @@ public class CreditCardService extends SpecificationService<CreditCard> {
 	@Autowired
 	private ModelMapper modelMapper;
 
-	private static final String DELETE_MSG = "Can not delete as it reffered in child table";
+	private static final String DELETE_MSG = "Can not delete";
 
 	private static final Map<String, String> filterMap = new HashMap<String, String>();
 
@@ -54,13 +54,13 @@ public class CreditCardService extends SpecificationService<CreditCard> {
 				pageRequest.getOffset(), pageRequest.getPageSize());
 	}
 
-	public void saveCreditCard(CreditCardDto cardDeatilDto, Integer userId) {
+	public void saveCreditCard(CreditCardDto cardDeatilDto, Long userId) {
 		CreditCard creditCard = modelMapper.map(cardDeatilDto, CreditCard.class);
 		creditCard.setUser(userRepo.findById(userId).get());
 		creditCardRepo.save(creditCard);
 	}
 
-	public void updateCreditCard(CreditCardDto cardDetailDto, Integer id, Integer userId) throws Exception {
+	public void updateCreditCard(CreditCardDto cardDetailDto, Long id, Long userId) throws Exception {
 		Specification<CreditCard> specificationFilters = getAuditSpecificationFilters(filterMap, id, userId);
 		List<CreditCard> creditCardList = creditCardRepo.findAll(specificationFilters);
 		if (creditCardList.isEmpty()) {
@@ -72,7 +72,7 @@ public class CreditCardService extends SpecificationService<CreditCard> {
 		creditCardRepo.save(existingCard);
 	}
 
-	public String deleteCreditCard(Integer id, Integer userId) throws Exception {
+	public String deleteCreditCard(Long id, Long userId) throws Exception {
 		Specification<CreditCard> specificationFilters = getAuditSpecificationFilters(filterMap, id, userId);
 		List<CreditCard> creditCardList = creditCardRepo.findAll(specificationFilters);
 		if (creditCardList.isEmpty()) {

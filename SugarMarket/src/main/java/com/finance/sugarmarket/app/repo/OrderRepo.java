@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.finance.sugarmarket.app.model.OrderDetail;
 
-public interface OrderRepo extends JpaRepository<OrderDetail, Integer> {
+public interface OrderRepo extends JpaRepository<OrderDetail, Long> {
 
 	@Query("SELECT o FROM OrderDetail o WHERE o.user.username = :username ORDER BY o.dateOfEvent ASC")
 	public List<OrderDetail> findByUserUsernameOrderByDateOfEventAsc(String username);
