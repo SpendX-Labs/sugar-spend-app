@@ -1,28 +1,32 @@
-package com.finance.sugarmarket.app.dto;
+package com.finance.sugarmarket.app.budgetview.dto;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class ExpenseReportDto {
 	private BigDecimal totalAmount;
 	private BigDecimal autoDebitAmount;
 	private BigDecimal manualSpendAmount;
-	private BigDecimal crediCardSpend;
+	private BigDecimal cardSpendAmount;
 	private BigDecimal availableAmount;
 	private AutoDebitDto remainingAutoDebit;
+	private List<TimeBasedSummary> timeBasedSummary;
 
 	public ExpenseReportDto() {
 		super();
 	}
 
 	public ExpenseReportDto(BigDecimal totalAmount, BigDecimal autoDebitAmount, BigDecimal manualSpendAmount,
-			BigDecimal crediCardSpend, BigDecimal availableAmount, AutoDebitDto remainingAutoDebit) {
+			BigDecimal cardSpendAmount, BigDecimal availableAmount, AutoDebitDto remainingAutoDebit,
+			List<TimeBasedSummary> timeBasedSummary) {
 		super();
 		this.totalAmount = totalAmount;
 		this.autoDebitAmount = autoDebitAmount;
 		this.manualSpendAmount = manualSpendAmount;
-		this.crediCardSpend = crediCardSpend;
+		this.cardSpendAmount = cardSpendAmount;
 		this.availableAmount = availableAmount;
 		this.remainingAutoDebit = remainingAutoDebit;
+		this.timeBasedSummary = timeBasedSummary;
 	}
 
 	public BigDecimal getTotalAmount() {
@@ -49,12 +53,12 @@ public class ExpenseReportDto {
 		this.manualSpendAmount = manualSpendAmount;
 	}
 
-	public BigDecimal getCrediCardSpend() {
-		return crediCardSpend;
+	public BigDecimal getCardSpendAmount() {
+		return cardSpendAmount;
 	}
 
-	public void setCrediCardSpend(BigDecimal crediCardSpend) {
-		this.crediCardSpend = crediCardSpend;
+	public void setCardSpendAmount(BigDecimal cardSpendAmount) {
+		this.cardSpendAmount = cardSpendAmount;
 	}
 
 	public BigDecimal getAvailableAmount() {
@@ -71,6 +75,14 @@ public class ExpenseReportDto {
 
 	public void setRemainingAutoDebit(AutoDebitDto remainingAutoDebit) {
 		this.remainingAutoDebit = remainingAutoDebit;
+	}
+
+	public List<TimeBasedSummary> getTimeBasedSummary() {
+		return timeBasedSummary;
+	}
+
+	public void setTimeBasedSummary(List<TimeBasedSummary> timeBasedSummary) {
+		this.timeBasedSummary = timeBasedSummary;
 	}
 
 }

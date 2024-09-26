@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.finance.sugarmarket.app.dto.ExpenseReportDto;
-import com.finance.sugarmarket.app.dto.TimeBasedSummary;
+import com.finance.sugarmarket.app.budgetview.dto.ExpenseReportDto;
+import com.finance.sugarmarket.app.budgetview.dto.TimeBasedSummary;
 import com.finance.sugarmarket.app.model.BudgetView;
 import com.finance.sugarmarket.app.service.BudgetViewerService;
 import com.finance.sugarmarket.base.controller.BaseController;

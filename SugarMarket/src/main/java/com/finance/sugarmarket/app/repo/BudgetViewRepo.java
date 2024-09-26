@@ -22,8 +22,19 @@ public interface BudgetViewRepo extends JpaRepository<BudgetView, Long> {
 	public void updateBudgetView(Date date, Long id);
 
 	@Query("SELECT b.creditCard, SUM(b.actualAmount), SUM(b.remainingAmount) " + "FROM BudgetView b "
-			+ "WHERE b.creditCard.user.id = :userId AND "
+			+ "WHERE b.user.id = :userId AND b.creditCard IS NOT NULL AND "
 			+ "b.budgetYear = :year " + "GROUP BY b.creditCard.id")
-	List<Object[]> findAllByYear(Integer year, Long userId);
+	List<Object[]> findAllByCreditCardYear(Integer year, Long userId);
+	
+	
+	@Query("SELECT b.loan, SUM(b.actualAmount), SUM(b.remainingAmount) " + "FROM BudgetView b "
+			+ "WHERE b.user.id = :userId AND b.creditCard IS NOT NULL AND "
+			+ "b.budgetYear = :year " + "GROUP BY b.loan.id")
+	List<Object[]> findAllByLoanYear(Integer year, Long userId);
+	
+	
+//	@Query("SELECT b from ")
+//	List<BudgetView> findAllByMonth(Integer year, String month, Long userId);
+//	
 	
 }

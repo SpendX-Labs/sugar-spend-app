@@ -11,13 +11,24 @@ import com.finance.sugarmarket.app.model.Expense;
 
 public interface ExpenseRepo extends JpaRepository<Expense, Long>, JpaSpecificationExecutor<Expense> {
 
-	@Query("SELECT o FROM Expense o WHERE o.creditCard.user.username = :username")
-	public List<Expense> findByUsername(String username);
-
 	@Query("SELECT o FROM Expense o WHERE o.creditCard.id = :id")
 	public List<Expense> findByCreditCardId(Long id);
+	
+	@Query("SELECT o FROM Expense o WHERE o.bankAccount.id = :id")
+	public List<Expense> findByBankAccountId(Long id);
+	
+	@Query("SELECT e.expenseDate, e.expenseType, SUM(e.amount) FROM Expense e WHERE e.user.id = :userId "
+	        + "AND YEAR(e.expenseDate) = :year AND MONTHNAME(e.expenseDate) = :month "
+	        + "GROUP BY e.expenseDate, e.expenseType")
+	List<Object[]> getMonthlyExpenseSummaryWithCashFlow(Integer year, String month, Long userId);
+	
+	
+	@Query("SELECT MONTHNAME(e.expenseDate), e.expenseType, SUM(e.amount) FROM Expense e WHERE e.creditCard.user.id = :userId "
+	        + "AND YEAR(e.expenseDate) = :year GROUP BY MONTHNAME(e.expenseDate), e.expenseType")
+	List<Object[]> getYearlyExpenseSummaryWithCashFlow(Integer year, Long userId);
+	
 
-	@Query("SELECT e.expenseDate, SUM(e.amount) FROM Expense e WHERE e.creditCard.user.id = :userId "
+	@Query("SELECT e.expenseDate, SUM(e.amount) FROM Expense e WHERE e.user.id = :userId "
 			+ "AND YEAR(e.expenseDate) = :year AND MONTHNAME(e.expenseDate) = :month GROUP BY e.expenseDate")
 	List<Object[]> getMonthlyExpenseSummary(Integer year, String month, Long userId);
 

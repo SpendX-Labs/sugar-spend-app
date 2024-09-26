@@ -1,4 +1,4 @@
-package com.finance.sugarmarket.app.dto;
+package com.finance.sugarmarket.app.budgetview.dto;
 
 import java.math.BigDecimal;
 
