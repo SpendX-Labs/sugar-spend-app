@@ -3,15 +3,6 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { Expense } from "@/lib/types";
 import { createQueryString } from "@/lib/utils";
 
-type ExpenseRequestBody = {
-  id?: number;
-  bankName: string;
-  expenseName: string;
-  statementDate: number;
-  dueDate: number;
-  last4Digit: string;
-};
-
 type ExpensesResponse = {
   total: number;
   offset: number;
@@ -26,7 +17,7 @@ export const expenseApi = createApi({
   baseQuery: authBaseQuery,
   tagTypes: ["Expense"],
   endpoints: (builder) => ({
-    addExpense: builder.mutation<any, ExpenseRequestBody>({
+    addExpense: builder.mutation<any, Expense>({
       query: (data) => ({
         url: expenseUrl,
         method: "POST",
@@ -43,7 +34,7 @@ export const expenseApi = createApi({
       }),
       invalidatesTags: ["Expense"],
     }),
-    editExpense: builder.mutation<any, ExpenseRequestBody>({
+    editExpense: builder.mutation<any, Expense>({
       query: (data) => ({
         url: `${expenseUrl}/${data.id}`,
         method: "PATCH",
