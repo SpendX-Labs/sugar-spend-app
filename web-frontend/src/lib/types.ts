@@ -20,16 +20,11 @@ export type CreditCard = {
 };
 
 export type Expense = {
-  id: number;
-  creditCardId: number;
+  id?: number;
+  creditCardId?: number;
   creditCardName: string;
   amount: number;
   expenseDate: string;
-  expenseTime: {
-    hour: number;
-    minute: number;
-    second: number;
-    nano: number;
-  };
+  expenseTime: string;
   reason: string;
 };

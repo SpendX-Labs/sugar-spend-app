@@ -112,9 +112,6 @@ export const AddCreditCardForm: React.FC<AddCreditCardFormProps> = ({ id }) => {
     try {
       setLoading(true);
       if (initialData) {
-        console.log(initialData.id);
-        console.log(typeof initialData.id);
-        console.log(data);
         await editCreditCard({
           id: Number(initialData.id),
           ...data,
