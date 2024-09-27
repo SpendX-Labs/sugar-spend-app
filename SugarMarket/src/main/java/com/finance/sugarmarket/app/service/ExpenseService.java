@@ -20,6 +20,7 @@ import com.finance.sugarmarket.app.model.Expense;
 import com.finance.sugarmarket.app.repo.BankAccountRepo;
 import com.finance.sugarmarket.app.repo.CreditCardRepo;
 import com.finance.sugarmarket.app.repo.ExpenseRepo;
+import com.finance.sugarmarket.auth.repo.MFUserRepo;
 import com.finance.sugarmarket.base.dto.Filter;
 import com.finance.sugarmarket.base.dto.ListViewDto;
 import com.finance.sugarmarket.base.service.SpecificationService;
@@ -35,6 +36,8 @@ public class ExpenseService extends SpecificationService<Expense> {
 	private CreditCardRepo creditCardRepo;
 	@Autowired
 	private BankAccountRepo bankAccountRepo;
+	@Autowired
+	private MFUserRepo userRepo;
 	@Autowired
 	private ModelMapper modelMapper;
 
@@ -100,6 +103,7 @@ public class ExpenseService extends SpecificationService<Expense> {
 			}
 			expense.setBankAccount(bankAccount);
 		}
+		expense.setUser(userRepo.findById(userId).get());
 		expenseRepo.save(expense);
 	}
 
