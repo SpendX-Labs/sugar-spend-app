@@ -79,7 +79,8 @@ databaseChangeLog:
                         monthOfBudget,
                         yearOfBudget,
                         sumAmount,
-                        sumAmount
+                        sumAmount,
+                        updateDateParam
                     );
                   END IF;
 
