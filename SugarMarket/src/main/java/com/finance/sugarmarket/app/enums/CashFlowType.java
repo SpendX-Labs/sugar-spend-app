@@ -1,7 +1,4 @@
 package com.finance.sugarmarket.app.enums;
-
 public enum CashFlowType {
-	Cash, Bank, CrediCard;
-	
-	
-}
+		CASH, BANK, CREDITCARD;
+	}

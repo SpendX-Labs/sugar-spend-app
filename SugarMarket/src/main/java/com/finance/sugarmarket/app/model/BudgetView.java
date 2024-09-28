@@ -44,12 +44,28 @@ public class BudgetView {
 		this.id = id;
 	}
 
+	public MFUser getUser() {
+		return user;
+	}
+
+	public void setUser(MFUser user) {
+		this.user = user;
+	}
+
 	public CreditCard getCreditCard() {
 		return creditCard;
 	}
 
 	public void setCreditCard(CreditCard creditCard) {
 		this.creditCard = creditCard;
+	}
+
+	public Loan getLoan() {
+		return loan;
+	}
+
+	public void setLoan(Loan loan) {
+		this.loan = loan;
 	}
 
 	public String getBudgetMonth() {
@@ -100,20 +116,16 @@ public class BudgetView {
 		this.dueDate = dueDate;
 	}
 
-	public BudgetView(Long id, CreditCard creditCard, String budgetMonth, Integer budgetYear,
-			BigDecimal actualAmount, BigDecimal remainingAmount, Date updateDate, Date dueDate) {
-		super();
-		this.id = id;
-		this.creditCard = creditCard;
+	public BudgetView(String budgetMonth, Integer budgetYear, BigDecimal actualAmount,
+			BigDecimal remainingAmount, Date updateDate, Date dueDate, CreditCard creditCard, Loan loan) {
 		this.budgetMonth = budgetMonth;
 		this.budgetYear = budgetYear;
 		this.actualAmount = actualAmount;
 		this.remainingAmount = remainingAmount;
 		this.updateDate = updateDate;
 		this.dueDate = dueDate;
+		this.creditCard = creditCard;
+		this.loan = loan;
 	}
 
-	public BudgetView() {
-		super();
-	}
 }
