@@ -72,16 +72,14 @@ databaseChangeLog:
                     SET actualAmount = sumAmount, remainingAmount = remAmount, updateDate = updateDateParam
                     WHERE creditCardId = creditCardId AND budgetMonth = monthOfBudget AND budgetYear = yearOfBudget;
                   ELSE
-                    INSERT INTO budgetView (userId, creditCardId, budgetMonth, budgetYear, actualAmount, remainingAmount, updateDate, dueDate)
+                    INSERT INTO budgetView (userId, creditCardId, budgetMonth, budgetYear, actualAmount, remainingAmount, updateDate)
                     VALUES (
                         userId,
                         creditCardId,
                         monthOfBudget,
                         yearOfBudget,
                         sumAmount,
-                        sumAmount,
-                        updateDateParam,
-                        STR_TO_DATE(CONCAT(yearOfBudget, '-', monthOfBudget, '-', dDay), '%Y-%M-%d')
+                        sumAmount
                     );
                   END IF;
 
