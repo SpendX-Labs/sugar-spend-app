@@ -4,10 +4,10 @@ databaseChangeLog:
       author: subham.biswas
       changes:
         - createProcedure:
-            procedureName: UpdateBudgetView
+            procedureName: UpdateBudgetViewByCard
             comments: "Procedure to update the budget view"
             procedureBody: |
-              CREATE PROCEDURE UpdateBudgetView(IN updateDateParam DATE, IN mfUserId INT)
+              CREATE PROCEDURE UpdateBudgetViewByCard(IN updateDateParam DATE, IN mfUserId INT)
               BEGIN
                 DECLARE done INT DEFAULT FALSE;
                 DECLARE cardId INT;
