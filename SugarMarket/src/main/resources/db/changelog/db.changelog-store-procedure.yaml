@@ -4,13 +4,13 @@ databaseChangeLog:
       author: subham.biswas
       changes:
         - createProcedure:
-            procedureName: updateBudgetView
+            procedureName: UpdateBudgetViewByCard
             comments: "Procedure to update the budget view"
             procedureBody: |
-              CREATE PROCEDURE updateBudgetView(IN updateDateParam DATE, IN userId INT)
+              CREATE PROCEDURE UpdateBudgetViewByCard(IN updateDateParam DATE, IN mfUserId INT)
               BEGIN
                 DECLARE done INT DEFAULT FALSE;
-                DECLARE creditCardId INT;
+                DECLARE cardId INT;
                 DECLARE actAmount DECIMAL(10, 2);
                 DECLARE remAmount DECIMAL(10, 2);
                 DECLARE sumAmount DECIMAL(10, 2);
@@ -22,20 +22,20 @@ databaseChangeLog:
                 DECLARE tempDueDate DATE;
                 
                 DECLARE creditCardCursor CURSOR FOR 
-                  SELECT creditCardId FROM creditCard WHERE userId = userId;
+                  SELECT creditCardId FROM creditCard WHERE userId = mfUserId;
 
                 DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
                 OPEN creditCardCursor;
 
                 creditCardLoop: LOOP
-                  FETCH creditCardCursor INTO creditCardId;
+                  FETCH creditCardCursor INTO cardId;
                   IF done THEN
                     LEAVE creditCardLoop;
                   END IF;
 
                   SELECT statementDate, dueDate INTO stDay, dDay 
-                  FROM creditCard WHERE creditCardId = creditCardId;
+                  FROM creditCard WHERE creditCardId = cardId;
 
                   SET tempDueDate = CONCAT(DATE_FORMAT(updateDateParam, '%Y-%m'), '-', LPAD(dDay, 2, '0'));
                   IF stDay > dDay THEN
@@ -54,33 +54,34 @@ databaseChangeLog:
                   SET yearOfBudget = YEAR(tempDueDate);
 
                   SELECT SUM(e.amount) INTO sumAmount
-                  FROM expense e
-                  WHERE e.creditCardId = creditCardId AND e.expenseDate BETWEEN lowerDate AND updateDateParam;
+                  FROM Expense e
+                  WHERE e.creditCardId = cardId AND e.expenseDate BETWEEN lowerDate AND updateDateParam;
 
                   IF sumAmount IS NULL THEN
                     SET sumAmount = 0;
                   END IF;
 
-                  IF EXISTS (SELECT 1 FROM budgetView WHERE creditCardId = creditCardId AND budgetMonth = monthOfBudget AND budgetYear = yearOfBudget) THEN
-                    SELECT actAmount, remAmount INTO actAmount, remAmount 
+                  IF EXISTS (SELECT 1 FROM budgetView WHERE creditCardId = cardId AND budgetMonth = monthOfBudget AND budgetYear = yearOfBudget) THEN
+                    SELECT actualAmount, remainingAmount INTO actAmount, remAmount 
                     FROM budgetView 
-                    WHERE creditCardId = creditCardId AND budgetMonth = monthOfBudget AND budgetYear = yearOfBudget;
+                    WHERE creditCardId = cardId AND budgetMonth = monthOfBudget AND budgetYear = yearOfBudget;
 
                     SET remAmount = sumAmount - actAmount + remAmount;
 
                     UPDATE budgetView
                     SET actualAmount = sumAmount, remainingAmount = remAmount, updateDate = updateDateParam
-                    WHERE creditCardId = creditCardId AND budgetMonth = monthOfBudget AND budgetYear = yearOfBudget;
+                    WHERE creditCardId = cardId AND budgetMonth = monthOfBudget AND budgetYear = yearOfBudget;
                   ELSE
-                    INSERT INTO budgetView (userId, creditCardId, budgetMonth, budgetYear, actualAmount, remainingAmount, updateDate)
+                    INSERT INTO budgetView (userId, creditCardId, budgetMonth, budgetYear, actualAmount, remainingAmount, updateDate, dueDate)
                     VALUES (
-                        userId,
-                        creditCardId,
+                        mfUserId,
+                        cardId,
                         monthOfBudget,
                         yearOfBudget,
                         sumAmount,
                         sumAmount,
-                        updateDateParam
+                        updateDateParam,
+                        STR_TO_DATE(CONCAT(yearOfBudget, '-', monthOfBudget, '-', dDay), '%Y-%M-%d')
                     );
                   END IF;
 
