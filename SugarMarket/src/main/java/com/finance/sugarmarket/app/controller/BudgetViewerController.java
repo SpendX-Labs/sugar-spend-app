@@ -1,9 +1,6 @@
 package com.finance.sugarmarket.app.controller;
 
-import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.finance.sugarmarket.app.dto.ExpenseReportDto;
-import com.finance.sugarmarket.app.dto.TimeBasedSummary;
+import com.finance.sugarmarket.app.budgetview.dto.AutoDebitDto;
+import com.finance.sugarmarket.app.budgetview.dto.ExpenseReportDto;
 import com.finance.sugarmarket.app.model.BudgetView;
 import com.finance.sugarmarket.app.service.BudgetViewerService;
 import com.finance.sugarmarket.base.controller.BaseController;
@@ -41,33 +38,16 @@ public class BudgetViewerController extends BaseController {
 		return budgetViewerService.getExpenseReport(getUserId(), month, year);
 	}
 
-	@PostMapping("/get-budgets")
-	public List<BudgetView> findAllBudget(@RequestBody Map<String, String> map) {
-		return budgetViewerService.findAllBudget(Integer.parseInt(map.get("budgetYear")), map.get("budgetMonth"),
-				getUserId());
-	}
+	@GetMapping("next-month-report")
+	public AutoDebitDto getNextMonthBudget() {
+		return budgetViewerService.getNextMonthBudget(getUserId());
 
-	@PostMapping("/time-based-summary")
-	public List<TimeBasedSummary> getBudgetChart(@RequestBody Map<String, String> map) {
-		return budgetViewerService.getBudgetChart(Integer.parseInt(map.get("budgetYear")), map.get("budgetMonth"),
-				getUserId());
-	}
-
-	@PostMapping("/get-pie-chart")
-	public List<TimeBasedSummary> getPieChart(@RequestBody Map<String, String> map) {
-		return budgetViewerService.getPieChart(Integer.parseInt(map.get("budgetYear")), map.get("budgetMonth"),
-				getUserId());
-	}
-
-	@PostMapping("/get-total-amount")
-	public Map<String, BigDecimal> getTotalAmount(@RequestBody Map<String, String> map) {
-		return budgetViewerService.getTotalAmount(Integer.parseInt(map.get("budgetYear")), map.get("budgetMonth"),
-				getUserId());
 	}
 
 	@PostMapping("/update-budget-data")
 	public ResponseEntity<String> updateBudgetData() {
 		try {
+			checkAdminRole();
 			budgetViewerService.updateBudgetView(new Date(), getUserId());
 		} catch (Exception e) {
 			log.error("error while updating budget: ", e);
@@ -76,6 +56,7 @@ public class BudgetViewerController extends BaseController {
 		return ResponseEntity.ok(AppConstants.SUCCESS);
 	}
 
+	@Deprecated
 	@PostMapping("/modify-remaing-amount")
 	public ResponseEntity<String> modifyRemainingAmount(@RequestBody BudgetView budget) {
 		try {

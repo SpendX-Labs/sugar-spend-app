@@ -80,7 +80,7 @@ public class BankAccountService extends SpecificationService<BankAccount> {
 			throw new Exception("You are not authorised to modify");
 		}
 		BankAccount existingBank = bankAccountList.get(0);
-		if (expenseRepo.findByCreditCardId(id).size() > 0) {
+		if (expenseRepo.findByBankAccountId(id).size() > 0) {
 			return DELETE_MSG;
 		}
 		bankAccountRepo.deleteById(existingBank.getId());
