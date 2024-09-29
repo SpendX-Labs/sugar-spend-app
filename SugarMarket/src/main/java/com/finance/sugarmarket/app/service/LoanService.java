@@ -62,13 +62,13 @@ public class LoanService {
 				loan.setPrincipalAmount(calculatePrincipal(loan.getEmiAmount(), loan.getInterestRate(), loan.getTenure()));
 				loan.setInterestAmount(loan.getTotalAmount().subtract(loan.getPrincipalAmount()));
 			}
-		} else if (loan.getLoanType().equals(LoanType.Reducing)) {
+		} else if (loan.getLoanType().equals(LoanType.REDUCING)) {
 			loan.setPrincipalAmount(loan.getTotalAmount());
 			loan.setEmiAmount(
 					calculateReducingEMI(loan.getPrincipalAmount(), loan.getInterestRate(), loan.getTenure()));
 			loan.setInterestAmount(
 					calculateReducingTotalInterest(loan.getPrincipalAmount(), loan.getEmiAmount(), loan.getTenure()));
-		} else if (loan.getLoanType().equals(LoanType.flat)) {
+		} else if (loan.getLoanType().equals(LoanType.FLAT)) {
 			loan.setPrincipalAmount(loan.getTotalAmount());
 			loan.setInterestAmount(
 					calculateFlatInterestAmount(loan.getPrincipalAmount(), loan.getInterestRate(), loan.getTenure()));
@@ -142,7 +142,7 @@ public class LoanService {
 		loan.setUpdateLock(true);
 		Integer paidMonths = modifyLoanDto.getAlreadyPaidMonth();
 		if (paidMonths != null && paidMonths > 0) {
-			if (loan.getLoanType().equals(LoanType.Reducing)) {
+			if (loan.getLoanType().equals(LoanType.REDUCING)) {
 				loan.setRemainingPrincipalAmount(calculateRemainingPrincipalReducing(loan.getPrincipalAmount(),
 						loan.getInterestRate(), loan.getTenure(), paidMonths, loan.getEmiAmount()));
 				loan.setRemainingInterestAmount(calculateRemainingInterestReducing(loan.getRemainingPrincipalAmount(),
@@ -156,7 +156,7 @@ public class LoanService {
 			loan.setRemainingTenure(loan.getTenure() - paidMonths);
 			loan.setRemainingAmount(loan.getRemainingInterestAmount().add(loan.getRemainingPrincipalAmount()));
 		} else {
-//			if(loan.getLoanType().equals(LoanType.Reducing)) {
+//			if(loan.getLoanType().equals(LoanType.REDUCING)) {
 //				BigDecimal newPrincipal = loan.getRemainingAmount().subtract(modifyLoanDto.getPrincipalRepay());
 //				BigDecimal monthlyInterestRate = annualInterestRate.divide(HUNDRED, RoundingMode.HALF_UP).divide(BigDecimal.valueOf(12), RoundingMode.HALF_UP);
 //		        BigDecimal emi = calculateEMI(newPrincipal, monthlyInterestRate, newTenureMonths);

@@ -15,6 +15,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Loan {
@@ -34,6 +36,8 @@ public class Loan {
 
 	private String lenderName;
 
+	@Size(min = 4, max = 4, message = "Last 4 digits must be exactly 4 characters")
+	@Pattern(regexp = "\\d{4}", message = "Last 4 digits must be numeric")
 	private String last4Digit;
 
 	private BigDecimal totalAmount;

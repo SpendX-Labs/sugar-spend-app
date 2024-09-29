@@ -45,7 +45,7 @@ public class ExpenseService extends SpecificationService<Expense> {
 	private static final Map<String, String> filterMap = new HashMap<String, String>();
 
 	static {
-		filterMap.put(FilterFieldConstant.USER_ID, "creditCard.user.id");
+		filterMap.put(FilterFieldConstant.USER_ID, "user.id");
 		filterMap.put(FilterFieldConstant.CREDIT_CARD_ID, "creditCard.id");
 	}
 
@@ -56,7 +56,7 @@ public class ExpenseService extends SpecificationService<Expense> {
 		for (Expense expense : pages.getContent()) {
 			ExpenseDto expenseDto = modelMapper.map(expense, ExpenseDto.class);
 			if (expense.getCreditCard() != null) {
-				String crediCardName = expense.getCreditCard().getBankName()
+				String crediCardName = expense.getCreditCard().getBankName() + " "
 						+ expense.getCreditCard().getCreditCardName() + " (XXXX"
 						+ expense.getCreditCard().getLast4Digit() + ") ";
 				expenseDto.setCashFlowDetails(new CashFlowDetailDto(expense.getCreditCard().getId(), crediCardName));
@@ -91,13 +91,13 @@ public class ExpenseService extends SpecificationService<Expense> {
 	private void persistExpense(ExpenseDto expenseDto, Expense expense, Long userId) throws Exception {
 		Long cashFlowId = expenseDto.getCashFlowDetails().getCashFlowId();
 		if (cashFlowId != null) {
-			if (expenseDto.getExpenseType().equals(CashFlowType.CreditCard)) {
+			if (expenseDto.getExpenseType().equals(CashFlowType.CREDITCARD)) {
 				CreditCard creditCard = creditCardRepo.findById(cashFlowId).get();
 				if (creditCard.getUser().getId() != userId) {
 					throw new Exception("user is different from the credit card.");
 				}
 				expense.setCreditCard(creditCard);
-			} else if (expenseDto.getExpenseType().equals(CashFlowType.Bank)) {
+			} else if (expenseDto.getExpenseType().equals(CashFlowType.BANK)) {
 				BankAccount bankAccount = bankAccountRepo.findById(cashFlowId).get();
 				if (bankAccount.getUser().getId() != userId) {
 					throw new Exception("user is different from the Bank Account.");
@@ -116,7 +116,7 @@ public class ExpenseService extends SpecificationService<Expense> {
 			throw new Exception("You are not authorised to modify");
 		}
 		Expense existingExpense = expenseList.get(0);
-		creditCardRepo.deleteById(existingExpense.getId());
+		expenseRepo.deleteById(existingExpense.getId());
 		return AppConstants.SUCCESS;
 	}
 }

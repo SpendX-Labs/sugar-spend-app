@@ -12,6 +12,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class BankAccount {
@@ -22,14 +24,15 @@ public class BankAccount {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "fkUserId", referencedColumnName = "userId")
+	@JoinColumn(name = "userId", referencedColumnName = "userId")
 	private MFUser user;
 
 	private String bankName;
 
 	@Enumerated(EnumType.STRING)
 	private AccountType accountType;
-
+	@Size(min = 4, max = 4, message = "Last 4 digits must be exactly 4 characters")
+	@Pattern(regexp = "\\d{4}", message = "Last 4 digits must be numeric")
 	private String last4Digit;
 
 	private String debitCardLast4Digit;
