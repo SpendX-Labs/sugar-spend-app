@@ -451,7 +451,7 @@ databaseChangeLog:
 
   - changeSet:
       id: "CreateBankAccount"
-      author: yourname
+      author: subham.biswas
       changes:
         - createTable:
             tableName: BankAccount
@@ -459,6 +459,7 @@ databaseChangeLog:
               - column:
                   name: bankAccountId
                   type: BIGINT
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -474,7 +475,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: accountType
-                  type: ENUM('savings', 'current')
+                  type: ENUM('SAVINGS', 'CURRENT')
                   constraints:
                     nullable: false
               - column:
@@ -486,7 +487,7 @@ databaseChangeLog:
                   name: debitCardLast4Digit
                   type: VARCHAR(4)
                   constraints:
-                    nullable: false
+                    nullable: true
 
   - changeSet:
       id: "AddBankAccountUserFkConstraint"
@@ -510,6 +511,7 @@ databaseChangeLog:
               - column:
                   name: incomeId
                   type: BIGINT
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -520,7 +522,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: incomeType
-                  type: ENUM('Cash', 'Bank', 'CreditCard')
+                  type: ENUM('CASH', 'BANK', 'CREDITCARD')
                   constraints:
                     nullable: false
               - column:
@@ -610,7 +612,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: expenseType
-                  type: ENUM('Cash', 'Bank', 'CreditCard')
+                  type: ENUM('CASH', 'BANK', 'CREDITCARD')
                   constraints:
                     nullable: false
               - column:
@@ -720,7 +722,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: loanType
-                  type: ENUM('Reducing', 'Flat')
+                  type: ENUM('REDUCING', 'FLAT')
                   constraints:
                     nullable: false
                     defaultValue: "Reducing"
@@ -921,6 +923,7 @@ databaseChangeLog:
               - column:
                   name: userId
                   type: BIGINT
+                  autoIncrement: true
                   constraints:
                     nullable: false
                     primaryKey: true
@@ -998,7 +1001,7 @@ databaseChangeLog:
                   value: "Sample Bank"
               - column:
                   name: accountType
-                  value: "savings"
+                  value: "SAVINGS"
               - column:
                   name: last4Digit
                   value: "1234"

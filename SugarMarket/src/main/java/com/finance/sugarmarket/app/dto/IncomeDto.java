@@ -1,19 +1,16 @@
 package com.finance.sugarmarket.app.dto;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.util.Date;
 import java.time.LocalTime;
 
 import com.finance.sugarmarket.app.enums.CashFlowType;
 
 public class IncomeDto {
-	
+
 	private Long id;
 	private CashFlowType incomeType;
-	private Long crediCardId;
-	private String creditCardName;
-	private Long bankAccountId;
-	private String bankAccountName;
+	private CashFlowDetailDto cashFlowDetails;
 	private BigDecimal amount;
 	private Date dateOfEvent;
 	private LocalTime timeOfEvent;
@@ -35,36 +32,12 @@ public class IncomeDto {
 		this.incomeType = incomeType;
 	}
 
-	public Long getCrediCardId() {
-		return crediCardId;
+	public CashFlowDetailDto getCashFlowDetails() {
+		return cashFlowDetails;
 	}
 
-	public void setCrediCardId(Long crediCardId) {
-		this.crediCardId = crediCardId;
-	}
-
-	public String getCreditCardName() {
-		return creditCardName;
-	}
-
-	public void setCreditCardName(String creditCardName) {
-		this.creditCardName = creditCardName;
-	}
-
-	public Long getBankAccountId() {
-		return bankAccountId;
-	}
-
-	public void setBankAccountId(Long bankAccountId) {
-		this.bankAccountId = bankAccountId;
-	}
-
-	public String getBankAccountName() {
-		return bankAccountName;
-	}
-
-	public void setBankAccountName(String bankAccountName) {
-		this.bankAccountName = bankAccountName;
+	public void setCashFlowDetails(CashFlowDetailDto cashFlowDetails) {
+		this.cashFlowDetails = cashFlowDetails;
 	}
 
 	public BigDecimal getAmount() {

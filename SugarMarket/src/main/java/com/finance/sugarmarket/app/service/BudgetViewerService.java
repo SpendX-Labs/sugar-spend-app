@@ -66,7 +66,7 @@ public class BudgetViewerService {
         summary.setDataKey(key);
       }
 
-      if (expenseType.equals(CashFlowType.CreditCard)) {
+      if (expenseType.equals(CashFlowType.CREDITCARD)) {
         cardSpendAmount = cardSpendAmount.add(amount);
         summary.setCreditCardAmount(amount);
       } else {

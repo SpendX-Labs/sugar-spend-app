@@ -13,7 +13,7 @@ public class LoanDto {
 	private String lenderName;
 	private Integer last4Digit;
 	private BigDecimal totalAmount;
-	private LoanType loanType = LoanType.flat;
+	private LoanType loanType = LoanType.FLAT;
 	private BigDecimal interestRate;
 	private boolean noCostEmi;
 	private Integer tenure;

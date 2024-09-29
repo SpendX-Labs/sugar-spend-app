@@ -14,7 +14,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.finance.sugarmarket.app.dto.BankAccountDto;
-import com.finance.sugarmarket.app.dto.CreditCardDto;
 import com.finance.sugarmarket.app.model.BankAccount;
 import com.finance.sugarmarket.app.repo.BankAccountRepo;
 import com.finance.sugarmarket.app.repo.ExpenseRepo;
@@ -27,7 +26,7 @@ import com.finance.sugarmarket.constants.FilterFieldConstant;
 
 @Service
 public class BankAccountService extends SpecificationService<BankAccount> {
-	
+
 	@Autowired
 	private BankAccountRepo bankAccountRepo;
 	@Autowired
@@ -49,7 +48,7 @@ public class BankAccountService extends SpecificationService<BankAccount> {
 		Specification<BankAccount> specificationFilters = getSpecificationFilters(filters, filterMap);
 		Page<BankAccount> pages = bankAccountRepo.findAll(specificationFilters, pageRequest);
 
-		Type listType = new TypeToken<List<CreditCardDto>>() {
+		Type listType = new TypeToken<List<BankAccountDto>>() {
 		}.getType();
 		return new ListViewDto<BankAccountDto>(modelMapper.map(pages.getContent(), listType), pages.getTotalElements(),
 				pageRequest.getOffset(), pageRequest.getPageSize());
