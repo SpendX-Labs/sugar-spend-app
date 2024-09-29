@@ -13,7 +13,7 @@ import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CreditCard } from "@/lib/types";
+import { CashFlowDetails, CashFlowType, CreditCard } from "@/lib/types";
 import { useGetCreditCardsQuery } from "@/store/credit-card/credit-card-api";
 import {
   useAddExpenseMutation,
@@ -49,6 +49,14 @@ const formSchema = z.object({
     .refine((value) => /^([01]\d|2[0-3]):([0-5]\d)$/.test(value), {
       message: "Time should be in the format HH:mm",
     }),
+  expenseType: z
+    .string()
+    .refine(
+      (value) => Object.values(CashFlowType).includes(value as CashFlowType),
+      {
+        message: "Invalid expense type",
+      }
+    ),
   reason: z.string().default(""),
 });
 
@@ -56,9 +64,23 @@ type ExpenseFormValues = z.infer<typeof formSchema>;
 
 interface ExpenseFormProps {
   id: string | number;
+  cashFlowDetails: CashFlowDetails | null;
+  amount: string | null;
+  expenseDate: string | null;
+  expenseTime: string | null;
+  expenseType: CashFlowType | null;
+  reason: string | null;
 }
 
-export const ExpenseForm: React.FC<ExpenseFormProps> = ({ id }) => {
+export const ExpenseForm: React.FC<ExpenseFormProps> = ({
+  id,
+  cashFlowDetails,
+  amount,
+  expenseDate,
+  expenseTime,
+  expenseType,
+  reason,
+}) => {
   const [addExpense] = useAddExpenseMutation();
   const [deleteExpense] = useDeleteExpenseMutation();
   const [editExpense] = useEditExpenseMutation();
@@ -71,25 +93,20 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({ id }) => {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const searchParams = useSearchParams();
-  const creditCardName = searchParams.get("creditCardName");
-  const amount = searchParams.get("amount");
-  const expenseDate = searchParams.get("expenseDate");
-  const expenseTime = searchParams.get("expenseTime");
-  const reason = searchParams.get("reason");
   const initialData =
-    creditCardName && amount && expenseDate && expenseTime
+    id && cashFlowDetails && amount && expenseDate && expenseTime && expenseType
       ? {
           id,
-          creditCardName,
+          cashFlowDetails,
           amount,
           expenseDate,
           expenseTime,
+          expenseType,
           reason,
         }
       : null;
 
-  const title = initialData ? "Edit Credit Card" : "Add Credit Card";
+  const title = initialData ? "Edit Expense" : "Add Expense";
   const description = initialData ? "Edit an expense." : "Add a new expense";
   const toastMessage = initialData ? "Expense updated." : "Expense created.";
   const action = initialData ? "Save changes" : "Add";
@@ -99,9 +116,11 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({ id }) => {
     : {
         bankName: "",
         expenseName: "",
+        expenseType: CashFlowType.CREDITCARD,
         statementDate: null,
         dueDate: null,
         last4Digit: "",
+        reason: "",
       };
 
   const form = useForm<any>({
@@ -116,11 +135,23 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({ id }) => {
         await editExpense({
           ...data,
           id: Number(initialData.id),
+          cashFlowDetails: {
+            cashFlowId: creditCards.filter(
+              (creditCard) => creditCard.creditCardName === data.creditCardName
+            )?.[0].id,
+            cashFlowName: data.creditCardName,
+          },
           expenseDate: new Date(data.expenseDate).toISOString(),
         }).unwrap();
       } else {
         await addExpense({
           ...data,
+          cashFlowDetails: {
+            cashFlowId: creditCards.filter(
+              (creditCard) => creditCard.creditCardName === data.creditCardName
+            )?.[0].id,
+            cashFlowName: data.creditCardName,
+          },
           expenseDate: new Date(data.expenseDate).toISOString(),
         }).unwrap();
       }
@@ -187,6 +218,38 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({ id }) => {
           className="w-full space-y-8"
         >
           <div className="gap-8 md:grid md:grid-cols-3">
+            <FormField
+              control={form.control}
+              name="expenseType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Expense Type</FormLabel>
+                  <Select
+                    disabled={loading}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={CashFlowType.CREDITCARD}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          defaultValue={CashFlowType.CREDITCARD}
+                          placeholder="Select Expense Type"
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.values(CashFlowType).map((value) => (
+                        <SelectItem key={value} value={value}>
+                          {value}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="creditCardName"
@@ -261,25 +324,23 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({ id }) => {
                 </FormItem>
               )}
             />
-            <div className="col-start-3 row-start-1 row-span-2">
-              <FormField
-                control={form.control}
-                name="reason"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Reason</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Description"
-                        disabled={loading}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <FormField
+              control={form.control}
+              name="reason"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Reason</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Description"
+                      disabled={loading}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
           <Button disabled={loading} className="ml-auto" type="submit">
             {action}

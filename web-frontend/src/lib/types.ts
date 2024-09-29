@@ -10,6 +10,12 @@ export interface NavItem {
   description?: string;
 }
 
+export enum CashFlowType {
+  CASH = "Cash",
+  BANK = "Bank",
+  CREDITCARD = "CreditCard",
+}
+
 export type CreditCard = {
   id: number;
   bankName: string;
@@ -19,12 +25,17 @@ export type CreditCard = {
   last4Digit: number;
 };
 
+export type CashFlowDetails = {
+  cashFlowId: number;
+  cashFlowName: string;
+};
+
 export type Expense = {
   id?: number;
-  creditCardId?: number;
-  creditCardName: string;
+  cashFlowDetails: CashFlowDetails;
   amount: number;
   expenseDate: string;
   expenseTime: string;
-  reason: string;
+  expenseType: CashFlowType | string;
+  reason?: string;
 };
