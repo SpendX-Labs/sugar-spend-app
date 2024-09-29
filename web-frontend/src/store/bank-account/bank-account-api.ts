@@ -3,14 +3,7 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { BankAccount } from "@/lib/types";
 import { createQueryString } from "@/lib/utils";
 
-type BankAccountRequestBody = {
-  id?: number;
-  bankName: string;
-  bankAccountName: string;
-  statementDate: number;
-  dueDate: number;
-  last4Digit: string;
-};
+type BankAccountRequestBody = Omit<BankAccount, "id"> & { id?: number };
 
 type BankAccountsResponse = {
   total: number;
@@ -26,7 +19,7 @@ export const bankAccountApi = createApi({
   baseQuery: authBaseQuery,
   tagTypes: ["BankAccount"],
   endpoints: (builder) => ({
-    addBankAccount: builder.mutation<any, BankAccountRequestBody>({
+    addBankAccount: builder.mutation<any, BankAccount>({
       query: (data) => ({
         url: bankAccountUrl,
         method: "POST",
@@ -43,7 +36,7 @@ export const bankAccountApi = createApi({
       }),
       invalidatesTags: ["BankAccount"],
     }),
-    editBankAccount: builder.mutation<any, BankAccountRequestBody>({
+    editBankAccount: builder.mutation<any, BankAccount>({
       query: (data) => ({
         url: `${bankAccountUrl}/${data.id}`,
         method: "PATCH",
