@@ -1,6 +1,7 @@
 import {
   AlertTriangle,
   ArrowRight,
+  Banknote,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -39,6 +40,7 @@ export const Icons = {
   add: Plus,
   allMutualFunds: Combine,
   arrowRight: ArrowRight,
+  bankAccount: Banknote,
   chevronLeft: ChevronLeft,
   chevronRight: ChevronRight,
   close: X,

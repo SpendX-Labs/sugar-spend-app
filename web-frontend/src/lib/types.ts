@@ -39,3 +39,16 @@ export type Expense = {
   expenseType: CashFlowType | string;
   reason?: string;
 };
+
+export enum BankAccountType {
+  SAVINGS = "savings",
+  CURRENT = "current",
+}
+
+export type BankAccount = {
+  id: number;
+  bankName: string;
+  accountType: BankAccountType;
+  last4Digit: string;
+  debitCardLast4Digit: string;
+};

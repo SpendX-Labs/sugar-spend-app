@@ -5,11 +5,13 @@ import { authSlice } from "./auth/auth-slice";
 import { creditCardApi } from "./credit-card/credit-card-api";
 import { expenseApi } from "./expense/expense-api";
 import { sidebarSlice } from "./sidebar/sidebar-slice";
+import { bankAccountApi } from "./bank-account/bank-account-api";
 
 const rootReducer = combineReducers({
   auth: authSlice.reducer,
   sidebar: sidebarSlice.reducer,
   [authApi.reducerPath]: authApi.reducer,
+  [bankAccountApi.reducerPath]: bankAccountApi.reducer,
   [creditCardApi.reducerPath]: creditCardApi.reducer,
   [expenseApi.reducerPath]: expenseApi.reducer,
 });
@@ -21,6 +23,7 @@ export const makeStore = () => {
     middleware: (getDefaultMiddleware) => {
       return getDefaultMiddleware().concat(
         authApi.middleware,
+        bankAccountApi.middleware,
         creditCardApi.middleware,
         expenseApi.middleware
       );

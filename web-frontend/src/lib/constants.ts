@@ -10,6 +10,12 @@ export const navItems: NavItem[] = [
     label: "Dashboard",
   },
   {
+    title: "Bank Account",
+    href: "/bank-account",
+    icon: "bankAccount",
+    label: "BankAccount",
+  },
+  {
     title: "Credit Card",
     href: "/credit-card",
     icon: "creditCard",
