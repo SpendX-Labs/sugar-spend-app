@@ -3,12 +3,12 @@ import { AddCreditCardForm } from "@/components/forms/add-credit-card-form";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { FC } from "react";
 
-// Define the props type
 interface UserPageProps {
   params: {
     creditCardId: string;
   };
 }
+
 const breadcrumbItems = [
   { title: "Dashboard", link: "/" },
   { title: "Credit Card", link: "/credit-card" },

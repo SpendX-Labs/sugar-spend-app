@@ -9,10 +9,7 @@ import com.finance.sugarmarket.app.enums.CashFlowType;
 public class ExpenseDto {
 	private Long id;
 	private CashFlowType expenseType;
-	private Long crediCardId;
-	private String creditCardName;
-	private Long bankAccountId;
-	private String bankAccountName;
+	private CashFlowDetailDto cashFlowDetails;
 	private BigDecimal amount;
 	private Date expenseDate;
 	private LocalTime expenseTime;
@@ -37,36 +34,12 @@ public class ExpenseDto {
 		this.expenseType = expenseType;
 	}
 
-	public Long getCrediCardId() {
-		return crediCardId;
+	public CashFlowDetailDto getCashFlowDetails() {
+		return cashFlowDetails;
 	}
 
-	public void setCrediCardId(Long crediCardId) {
-		this.crediCardId = crediCardId;
-	}
-
-	public String getCreditCardName() {
-		return creditCardName;
-	}
-
-	public void setCreditCardName(String creditCardName) {
-		this.creditCardName = creditCardName;
-	}
-
-	public Long getBankAccountId() {
-		return bankAccountId;
-	}
-
-	public void setBankAccountId(Long bankAccountId) {
-		this.bankAccountId = bankAccountId;
-	}
-
-	public String getBankAccountName() {
-		return bankAccountName;
-	}
-
-	public void setBankAccountName(String bankAccountName) {
-		this.bankAccountName = bankAccountName;
+	public void setCashFlowDetails(CashFlowDetailDto cashFlowDetails) {
+		this.cashFlowDetails = cashFlowDetails;
 	}
 
 	public BigDecimal getAmount() {

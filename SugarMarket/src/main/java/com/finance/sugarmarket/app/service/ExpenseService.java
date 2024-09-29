@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.finance.sugarmarket.app.dto.CashFlowDetailDto;
 import com.finance.sugarmarket.app.dto.ExpenseDto;
 import com.finance.sugarmarket.app.enums.CashFlowType;
 import com.finance.sugarmarket.app.model.BankAccount;
@@ -55,16 +56,14 @@ public class ExpenseService extends SpecificationService<Expense> {
 		for (Expense expense : pages.getContent()) {
 			ExpenseDto expenseDto = modelMapper.map(expense, ExpenseDto.class);
 			if (expense.getCreditCard() != null) {
-				expenseDto.setCrediCardId(expense.getCreditCard().getId());
 				String crediCardName = expense.getCreditCard().getBankName()
 						+ expense.getCreditCard().getCreditCardName() + " (XXXX"
 						+ expense.getCreditCard().getLast4Digit() + ") ";
-				expenseDto.setCreditCardName(crediCardName);
+				expenseDto.setCashFlowDetails(new CashFlowDetailDto(expense.getCreditCard().getId(), crediCardName));
 			} else if (expense.getBankAccount() != null) {
-				expenseDto.setBankAccountId(expense.getBankAccount().getId());
 				String bankAccountName = expense.getBankAccount().getBankName() + " (XXXX"
 						+ expense.getBankAccount().getLast4Digit() + ") ";
-				expenseDto.setBankAccountName(bankAccountName);
+				expenseDto.setCashFlowDetails(new CashFlowDetailDto(expense.getBankAccount().getId(), bankAccountName));
 			}
 			listDto.add(expenseDto);
 		}
@@ -90,18 +89,21 @@ public class ExpenseService extends SpecificationService<Expense> {
 	}
 
 	private void persistExpense(ExpenseDto expenseDto, Expense expense, Long userId) throws Exception {
-		if (expenseDto.getExpenseType().equals(CashFlowType.CREDITCARD) && expenseDto.getCrediCardId() != null) {
-			CreditCard creditCard = creditCardRepo.findById(expenseDto.getCrediCardId()).get();
-			if (creditCard.getUser().getId() != userId) {
-				throw new Exception("user is different from the credit card.");
+		Long cashFlowId = expenseDto.getCashFlowDetails().getCashFlowId();
+		if (cashFlowId != null) {
+			if (expenseDto.getExpenseType().equals(CashFlowType.CreditCard)) {
+				CreditCard creditCard = creditCardRepo.findById(cashFlowId).get();
+				if (creditCard.getUser().getId() != userId) {
+					throw new Exception("user is different from the credit card.");
+				}
+				expense.setCreditCard(creditCard);
+			} else if (expenseDto.getExpenseType().equals(CashFlowType.Bank)) {
+				BankAccount bankAccount = bankAccountRepo.findById(cashFlowId).get();
+				if (bankAccount.getUser().getId() != userId) {
+					throw new Exception("user is different from the Bank Account.");
+				}
+				expense.setBankAccount(bankAccount);
 			}
-			expense.setCreditCard(creditCard);
-		} else if (expenseDto.getExpenseType().equals(CashFlowType.BANK) && expenseDto.getBankAccountId() != null) {
-			BankAccount bankAccount = bankAccountRepo.findById(expenseDto.getBankAccountId()).get();
-			if (bankAccount.getUser().getId() != userId) {
-				throw new Exception("user is different from the Bank Account.");
-			}
-			expense.setBankAccount(bankAccount);
 		}
 		expense.setUser(userRepo.findById(userId).get());
 		expenseRepo.save(expense);

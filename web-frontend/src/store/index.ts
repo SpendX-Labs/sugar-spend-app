@@ -1,15 +1,17 @@
 import type { Action, ThunkAction } from "@reduxjs/toolkit";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import { authSlice } from "./auth/auth-slice";
 import { authApi } from "./auth/auth-api";
-import { sidebarSlice } from "./sidebar/sidebar-slice";
+import { authSlice } from "./auth/auth-slice";
 import { creditCardApi } from "./credit-card/credit-card-api";
+import { expenseApi } from "./expense/expense-api";
+import { sidebarSlice } from "./sidebar/sidebar-slice";
 
 const rootReducer = combineReducers({
   auth: authSlice.reducer,
   sidebar: sidebarSlice.reducer,
   [authApi.reducerPath]: authApi.reducer,
   [creditCardApi.reducerPath]: creditCardApi.reducer,
+  [expenseApi.reducerPath]: expenseApi.reducer,
 });
 export type RootState = ReturnType<AppStore["getState"]>;
 
@@ -19,7 +21,8 @@ export const makeStore = () => {
     middleware: (getDefaultMiddleware) => {
       return getDefaultMiddleware().concat(
         authApi.middleware,
-        creditCardApi.middleware
+        creditCardApi.middleware,
+        expenseApi.middleware
       );
     },
   });
