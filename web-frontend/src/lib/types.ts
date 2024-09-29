@@ -11,9 +11,9 @@ export interface NavItem {
 }
 
 export enum CashFlowType {
-  CASH = "Cash",
-  BANK = "Bank",
-  CREDITCARD = "CreditCard",
+  CASH = "CASH",
+  BANK = "BANK",
+  CREDITCARD = "CREDITCARD",
 }
 
 export type CreditCard = {
@@ -38,4 +38,17 @@ export type Expense = {
   expenseTime: string;
   expenseType: CashFlowType | string;
   reason?: string;
+};
+
+export enum BankAccountType {
+  SAVINGS = "SAVINGS",
+  CURRENT = "CURRENT",
+}
+
+export type BankAccount = {
+  id?: number;
+  bankName: string;
+  accountType: BankAccountType;
+  last4Digit: string;
+  debitCardLast4Digit: string;
 };

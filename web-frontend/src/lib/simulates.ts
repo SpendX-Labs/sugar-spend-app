@@ -102,3 +102,48 @@ export const creditCardsResponse: CreditCardsResponse = {
   limit: 10,
   data: creditCards.splice(0, 10),
 };
+
+const bankAccounts = [
+  {
+    id: 1,
+    bankName: "Wells Fargo",
+    accountType: "savings",
+    last4Digit: "8342",
+    debitCardLast4Digit: "9845",
+  },
+  {
+    id: 2,
+    bankName: "Chase Bank",
+    accountType: "current",
+    last4Digit: "4321",
+    debitCardLast4Digit: "2309",
+  },
+  {
+    id: 3,
+    bankName: "Bank of America",
+    accountType: "savings",
+    last4Digit: "2345",
+    debitCardLast4Digit: "5409",
+  },
+  {
+    id: 4,
+    bankName: "Citibank",
+    accountType: "current",
+    last4Digit: "1923",
+    debitCardLast4Digit: "8473",
+  },
+  {
+    id: 5,
+    bankName: "Capital One",
+    accountType: "savings",
+    last4Digit: "3847",
+    debitCardLast4Digit: "2938",
+  },
+];
+
+export const bankAccountsResponse = {
+  total: 100,
+  offset: 0,
+  limit: 10,
+  data: bankAccounts,
+};
