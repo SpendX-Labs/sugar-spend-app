@@ -86,13 +86,13 @@ public class IncomeService extends SpecificationService<Income> {
 	}
 
 	private void persistIncome(IncomeDto incomeDto, Income income, Long userId) throws Exception {
-		if (incomeDto.getIncomeType().equals(CashFlowType.CREDITCARD) && incomeDto.getCrediCardId() != null) {
+		if (incomeDto.getIncomeType().equals(CashFlowType.CreditCard) && incomeDto.getCrediCardId() != null) {
 			CreditCard creditCard = creditCardRepo.findById(incomeDto.getCrediCardId()).get();
 			if (creditCard.getUser().getId() != userId) {
 				throw new Exception("user is different from the credit card.");
 			}
 			income.setCreditCard(creditCard);
-		} else if (incomeDto.getIncomeType().equals(CashFlowType.BANK) && incomeDto.getBankAccountId() != null) {
+		} else if (incomeDto.getIncomeType().equals(CashFlowType.Bank) && incomeDto.getBankAccountId() != null) {
 			BankAccount bankAccount = bankAccountRepo.findById(incomeDto.getBankAccountId()).get();
 			if (bankAccount.getUser().getId() != userId) {
 				throw new Exception("user is different from the Bank Account.");
