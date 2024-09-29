@@ -4,7 +4,7 @@ databaseChangeLog:
       author: subham.biswas
       changes:
         - createTable:
-            tableName: MfRole
+            tableName: MFRole
             columns:
               - column:
                   name: roleId
@@ -23,7 +23,7 @@ databaseChangeLog:
       author: subham.biswas
       changes:
         - insert:
-            tableName: MfRole
+            tableName: MFRole
             columns:
               - column:
                   name: roleId
@@ -32,7 +32,7 @@ databaseChangeLog:
                   name: roleName
                   value: admin
         - insert:
-            tableName: MfRole
+            tableName: MFRole
             columns:
               - column:
                   name: roleId
@@ -46,7 +46,7 @@ databaseChangeLog:
       author: subham.biswas
       changes:
         - createTable:
-            tableName: MfUser
+            tableName: MFUser
             columns:
               - column:
                   name: userId
@@ -91,12 +91,12 @@ databaseChangeLog:
       author: subham.biswas
       changes:
         - addUniqueConstraint:
-            tableName: MfUser
+            tableName: MFUser
             columnNames: username
             constraintName: uqUsername
 
         - addUniqueConstraint:
-            tableName: MfUser
+            tableName: MFUser
             columnNames: email
             constraintName: uqEmail
 
@@ -105,7 +105,7 @@ databaseChangeLog:
       author: subham.biswas
       changes:
         - insert:
-            tableName: MfUser
+            tableName: MFUser
             columns:
               - column:
                   name: userId
@@ -129,7 +129,7 @@ databaseChangeLog:
                   name: isActive
                   value: 1
         - insert:
-            tableName: MfUser
+            tableName: MFUser
             columns:
               - column:
                   name: userId
@@ -184,7 +184,7 @@ databaseChangeLog:
         - addForeignKeyConstraint:
             baseTableName: MapRoleUser
             baseColumnNames: userId
-            referencedTableName: MfUser
+            referencedTableName: MFUser
             referencedColumnNames: userId
             constraintName: mapRoleUserUserId
             onDelete: CASCADE
@@ -196,7 +196,7 @@ databaseChangeLog:
         - addForeignKeyConstraint:
             baseTableName: MapRoleUser
             baseColumnNames: roleId
-            referencedTableName: MfRole
+            referencedTableName: MFRole
             referencedColumnNames: roleId
             constraintName: mapRoleUserRoleId
             onDelete: CASCADE
@@ -388,7 +388,7 @@ databaseChangeLog:
         - addForeignKeyConstraint:
             baseTableName: OrderDetail
             baseColumnNames: userId
-            referencedTableName: MfUser
+            referencedTableName: MFUser
             referencedColumnNames: userId
             constraintName: orderDetailUserIdFk
             onDelete: CASCADE
@@ -444,7 +444,7 @@ databaseChangeLog:
         - addForeignKeyConstraint:
             baseTableName: CreditCard
             baseColumnNames: userId
-            referencedTableName: MfUser
+            referencedTableName: MFUser
             referencedColumnNames: userId
             constraintName: creditCardUserIdFk
             onDelete: CASCADE
@@ -496,7 +496,7 @@ databaseChangeLog:
         - addForeignKeyConstraint:
             baseTableName: BankAccount
             baseColumnNames: userId
-            referencedTableName: MfUser
+            referencedTableName: MFUser
             referencedColumnNames: userId
             constraintName: bankAccountUserIdFk
             onDelete: CASCADE
@@ -563,7 +563,7 @@ databaseChangeLog:
         - addForeignKeyConstraint:
             baseTableName: Income
             baseColumnNames: userId
-            referencedTableName: MfUser
+            referencedTableName: MFUser
             referencedColumnNames: userId
             constraintName: incomeUserIdFk
             onDelete: CASCADE
@@ -653,7 +653,7 @@ databaseChangeLog:
         - addForeignKeyConstraint:
             baseTableName: Expense
             baseColumnNames: userId
-            referencedTableName: MfUser
+            referencedTableName: MFUser
             referencedColumnNames: userId
             constraintName: expenseUserIdFk
             onDelete: CASCADE
@@ -801,7 +801,7 @@ databaseChangeLog:
         - addForeignKeyConstraint:
             baseTableName: Loan
             baseColumnNames: userId
-            referencedTableName: MfUser
+            referencedTableName: MFUser
             referencedColumnNames: userId
             constraintName: loanUserIdFk
             onDelete: CASCADE
@@ -884,7 +884,7 @@ databaseChangeLog:
         - addForeignKeyConstraint:
             baseTableName: BudgetView
             baseColumnNames: userId
-            referencedTableName: MfUser
+            referencedTableName: MFUser
             referencedColumnNames: userId
             constraintName: budgetViewUserIdFk
             onDelete: CASCADE
@@ -955,7 +955,7 @@ databaseChangeLog:
         - addForeignKeyConstraint:
             baseTableName: UserExtraInfo
             baseColumnNames: userId
-            referencedTableName: MfUser
+            referencedTableName: MFUser
             referencedColumnNames: userId
             constraintName: fk_UserExtraInfo_userId
             onDelete: CASCADE
