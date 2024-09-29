@@ -19,7 +19,7 @@ export const bankAccountApi = createApi({
   baseQuery: authBaseQuery,
   tagTypes: ["BankAccount"],
   endpoints: (builder) => ({
-    addBankAccount: builder.mutation<any, BankAccount>({
+    addBankAccount: builder.mutation<any, BankAccountRequestBody>({
       query: (data) => ({
         url: bankAccountUrl,
         method: "POST",
@@ -36,7 +36,7 @@ export const bankAccountApi = createApi({
       }),
       invalidatesTags: ["BankAccount"],
     }),
-    editBankAccount: builder.mutation<any, BankAccount>({
+    editBankAccount: builder.mutation<any, BankAccountRequestBody>({
       query: (data) => ({
         url: `${bankAccountUrl}/${data.id}`,
         method: "PATCH",
