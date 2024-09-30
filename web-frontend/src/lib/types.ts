@@ -52,3 +52,13 @@ export type BankAccount = {
   last4Digit: string;
   debitCardLast4Digit: string;
 };
+
+export type Income = {
+  id?: number;
+  incomeType: string;
+  cashFlowDetails: CashFlowDetails;
+  amount: number;
+  dateOfEvent: string;
+  timeOfEvent: string;
+  message: string;
+};
