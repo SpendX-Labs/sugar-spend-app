@@ -6,6 +6,7 @@ import { creditCardApi } from "./credit-card/credit-card-api";
 import { expenseApi } from "./expense/expense-api";
 import { sidebarSlice } from "./sidebar/sidebar-slice";
 import { bankAccountApi } from "./bank-account/bank-account-api";
+import { incomeApi } from "./income/income-api";
 
 const rootReducer = combineReducers({
   auth: authSlice.reducer,
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   [bankAccountApi.reducerPath]: bankAccountApi.reducer,
   [creditCardApi.reducerPath]: creditCardApi.reducer,
   [expenseApi.reducerPath]: expenseApi.reducer,
+  [incomeApi.reducerPath]: incomeApi.reducer,
 });
 export type RootState = ReturnType<AppStore["getState"]>;
 
@@ -25,7 +27,8 @@ export const makeStore = () => {
         authApi.middleware,
         bankAccountApi.middleware,
         creditCardApi.middleware,
-        expenseApi.middleware
+        expenseApi.middleware,
+        incomeApi.middleware
       );
     },
   });
