@@ -1,6 +1,7 @@
 import LoginForm from "@/components/forms/login-form";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export default function LoginPge() {
   return (
@@ -9,7 +10,9 @@ export default function LoginPge() {
         <h1 className="text-2xl font-semibold tracking-tight">Welcome!</h1>
         <p className="text-sm text-muted-foreground">Login to your account</p>
       </div>
-      <LoginForm />
+      <Suspense fallback={<div>Loading...</div>}>
+        <LoginForm />
+      </Suspense>
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t" />

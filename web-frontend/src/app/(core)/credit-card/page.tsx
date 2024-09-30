@@ -62,9 +62,7 @@ export default function page() {
 
         <CreditCardTable
           searchKey="creditCardName"
-          pageNo={page}
           columns={columns}
-          totalCount={totalCreditCards}
           data={creditCards}
           pageCount={pageCount}
         />

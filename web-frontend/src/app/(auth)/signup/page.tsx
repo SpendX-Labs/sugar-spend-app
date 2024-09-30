@@ -1,6 +1,7 @@
 import SignupForm from "@/components/forms/signup-form";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export default function SignupPage() {
   return (
@@ -10,7 +11,9 @@ export default function SignupPage() {
           Create account!
         </h1>
       </div>
-      <SignupForm />
+      <Suspense fallback={<div>Loading...</div>}>
+        <SignupForm />
+      </Suspense>
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t" />
