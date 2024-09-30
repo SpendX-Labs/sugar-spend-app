@@ -12,7 +12,7 @@ type CreditCardRequestBody = {
   last4Digit: string;
 };
 
-type CreditCardsResponse = {
+export type CreditCardsResponse = {
   total: number;
   offset: number;
   limit: number;
