@@ -22,7 +22,7 @@ databaseChangeLog:
                 DECLARE tempDueDate DATE;
                 
                 DECLARE creditCardCursor CURSOR FOR 
-                  SELECT creditCardId FROM creditCard WHERE userId = mfUserId;
+                  SELECT creditCardId FROM CreditCard WHERE userId = mfUserId;
 
                 DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
@@ -35,7 +35,7 @@ databaseChangeLog:
                   END IF;
 
                   SELECT statementDate, dueDate INTO stDay, dDay 
-                  FROM creditCard WHERE creditCardId = cardId;
+                  FROM CreditCard WHERE creditCardId = cardId;
 
                   SET tempDueDate = CONCAT(DATE_FORMAT(updateDateParam, '%Y-%m'), '-', LPAD(dDay, 2, '0'));
                   IF stDay > dDay THEN
@@ -61,18 +61,18 @@ databaseChangeLog:
                     SET sumAmount = 0;
                   END IF;
 
-                  IF EXISTS (SELECT 1 FROM budgetView WHERE creditCardId = cardId AND budgetMonth = monthOfBudget AND budgetYear = yearOfBudget) THEN
+                  IF EXISTS (SELECT 1 FROM BudgetView WHERE creditCardId = cardId AND budgetMonth = monthOfBudget AND budgetYear = yearOfBudget) THEN
                     SELECT actualAmount, remainingAmount INTO actAmount, remAmount 
-                    FROM budgetView 
+                    FROM BudgetView 
                     WHERE creditCardId = cardId AND budgetMonth = monthOfBudget AND budgetYear = yearOfBudget;
 
                     SET remAmount = sumAmount - actAmount + remAmount;
 
-                    UPDATE budgetView
+                    UPDATE BudgetView
                     SET actualAmount = sumAmount, remainingAmount = remAmount, updateDate = updateDateParam
                     WHERE creditCardId = cardId AND budgetMonth = monthOfBudget AND budgetYear = yearOfBudget;
                   ELSE
-                    INSERT INTO budgetView (userId, creditCardId, budgetMonth, budgetYear, actualAmount, remainingAmount, updateDate, dueDate)
+                    INSERT INTO BudgetView (userId, creditCardId, budgetMonth, budgetYear, actualAmount, remainingAmount, updateDate, dueDate)
                     VALUES (
                         mfUserId,
                         cardId,

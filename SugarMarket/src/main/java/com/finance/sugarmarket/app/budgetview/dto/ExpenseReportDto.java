@@ -4,10 +4,11 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class ExpenseReportDto {
-	private BigDecimal totalAmount;
+	private BigDecimal totalExpense;
 	private BigDecimal autoDebitAmount;
 	private BigDecimal manualSpendAmount;
 	private BigDecimal cardSpendAmount;
+	private BigDecimal totalImcome;
 	private BigDecimal availableAmount;
 	private AutoDebitDto remainingAutoDebit;
 	private List<TimeBasedSummary> timeBasedSummary;
@@ -16,25 +17,26 @@ public class ExpenseReportDto {
 		super();
 	}
 
-	public ExpenseReportDto(BigDecimal totalAmount, BigDecimal autoDebitAmount, BigDecimal manualSpendAmount,
-			BigDecimal cardSpendAmount, BigDecimal availableAmount, AutoDebitDto remainingAutoDebit,
-			List<TimeBasedSummary> timeBasedSummary) {
+	public ExpenseReportDto(BigDecimal totalExpense, BigDecimal autoDebitAmount, BigDecimal manualSpendAmount,
+			BigDecimal cardSpendAmount, BigDecimal totalImcome, BigDecimal availableAmount,
+			AutoDebitDto remainingAutoDebit, List<TimeBasedSummary> timeBasedSummary) {
 		super();
-		this.totalAmount = totalAmount;
+		this.totalExpense = totalExpense;
 		this.autoDebitAmount = autoDebitAmount;
 		this.manualSpendAmount = manualSpendAmount;
 		this.cardSpendAmount = cardSpendAmount;
+		this.totalImcome = totalImcome;
 		this.availableAmount = availableAmount;
 		this.remainingAutoDebit = remainingAutoDebit;
 		this.timeBasedSummary = timeBasedSummary;
 	}
 
-	public BigDecimal getTotalAmount() {
-		return totalAmount;
+	public BigDecimal getTotalExpense() {
+		return totalExpense;
 	}
 
-	public void setTotalAmount(BigDecimal totalAmount) {
-		this.totalAmount = totalAmount;
+	public void setTotalExpense(BigDecimal totalExpense) {
+		this.totalExpense = totalExpense;
 	}
 
 	public BigDecimal getAutoDebitAmount() {
@@ -59,6 +61,14 @@ public class ExpenseReportDto {
 
 	public void setCardSpendAmount(BigDecimal cardSpendAmount) {
 		this.cardSpendAmount = cardSpendAmount;
+	}
+
+	public BigDecimal getTotalImcome() {
+		return totalImcome;
+	}
+
+	public void setTotalImcome(BigDecimal totalImcome) {
+		this.totalImcome = totalImcome;
 	}
 
 	public BigDecimal getAvailableAmount() {

@@ -1,6 +1,7 @@
 package com.finance.sugarmarket.app.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import com.finance.sugarmarket.app.model.BankAccount;
 import com.finance.sugarmarket.app.model.CreditCard;
 import com.finance.sugarmarket.app.model.Expense;
 import com.finance.sugarmarket.app.repo.BankAccountRepo;
+import com.finance.sugarmarket.app.repo.BudgetViewRepo;
 import com.finance.sugarmarket.app.repo.CreditCardRepo;
 import com.finance.sugarmarket.app.repo.ExpenseRepo;
 import com.finance.sugarmarket.auth.repo.MFUserRepo;
@@ -41,6 +43,8 @@ public class ExpenseService extends SpecificationService<Expense> {
 	private MFUserRepo userRepo;
 	@Autowired
 	private ModelMapper modelMapper;
+	@Autowired
+	private BudgetViewRepo budgetViewRepo;
 
 	private static final Map<String, String> filterMap = new HashMap<String, String>();
 
@@ -107,6 +111,9 @@ public class ExpenseService extends SpecificationService<Expense> {
 		}
 		expense.setUser(userRepo.findById(userId).get());
 		expenseRepo.save(expense);
+		if (expense.getExpenseType().equals(CashFlowType.CREDITCARD)) {
+			budgetViewRepo.updateBudgetView(new Date(), userId);
+		}
 	}
 
 	public String deleteExpense(Long id, Long userId) throws Exception {
