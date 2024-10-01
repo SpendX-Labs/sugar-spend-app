@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { TrendingUp } from "lucide-react";
 import { Label, Pie, PieChart } from "recharts";
 
 import {
@@ -19,8 +18,8 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { CURRENCY_RUPEE_SYMBOL } from "@/lib/constants";
+import { useGetExpenseReportQuery } from "@/store/budget/budget-api";
 
-// Updated data for upcoming deductions grouped by cards, loans, and others
 const chartData = [
   { category: "cards", amount: 500, fill: "var(--color-cards)" },
   { category: "loans", amount: 1200, fill: "var(--color-loans)" },
@@ -46,9 +45,17 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function UpcomingDeductionChart() {
-  const totalAmount = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.amount, 0);
-  }, []);
+  const {
+    data: expenseReport,
+    error,
+    isLoading,
+  } = useGetExpenseReportQuery({
+    year: 2024,
+    month: "",
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error Occured</div>;
 
   return (
     <Card className="flex flex-col">
@@ -89,7 +96,7 @@ export function UpcomingDeductionChart() {
                           className="fill-foreground text-3xl font-bold"
                         >
                           {CURRENCY_RUPEE_SYMBOL}
-                          {totalAmount.toLocaleString()}
+                          {expenseReport?.remainingAutoDebit.totalAmount.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}

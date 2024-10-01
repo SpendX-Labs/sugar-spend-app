@@ -1,72 +1,107 @@
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CURRENCY_RUPEE_SYMBOL } from "@/lib/constants";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
+import { useGetExpensesQuery } from "@/store/expense/expense-api";
+import { format } from "date-fns";
+import { useGetIncomesQuery } from "@/store/income/income-api";
 
 export function RecentTransactions() {
+  const {
+    data: expenseRes,
+    error: expenseError,
+    isLoading: isExpenseLoading,
+  } = useGetExpensesQuery({
+    page: 0,
+    size: 10,
+  });
+  const {
+    data: incomeRes,
+    error: incomeError,
+    isLoading: isIncomeLoading,
+  } = useGetIncomesQuery({
+    page: 0,
+    size: 10,
+  });
+
+  if (isExpenseLoading || isIncomeLoading) return <div>Loading...</div>;
+  if (expenseError || incomeError) return <div>Error Occured</div>;
+
+  const expenses = expenseRes?.data || [];
+  const incomes = incomeRes?.data || [];
+
+  const totalTransactions = (expenseRes?.total || 0) + (incomeRes?.total || 0);
+  const transactions = expenses
+    .map((expense) => ({
+      amount: expense.amount,
+      cashFlowType: expense.expenseType,
+      date: expense.expenseDate,
+      time: expense.expenseTime,
+      message: expense.reason,
+      transactionType: "EXPENSE",
+    }))
+    .concat(
+      incomes.map((income) => ({
+        amount: income.amount,
+        cashFlowType: income.incomeType,
+        date: income.dateOfEvent,
+        time: income.timeOfEvent,
+        message: income.message,
+        transactionType: "INCOME",
+      }))
+    )
+    .sort((a, b) => {
+      if (a.date == b.date ? a.time < b.time : a.date < b.date) return 1;
+      return -1;
+    });
+
   return (
-    <div className="space-y-8">
-      <div className="flex items-center">
-        <Avatar className="h-9 w-9">
-          <AvatarImage src="/avatars/01.png" alt="Avatar" />
-          <AvatarFallback>OM</AvatarFallback>
-        </Avatar>
-        <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">Olivia Martin</p>
-          <p className="text-sm text-muted-foreground">
-            olivia.martin@email.com
-          </p>
-        </div>
-        <div className="ml-auto font-medium">
-          -{CURRENCY_RUPEE_SYMBOL}1,999.00
-        </div>
-      </div>
-      <div className="flex items-center">
-        <Avatar className="flex h-9 w-9 items-center justify-center space-y-0 border">
-          <AvatarImage src="/avatars/02.png" alt="Avatar" />
-          <AvatarFallback>JL</AvatarFallback>
-        </Avatar>
-        <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">Jackson Lee</p>
-          <p className="text-sm text-muted-foreground">jackson.lee@email.com</p>
-        </div>
-        <div className="ml-auto font-medium">-{CURRENCY_RUPEE_SYMBOL}39.00</div>
-      </div>
-      <div className="flex items-center">
-        <Avatar className="h-9 w-9">
-          <AvatarImage src="/avatars/03.png" alt="Avatar" />
-          <AvatarFallback>IN</AvatarFallback>
-        </Avatar>
-        <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">Isabella Nguyen</p>
-          <p className="text-sm text-muted-foreground">
-            isabella.nguyen@email.com
-          </p>
-        </div>
-        <div className="ml-auto font-medium">
-          -{CURRENCY_RUPEE_SYMBOL}299.00
-        </div>
-      </div>
-      <div className="flex items-center">
-        <Avatar className="h-9 w-9">
-          <AvatarImage src="/avatars/04.png" alt="Avatar" />
-          <AvatarFallback>WK</AvatarFallback>
-        </Avatar>
-        <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">William Kim</p>
-          <p className="text-sm text-muted-foreground">will@email.com</p>
-        </div>
-        <div className="ml-auto font-medium">-{CURRENCY_RUPEE_SYMBOL}99.00</div>
-      </div>
-      <div className="flex items-center">
-        <Avatar className="h-9 w-9">
-          <AvatarImage src="/avatars/05.png" alt="Avatar" />
-          <AvatarFallback>SD</AvatarFallback>
-        </Avatar>
-        <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">Sofia Davis</p>
-          <p className="text-sm text-muted-foreground">sofia.davis@email.com</p>
-        </div>
-        <div className="ml-auto font-medium">-{CURRENCY_RUPEE_SYMBOL}39.00</div>
-      </div>
-    </div>
+    <Card className="h-full">
+      <CardHeader>
+        <CardTitle>Recent Transactions(Expense)</CardTitle>
+        <CardDescription>
+          You made {totalTransactions} transactions(expenses) this month.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-8">
+        {transactions.map((transaction, index) => (
+          <div className="flex items-center" key={"transaction-" + index}>
+            <Avatar className="h-9 w-9">
+              {/* Todo: Add Cash flow pngs */}
+              <AvatarImage src="/avatars/01.png" alt="Avatar" />
+              <AvatarFallback>
+                {transaction.cashFlowType.slice(0, 3)}
+              </AvatarFallback>
+            </Avatar>
+            <div className="ml-4 space-y-1">
+              <p className="text-sm font-medium leading-none">
+                {transaction.message}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {format(new Date(transaction.date), "dd-MM-yyyy")}
+              </p>
+            </div>
+            <div
+              className={`ml-auto font-medium ${
+                transaction.transactionType === "INCOME"
+                  ? "text-green-400"
+                  : "text-red-400"
+              }`}
+            >
+              {transaction.transactionType === "INCOME" ? "+" : "-"}
+              {CURRENCY_RUPEE_SYMBOL}
+              {transaction.amount}
+            </div>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
   );
 }

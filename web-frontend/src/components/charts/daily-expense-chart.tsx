@@ -17,7 +17,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { CURRENCY_RUPEE_SYMBOL } from "@/lib/constants";
-import { currentMonthExpense } from "@/lib/data";
+import { useGetExpenseReportQuery } from "@/store/budget/budget-api";
 
 export const description = "An interactive bar chart";
 
@@ -44,24 +44,25 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function DailyExpenseChart() {
-  const chartData = currentMonthExpense.map((data) => ({
-    ...data,
-    total: data.auto + data.direct,
-  }));
+  const {
+    data: expenseRes,
+    error,
+    isLoading,
+  } = useGetExpenseReportQuery({
+    year: 2024,
+    month: "",
+  });
 
   const [activeChart, setActiveChart] =
     React.useState<keyof typeof chartConfig>(TOTAL);
 
-  console.log(chartData);
-  console.log(activeChart);
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error Occured</div>;
 
-  const total = React.useMemo(
-    () => ({
-      [AUTO]: chartData.reduce((acc, curr) => acc + curr.auto, 0),
-      [DIRECT]: chartData.reduce((acc, curr) => acc + curr.direct, 0),
-    }),
-    []
-  );
+  const total = {
+    [AUTO]: expenseRes?.autoDebitAmount || 0,
+    [DIRECT]: expenseRes?.cardSpendAmount || 0,
+  };
 
   return (
     <Card>
@@ -103,7 +104,7 @@ export function DailyExpenseChart() {
         >
           <BarChart
             accessibilityLayer
-            data={chartData}
+            data={expenseRes?.timeBasedSummary}
             margin={{
               left: 12,
               right: 12,
