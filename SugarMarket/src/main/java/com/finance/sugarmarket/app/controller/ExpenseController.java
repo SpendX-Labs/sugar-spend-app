@@ -28,7 +28,7 @@ import com.finance.sugarmarket.base.controller.BaseController;
 import com.finance.sugarmarket.base.dto.Filter;
 import com.finance.sugarmarket.base.dto.ListViewDto;
 import com.finance.sugarmarket.constants.AppConstants;
-import com.finance.sugarmarket.constants.FilterFieldConstant;
+import com.finance.sugarmarket.constants.FieldConstant;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -85,8 +85,8 @@ public class ExpenseController extends BaseController {
 	public Map<String, Sort.Direction> getDefaultSortColumns(HttpServletRequest request) {
 		Map<String, Sort.Direction> map = new HashMap<>();
 		map.putAll(super.getDefaultSortColumns(request));
-		map.put(FilterFieldConstant.EXPENSE_DATE, Sort.Direction.DESC);
-		map.put(FilterFieldConstant.EXPENSE_TIME, Sort.Direction.DESC);
+		map.put(FieldConstant.EXPENSE_DATE, Sort.Direction.DESC);
+		map.put(FieldConstant.EXPENSE_TIME, Sort.Direction.DESC);
 		return map;
 	}
 }

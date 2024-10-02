@@ -24,7 +24,9 @@ import com.finance.sugarmarket.app.service.BankAccountService;
 import com.finance.sugarmarket.base.controller.BaseController;
 import com.finance.sugarmarket.base.dto.Filter;
 import com.finance.sugarmarket.base.dto.ListViewDto;
+import com.finance.sugarmarket.base.enums.FilterOperation;
 import com.finance.sugarmarket.constants.AppConstants;
+import com.finance.sugarmarket.constants.FieldConstant;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -73,6 +75,12 @@ public class BankAccountController extends BaseController {
 			log.error("error while saving credit card: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
+	}
+
+	public void setSearchFilters(List<Filter> list, String searchBy) {
+		list.add(new Filter(FieldConstant.BANK_NAME, FilterOperation.LIKE, searchBy));
+		list.add(new Filter(FieldConstant.LAST_4_DIGIT, FilterOperation.LIKE, searchBy));
+		list.add(new Filter(FieldConstant.DEBIT_CARD_LAST_4_DIGIT, FilterOperation.LIKE, searchBy));
 	}
 
 }

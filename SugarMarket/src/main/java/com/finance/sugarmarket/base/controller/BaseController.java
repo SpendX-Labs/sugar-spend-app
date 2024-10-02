@@ -21,7 +21,8 @@ import com.finance.sugarmarket.auth.service.JwtCacheService;
 import com.finance.sugarmarket.auth.service.JwtService;
 import com.finance.sugarmarket.base.dto.Filter;
 import com.finance.sugarmarket.base.enums.FilterOperation;
-import com.finance.sugarmarket.constants.FilterFieldConstant;
+import com.finance.sugarmarket.constants.FieldConstant;
+import com.finance.sugarmarket.constants.QueryParamConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -75,7 +76,7 @@ abstract public class BaseController {
 		int offset = 0;
 		int limit = 10;
 
-		String offSetParam = request.getParameter(FilterFieldConstant.OFFSET);
+		String offSetParam = request.getParameter(QueryParamConstants.OFFSET);
 		if (StringUtils.isNotEmpty(offSetParam)) {
 			try {
 				offset = Integer.parseInt(offSetParam);
@@ -84,7 +85,7 @@ abstract public class BaseController {
 			}
 		}
 
-		String limitParam = request.getParameter(FilterFieldConstant.LIMIT);
+		String limitParam = request.getParameter(QueryParamConstants.LIMIT);
 		if (StringUtils.isNotEmpty(limitParam)) {
 			try {
 				limit = Integer.parseInt(limitParam);
@@ -110,9 +111,28 @@ abstract public class BaseController {
 		}
 
 		// Filters
-		List<Filter> filters = new ArrayList<>();
-		String filtersParam = request.getParameter(FilterFieldConstant.FILTERS);
+		List<Filter> filters = getFilterParams(request);
 
+		return Pair.of(pageRequest, filters);
+	}
+
+	public Map<String, Sort.Direction> getDefaultSortColumns(HttpServletRequest request) {
+		String orderByColumn = request.getParameter(QueryParamConstants.SORT_COLUMN);
+		Map<String, Sort.Direction> map = new HashMap<>();
+		if (StringUtils.isEmpty(orderByColumn))
+			return map;
+		String orderby = request.getParameter(QueryParamConstants.ORDER_BY);
+		Sort.Direction direction = (orderby != null && orderby.equalsIgnoreCase(QueryParamConstants.DESC))
+				? Sort.Direction.DESC
+				: Sort.Direction.ASC;
+		map.put(orderByColumn, direction);
+		return map;
+	}
+
+	public List<Filter> getFilterParams(HttpServletRequest request) {
+		List<Filter> filters = new ArrayList<>();
+		filters.add(new Filter(FieldConstant.USER_ID, FilterOperation.EQUAL, getUserId().toString()));
+		String filtersParam = request.getParameter(QueryParamConstants.FILTERS);
 		if (StringUtils.isNotEmpty(filtersParam)) {
 			try {
 				filters = objectMapper.readValue(filtersParam, new TypeReference<List<Filter>>() {
@@ -122,21 +142,16 @@ abstract public class BaseController {
 			}
 		}
 
-		filters.add(new Filter(FilterFieldConstant.USER_ID, FilterOperation.EQUAL, getUserId().toString()));
+		// Search
+		String searchBy = request.getParameter(QueryParamConstants.SEARCH_BY);
+		if (StringUtils.isNotEmpty(searchBy)) {
+			setSearchFilters(filters, searchBy);
+		}
 
-		return Pair.of(pageRequest, filters);
+		return filters;
 	}
 
-	public Map<String, Sort.Direction> getDefaultSortColumns(HttpServletRequest request) {
-		String orderByColumn = request.getParameter(FilterFieldConstant.SORT_COLUMN);
-		Map<String, Sort.Direction> map = new HashMap<>();
-		if (StringUtils.isEmpty(orderByColumn))
-			return map;
-		String orderby = request.getParameter(FilterFieldConstant.ORDER_BY);
-		Sort.Direction direction = (orderby != null && orderby.equalsIgnoreCase(FilterFieldConstant.DESC))
-				? Sort.Direction.DESC
-				: Sort.Direction.ASC;
-		map.put(orderByColumn, direction);
-		return map;
+	public void setSearchFilters(List<Filter> list, String searchBy) {
 	}
+
 }

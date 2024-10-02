@@ -10,7 +10,10 @@ import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,10 +43,10 @@ public class LoanController extends BaseController {
 		return loanService.findAllLoans(pair.getFirst(), pair.getSecond());
 	}
 
-	@PostMapping("/save-loan-detail")
+	@PostMapping
 	public ResponseEntity<String> saveCreditCard(@RequestBody LoanDto loanDto) {
 		try {
-			loanService.saveOrUpdateLoanDetails(loanDto, getUserName());
+			loanService.saveLoan(loanDto, getUserId());
 		} catch (Exception e) {
 			log.error("error while saving credit card: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(AppConstants.FAILED);
@@ -51,13 +54,35 @@ public class LoanController extends BaseController {
 		return ResponseEntity.ok(AppConstants.SUCCESS);
 	}
 
-	@PostMapping("/modify-loan")
-	public ResponseEntity<String> modifyLoan(@RequestBody ModifyLoanDto modifyLoanDto) {
+	@PatchMapping("{id}")
+	public ResponseEntity<String> updateExpense(@PathVariable("id") Long id, @RequestBody LoanDto loanDto) {
+		try {
+			loanService.updateLoan(loanDto, id, getUserId());
+		} catch (Exception e) {
+			log.error("error while saving credit card: ", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(AppConstants.FAILED);
+		}
+		return ResponseEntity.ok(AppConstants.SUCCESS);
+	}
+
+	@PatchMapping("/modify/{id}")
+	public ResponseEntity<String> modifyLoan(@PathVariable("id") Long id, @RequestBody ModifyLoanDto modifyLoanDto) {
 		try {
 			loanService.modifyLoanDetails(modifyLoanDto);
 		} catch (Exception e) {
 			log.error("error while saving credit card: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(AppConstants.FAILED);
+		}
+		return ResponseEntity.ok(AppConstants.SUCCESS);
+	}
+
+	@DeleteMapping("{id}")
+	public ResponseEntity<String> deleteById(@PathVariable("id") Long id) {
+		try {
+			loanService.deleteLoan(id, getUserId());
+		} catch (Exception e) {
+			log.error("error while deleting expense: ", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
 		return ResponseEntity.ok(AppConstants.SUCCESS);
 	}

@@ -28,7 +28,7 @@ import com.finance.sugarmarket.base.dto.Filter;
 import com.finance.sugarmarket.base.dto.ListViewDto;
 import com.finance.sugarmarket.base.service.SpecificationService;
 import com.finance.sugarmarket.constants.AppConstants;
-import com.finance.sugarmarket.constants.FilterFieldConstant;
+import com.finance.sugarmarket.constants.FieldConstant;
 
 @Service
 public class ExpenseService extends SpecificationService<Expense> {
@@ -49,8 +49,8 @@ public class ExpenseService extends SpecificationService<Expense> {
 	private static final Map<String, String> filterMap = new HashMap<String, String>();
 
 	static {
-		filterMap.put(FilterFieldConstant.USER_ID, "user.id");
-		filterMap.put(FilterFieldConstant.CREDIT_CARD_ID, "creditCard.id");
+		filterMap.put(FieldConstant.USER_ID, "user.id");
+		filterMap.put(FieldConstant.CREDIT_CARD_ID, "creditCard.id");
 	}
 
 	public ListViewDto<ExpenseDto> findAllExpense(PageRequest pageRequest, List<Filter> filters) {
@@ -77,6 +77,7 @@ public class ExpenseService extends SpecificationService<Expense> {
 
 	public void saveExpense(ExpenseDto expenseDto, Long userId) throws Exception {
 		Expense expense = modelMapper.map(expenseDto, Expense.class);
+		expense.setUser(userRepo.findById(userId).get());
 		persistExpense(expenseDto, expense, userId);
 	}
 
@@ -109,7 +110,6 @@ public class ExpenseService extends SpecificationService<Expense> {
 				expense.setBankAccount(bankAccount);
 			}
 		}
-		expense.setUser(userRepo.findById(userId).get());
 		expenseRepo.save(expense);
 		if (expense.getExpenseType().equals(CashFlowType.CREDITCARD)) {
 			budgetViewRepo.updateBudgetView(new Date(), userId);
@@ -120,7 +120,7 @@ public class ExpenseService extends SpecificationService<Expense> {
 		Specification<Expense> specificationFilters = getAuditSpecificationFilters(filterMap, id, userId);
 		List<Expense> expenseList = expenseRepo.findAll(specificationFilters);
 		if (expenseList.isEmpty()) {
-			throw new Exception("You are not authorised to modify");
+			throw new Exception("You are not authorised to delete");
 		}
 		Expense existingExpense = expenseList.get(0);
 		expenseRepo.deleteById(existingExpense.getId());

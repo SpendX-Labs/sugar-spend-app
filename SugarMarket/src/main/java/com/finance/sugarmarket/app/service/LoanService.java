@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.finance.sugarmarket.app.dto.LoanDto;
 import com.finance.sugarmarket.app.dto.ModifyLoanDto;
 import com.finance.sugarmarket.app.enums.LoanType;
+import com.finance.sugarmarket.app.model.CreditCard;
 import com.finance.sugarmarket.app.model.Loan;
 import com.finance.sugarmarket.app.repo.CreditCardRepo;
 import com.finance.sugarmarket.app.repo.LoanRepo;
@@ -24,7 +25,8 @@ import com.finance.sugarmarket.auth.repo.MFUserRepo;
 import com.finance.sugarmarket.base.dto.Filter;
 import com.finance.sugarmarket.base.dto.ListViewDto;
 import com.finance.sugarmarket.base.service.SpecificationService;
-import com.finance.sugarmarket.constants.FilterFieldConstant;
+import com.finance.sugarmarket.constants.AppConstants;
+import com.finance.sugarmarket.constants.FieldConstant;
 
 @Service
 public class LoanService extends SpecificationService<Loan> {
@@ -42,7 +44,7 @@ public class LoanService extends SpecificationService<Loan> {
 	private static final Map<String, String> filterMap = new HashMap<String, String>();
 
 	static {
-		filterMap.put(FilterFieldConstant.USER_ID, "user.id");
+		filterMap.put(FieldConstant.USER_ID, "user.id");
 	}
 
 	public ListViewDto<LoanDto> findAllLoans(PageRequest pageRequest, List<Filter> filters) {
@@ -63,14 +65,34 @@ public class LoanService extends SpecificationService<Loan> {
 
 	}
 
-	public void saveOrUpdateLoanDetails(LoanDto loandto, String username) throws Exception {
-		if (loandto.getId() != null && loanRepo.findById(loandto.getId()).get().isUpdateLock()) {
-			throw new Exception("Update for this emi is not possible");
-		}
+	public void saveLoan(LoanDto loandto, Long userId) throws Exception {
 		Loan loan = modelMapper.map(loandto, Loan.class);
-		loan.setUser(userRepo.findByUsername(username));
+		loan.setUser(userRepo.findById(userId).get());
+		persistLoan(loandto, loan, userId);
+	}
+
+	public void updateLoan(LoanDto loanDto, Long id, Long userId) throws Exception {
+		Specification<Loan> specificationFilters = getAuditSpecificationFilters(filterMap, id, userId);
+		List<Loan> loanList = loanRepo.findAll(specificationFilters);
+		if (loanList.isEmpty()) {
+			throw new Exception("You are not authorised to modify");
+		}
+		Loan existingLoan = loanList.get(0);
+		if (existingLoan.isUpdateLock()) {
+			throw new Exception("Update is not possible for this Loan Details");
+		}
+		modelMapper.map(loanDto, existingLoan);
+		existingLoan.setId(id);
+		persistLoan(loanDto, existingLoan, userId);
+	}
+
+	public void persistLoan(LoanDto loandto, Loan loan, Long userId) throws Exception {
 		if (loandto.getCreditCardId() != null && loandto.getCreditCardId() > 0) {
-			loan.setCreditCard(creditCardRepo.findById(loandto.getCreditCardId()).get());
+			CreditCard creditCard = creditCardRepo.findById(loandto.getCreditCardId()).get();
+			if (creditCard.getUser().getId() != userId) {
+				throw new Exception("user is different from the credit card.");
+			}
+			loan.setCreditCard(creditCard);
 		} else {
 			loan.setCreditCard(null);
 		}
@@ -226,6 +248,17 @@ public class LoanService extends SpecificationService<Loan> {
 	private BigDecimal calculateRemainingInterestFlat(BigDecimal totalInterest, int totalTenure, int paidMonths) {
 		BigDecimal remainingTenure = BigDecimal.valueOf(totalTenure - paidMonths);
 		return totalInterest.multiply(remainingTenure).divide(BigDecimal.valueOf(totalTenure), 2, RoundingMode.HALF_UP);
+	}
+
+	public String deleteLoan(Long id, Long userId) throws Exception {
+		Specification<Loan> specificationFilters = getAuditSpecificationFilters(filterMap, id, userId);
+		List<Loan> loanList = loanRepo.findAll(specificationFilters);
+		if (loanList.isEmpty()) {
+			throw new Exception("You are not authorised to delete");
+		}
+		Loan loan = loanList.get(0);
+		loanRepo.deleteById(loan.getId());
+		return AppConstants.SUCCESS;
 	}
 
 }
