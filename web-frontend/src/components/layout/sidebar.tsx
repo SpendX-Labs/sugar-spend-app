@@ -6,10 +6,7 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { navItems } from "@/lib/constants";
 import { useAppDispatch, useAppSelector } from "@/hooks/use-app";
-import {
-  selectIsMinimized,
-  toggleSidebar,
-} from "@/store/sidebar/sidebar-slice";
+import { selectIsMinimized, toggleSidebar } from "@/store/slices/sidebar-slice";
 
 type SidebarProps = {
   className?: string;

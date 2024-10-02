@@ -11,7 +11,7 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { CreditCard } from "@/lib/types";
 import { createQueryString } from "@/lib/utils";
-import { useDeleteCreditCardMutation } from "@/store/credit-card/credit-card-api";
+import { useDeleteCreditCardMutation } from "@/store/apis/credit-card-api";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

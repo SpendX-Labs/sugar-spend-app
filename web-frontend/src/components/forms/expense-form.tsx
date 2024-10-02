@@ -14,12 +14,12 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CashFlowDetails, CashFlowType, CreditCard } from "@/lib/types";
-import { useGetCreditCardsQuery } from "@/store/credit-card/credit-card-api";
+import { useGetCreditCardsQuery } from "@/store/apis/credit-card-api";
 import {
   useAddExpenseMutation,
   useDeleteExpenseMutation,
   useEditExpenseMutation,
-} from "@/store/expense/expense-api";
+} from "@/store/apis/expense-api";
 import { Trash } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";

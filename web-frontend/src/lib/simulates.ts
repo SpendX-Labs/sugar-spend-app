@@ -1,4 +1,4 @@
-import { CreditCardsResponse } from "@/store/credit-card/credit-card-api";
+import { CreditCardsResponse } from "@/store/apis/credit-card-api";
 import { CreditCard } from "./types";
 
 export function simulateApi(simulatedData: CreditCardsResponse) {
@@ -16,6 +16,7 @@ const creditCards: CreditCard[] = [
     creditCardName: "PlatinumCard",
     statementDate: 10,
     dueDate: 30,
+    last4Digit: 1234,
   },
   {
     id: 2,
@@ -23,6 +24,7 @@ const creditCards: CreditCard[] = [
     creditCardName: "GoldCard",
     statementDate: 15,
     dueDate: 5,
+    last4Digit: 1234,
   },
   {
     id: 3,
@@ -30,6 +32,7 @@ const creditCards: CreditCard[] = [
     creditCardName: "SilverCard",
     statementDate: 20,
     dueDate: 10,
+    last4Digit: 1234,
   },
   {
     id: 4,
@@ -37,6 +40,7 @@ const creditCards: CreditCard[] = [
     creditCardName: "RewardsCard",
     statementDate: 5,
     dueDate: 25,
+    last4Digit: 1234,
   },
   {
     id: 5,
@@ -44,6 +48,7 @@ const creditCards: CreditCard[] = [
     creditCardName: "BusinessCard",
     statementDate: 18,
     dueDate: 8,
+    last4Digit: 1234,
   },
   {
     id: 6,
@@ -51,6 +56,7 @@ const creditCards: CreditCard[] = [
     creditCardName: "CashbackCard",
     statementDate: 12,
     dueDate: 2,
+    last4Digit: 1234,
   },
   {
     id: 7,
@@ -58,6 +64,7 @@ const creditCards: CreditCard[] = [
     creditCardName: "TravelCard",
     statementDate: 25,
     dueDate: 15,
+    last4Digit: 1234,
   },
   {
     id: 8,
@@ -65,6 +72,7 @@ const creditCards: CreditCard[] = [
     creditCardName: "PremiumCard",
     statementDate: 16,
     dueDate: 6,
+    last4Digit: 1234,
   },
   {
     id: 9,
@@ -72,6 +80,7 @@ const creditCards: CreditCard[] = [
     creditCardName: "BasicCard",
     statementDate: 11,
     dueDate: 1,
+    last4Digit: 1234,
   },
   {
     id: 10,
@@ -79,6 +88,7 @@ const creditCards: CreditCard[] = [
     creditCardName: "StandardCard",
     statementDate: 22,
     dueDate: 12,
+    last4Digit: 1234,
   },
   {
     id: 11,
@@ -86,6 +96,7 @@ const creditCards: CreditCard[] = [
     creditCardName: "BasicCard",
     statementDate: 11,
     dueDate: 1,
+    last4Digit: 1234,
   },
   {
     id: 12,
@@ -93,6 +104,7 @@ const creditCards: CreditCard[] = [
     creditCardName: "StandardCard",
     statementDate: 22,
     dueDate: 12,
+    last4Digit: 1234,
   },
 ];
 
