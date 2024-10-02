@@ -11,7 +11,7 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { BankAccount } from "@/lib/types";
 import { createQueryString } from "@/lib/utils";
-import { useDeleteBankAccountMutation } from "@/store/bank-account/bank-account-api";
+import { useDeleteBankAccountMutation } from "@/store/apis/bank-account-api";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

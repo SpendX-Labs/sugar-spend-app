@@ -1,7 +1,7 @@
 "use client";
 
 import { CURRENCY_RUPEE_SYMBOL } from "@/lib/constants";
-import { useGetNextMonthReportQuery } from "@/store/budget/budget-api";
+import { useGetNextMonthReportQuery } from "@/store/apis/budget-api";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 const NextMonthDeductionsCard: React.FC = () => {

@@ -18,7 +18,7 @@ import {
   useAddBankAccountMutation,
   useDeleteBankAccountMutation,
   useEditBankAccountMutation,
-} from "@/store/bank-account/bank-account-api";
+} from "@/store/apis/bank-account-api";
 import { Trash } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";

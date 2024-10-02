@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useGetAuthDataQuery } from "@/store/auth/auth-api";
+import { useGetAuthDataQuery } from "@/store/apis/auth-api";
 import { getValidAuthTokens } from "@/lib/cookies";
 
 export function useRedirectAuth() {

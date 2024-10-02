@@ -1,13 +1,17 @@
 "use client";
 
+import { useAppSelector } from "@/hooks/use-app";
 import { CURRENCY_RUPEE_SYMBOL } from "@/lib/constants";
-import { useGetExpenseReportQuery } from "@/store/budget/budget-api";
+import { useGetExpenseReportQuery } from "@/store/apis/budget-api";
+import { selectMonth, selectYear } from "@/store/slices/month-year-slice";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 const MutualFundsCard: React.FC = () => {
+  const month = useAppSelector(selectMonth);
+  const year = useAppSelector(selectYear);
   const { data, error, isLoading } = useGetExpenseReportQuery({
-    year: 2024,
-    month: "",
+    year,
+    month,
   });
 
   if (isLoading) return <div>Loading...</div>;

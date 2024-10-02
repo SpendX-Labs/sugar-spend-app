@@ -12,7 +12,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useLogoutMutation, useUserInfoQuery } from "@/store/auth/auth-api";
+import { useLogoutMutation, useUserInfoQuery } from "@/store/apis/auth-api";
 import { LogOut, LogOutIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 

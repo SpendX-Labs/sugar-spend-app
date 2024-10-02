@@ -9,9 +9,9 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { useGetExpensesQuery } from "@/store/expense/expense-api";
+import { useGetExpensesQuery } from "@/store/apis/expense-api";
 import { format } from "date-fns";
-import { useGetIncomesQuery } from "@/store/income/income-api";
+import { useGetIncomesQuery } from "@/store/apis/income-api";
 
 export function RecentTransactions() {
   const {

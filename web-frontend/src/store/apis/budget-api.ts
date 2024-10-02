@@ -3,7 +3,7 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { ExpenseReport, NextMonthReport } from "@/lib/types";
 import { createQueryString } from "@/lib/utils";
 
-const budgetUrl = "/app/buget";
+const budgetUrl = "/app/budget";
 
 export const budgetApi = createApi({
   reducerPath: "budgetApi",

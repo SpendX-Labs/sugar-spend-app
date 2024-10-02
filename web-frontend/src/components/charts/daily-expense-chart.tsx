@@ -1,8 +1,5 @@
 "use client";
 
-import * as React from "react";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-
 import {
   Card,
   CardContent,
@@ -16,10 +13,12 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useAppSelector } from "@/hooks/use-app";
 import { CURRENCY_RUPEE_SYMBOL } from "@/lib/constants";
-import { useGetExpenseReportQuery } from "@/store/budget/budget-api";
-
-export const description = "An interactive bar chart";
+import { useGetExpenseReportQuery } from "@/store/apis/budget-api";
+import { selectMonth, selectYear } from "@/store/slices/month-year-slice";
+import * as React from "react";
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 const AUTO = "auto";
 const DIRECT = "direct";
@@ -44,13 +43,15 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function DailyExpenseChart() {
+  const month = useAppSelector(selectMonth);
+  const year = useAppSelector(selectYear);
   const {
     data: expenseRes,
     error,
     isLoading,
   } = useGetExpenseReportQuery({
-    year: 2024,
-    month: "",
+    year,
+    month,
   });
 
   const [activeChart, setActiveChart] =

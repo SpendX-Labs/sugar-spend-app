@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { Expense } from "@/lib/types";
-import { useGetExpensesQuery } from "@/store/expense/expense-api";
+import { useGetExpensesQuery } from "@/store/apis/expense-api";
 import { Plus } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { columns } from "./columns";

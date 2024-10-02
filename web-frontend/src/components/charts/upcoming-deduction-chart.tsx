@@ -1,13 +1,9 @@
 "use client";
 
-import * as React from "react";
-import { Label, Pie, PieChart } from "recharts";
-
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -17,8 +13,12 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useAppSelector } from "@/hooks/use-app";
 import { CURRENCY_RUPEE_SYMBOL } from "@/lib/constants";
-import { useGetExpenseReportQuery } from "@/store/budget/budget-api";
+import { useGetExpenseReportQuery } from "@/store/apis/budget-api";
+import { selectMonth, selectYear } from "@/store/slices/month-year-slice";
+import * as React from "react";
+import { Label, Pie, PieChart } from "recharts";
 
 const chartData = [
   { category: "cards", amount: 500, fill: "var(--color-cards)" },
@@ -45,13 +45,15 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function UpcomingDeductionChart() {
+  const month = useAppSelector(selectMonth);
+  const year = useAppSelector(selectYear);
   const {
     data: expenseReport,
     error,
     isLoading,
   } = useGetExpenseReportQuery({
-    year: 2024,
-    month: "",
+    year,
+    month,
   });
 
   if (isLoading) return <div>Loading...</div>;

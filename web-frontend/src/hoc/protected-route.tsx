@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useGetAuthDataQuery } from "@/store/auth/auth-api";
+import { useGetAuthDataQuery } from "@/store/apis/auth-api";
 
 const ProtectedRoute: React.FC<React.PropsWithChildren<any>> = ({
   children,

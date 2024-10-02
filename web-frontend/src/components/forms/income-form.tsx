@@ -14,12 +14,12 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CashFlowDetails, CashFlowType, BankAccount } from "@/lib/types";
-import { useGetBankAccountsQuery } from "@/store/bank-account/bank-account-api";
+import { useGetBankAccountsQuery } from "@/store/apis/bank-account-api";
 import {
   useAddIncomeMutation,
   useDeleteIncomeMutation,
   useEditIncomeMutation,
-} from "@/store/income/income-api";
+} from "@/store/apis/income-api";
 import { Trash } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";

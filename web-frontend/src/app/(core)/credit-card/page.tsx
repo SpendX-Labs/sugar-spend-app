@@ -9,7 +9,7 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { CreditCard } from "@/lib/types";
-import { useGetCreditCardsQuery } from "@/store/credit-card/credit-card-api";
+import { useGetCreditCardsQuery } from "@/store/apis/credit-card-api";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";

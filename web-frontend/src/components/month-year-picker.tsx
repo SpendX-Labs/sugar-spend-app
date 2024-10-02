@@ -1,11 +1,19 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useAppDispatch, useAppSelector } from "@/hooks/use-app";
 import { cn } from "@/lib/utils";
+import {
+  selectMonth,
+  selectYear,
+  setMonth,
+  setYear,
+} from "@/store/slices/month-year-slice";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import * as React from "react";
 
@@ -27,22 +35,18 @@ const months = [
 export function MonthYearPicker({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
-  const [selectedMonth, setSelectedMonth] = React.useState<number | undefined>(
-    undefined
-  );
-  const [selectedYear, setSelectedYear] = React.useState<number | undefined>(
-    new Date().getFullYear()
-  );
+  const dispatch = useAppDispatch();
+  const selectedMonth = useAppSelector(selectMonth);
+  const selectedYear = useAppSelector(selectYear);
 
-  const handleMonthChange = (month: number | undefined) => {
-    setSelectedMonth(month);
+  const handleMonthChange = (month: string) => {
+    dispatch(setMonth(month));
   };
 
   const handleYearChange = (year: number) => {
-    setSelectedYear(year);
-    // If year is selected and month is not, set selectedMonth to undefined
+    dispatch(setYear(year));
     if (!selectedMonth) {
-      setSelectedMonth(undefined);
+      dispatch(setMonth(""));
     }
   };
 
@@ -60,10 +64,10 @@ export function MonthYearPicker({
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
             {selectedYear ? (
-              selectedMonth !== undefined ? (
-                `${months[selectedMonth]} ${selectedYear}`
+              selectedMonth ? (
+                `${selectedMonth} ${selectedYear}`
               ) : (
-                `${selectedYear}` // Display only year if month is not selected
+                `${selectedYear}`
               )
             ) : (
               <span>Select Month & Year</span>
@@ -80,7 +84,7 @@ export function MonthYearPicker({
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500"
               >
                 {[...Array(11)].map((_, index) => {
-                  const year = new Date().getFullYear() + index; // Next 10 years
+                  const year = new Date().getFullYear() + index;
                   return (
                     <option key={year} value={year}>
                       {year}
@@ -92,17 +96,13 @@ export function MonthYearPicker({
             <div>
               <label className="block text-sm font-medium">Select Month:</label>
               <select
-                value={selectedMonth !== undefined ? selectedMonth : ""}
-                onChange={(e) =>
-                  handleMonthChange(
-                    e.target.value ? Number(e.target.value) : undefined
-                  )
-                }
+                value={selectedMonth || ""}
+                onChange={(e) => handleMonthChange(e.target.value || "")}
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500"
               >
                 <option value="">Select Month</option>
                 {months.map((month, index) => (
-                  <option key={index} value={index}>
+                  <option key={index} value={month}>
                     {month}
                   </option>
                 ))}
