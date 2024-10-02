@@ -83,15 +83,16 @@ export type RemainingAutoDebit = {
 
 export type TimeBasedSummary = {
   dataKey: string;
-  manualAmount: number;
-  cardAmount: number;
+  manualAmount: number | null;
+  cardAmount: number | null;
 };
 
 export type ExpenseReport = {
-  totalAmount: number;
+  totalExpense: number;
   autoDebitAmount: number;
   manualSpendAmount: number;
   cardSpendAmount: number;
+  totalImcome: number;
   availableAmount: number;
   remainingAutoDebit: RemainingAutoDebit;
   timeBasedSummary: TimeBasedSummary[];

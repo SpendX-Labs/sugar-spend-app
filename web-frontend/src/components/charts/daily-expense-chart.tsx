@@ -14,7 +14,8 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { useAppSelector } from "@/hooks/use-app";
-import { CURRENCY_RUPEE_SYMBOL } from "@/lib/constants";
+import { CURRENCY_RUPEE_SYMBOL, monthNameToNumber } from "@/lib/constants";
+import { generateMonthlyExpenses, generateYearlyExpenses } from "@/lib/utils";
 import { useGetExpenseReportQuery } from "@/store/apis/budget-api";
 import { selectMonth, selectYear } from "@/store/slices/month-year-slice";
 import * as React from "react";
@@ -61,8 +62,8 @@ export function DailyExpenseChart() {
   if (error) return <div>Error Occured</div>;
 
   const total = {
-    [AUTO]: expenseRes?.autoDebitAmount || 0,
-    [DIRECT]: expenseRes?.cardSpendAmount || 0,
+    [AUTO]: expenseRes?.cardSpendAmount || 0,
+    [DIRECT]: expenseRes?.manualSpendAmount || 0,
   };
 
   return (
@@ -98,53 +99,94 @@ export function DailyExpenseChart() {
           })}
         </div>
       </CardHeader>
-      <CardContent className="px-2 sm:p-6">
-        <ChartContainer
-          config={chartConfig}
-          className="aspect-auto h-[280px] w-full"
-        >
-          <BarChart
-            accessibilityLayer
-            data={expenseRes?.timeBasedSummary}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
+      {monthNameToNumber[month] ? (
+        <CardContent className="px-2 sm:p-6">
+          <ChartContainer
+            config={chartConfig}
+            className="aspect-auto h-[280px] w-full"
           >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="date"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              minTickGap={32}
-              tickFormatter={(value) => {
-                const date = new Date(value);
-                return date.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                });
+            <BarChart
+              accessibilityLayer
+              data={generateMonthlyExpenses(
+                month,
+                year,
+                expenseRes?.timeBasedSummary || []
+              )}
+              margin={{
+                left: 12,
+                right: 12,
               }}
-            />
-            <ChartTooltip
-              content={
-                <ChartTooltipContent
-                  className="w-[150px]"
-                  nameKey="views"
-                  labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    });
-                  }}
-                />
-              }
-            />
-            <Bar dataKey={activeChart} fill={`var(--color-${activeChart})`} />
-          </BarChart>
-        </ChartContainer>
-      </CardContent>
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                minTickGap={32}
+                tickFormatter={(value) => {
+                  const date = new Date(value);
+                  return date.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  });
+                }}
+              />
+              <ChartTooltip
+                content={
+                  <ChartTooltipContent
+                    className="w-[150px]"
+                    nameKey="views"
+                    labelFormatter={(value) => {
+                      return new Date(value).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      });
+                    }}
+                  />
+                }
+              />
+              <Bar dataKey={activeChart} fill={`var(--color-${activeChart})`} />
+            </BarChart>
+          </ChartContainer>
+        </CardContent>
+      ) : (
+        <CardContent className="px-2 sm:p-6">
+          <ChartContainer
+            config={chartConfig}
+            className="aspect-auto h-[280px] w-full"
+          >
+            <BarChart
+              accessibilityLayer
+              data={generateYearlyExpenses(
+                year,
+                expenseRes?.timeBasedSummary || []
+              )}
+              margin={{
+                left: 12,
+                right: 12,
+              }}
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="month"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                minTickGap={32}
+                tickFormatter={(value) => value.slice(0, 3)}
+              />
+              <ChartTooltip
+                content={
+                  <ChartTooltipContent className="w-[150px]" nameKey="views" />
+                }
+              />
+              <Bar dataKey={activeChart} fill={`var(--color-${activeChart})`} />
+            </BarChart>
+          </ChartContainer>
+        </CardContent>
+      )}
     </Card>
   );
 }

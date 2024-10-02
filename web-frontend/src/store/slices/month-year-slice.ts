@@ -1,3 +1,4 @@
+import { monthNumberToName } from "@/lib/constants";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface MonthYearState {
@@ -6,7 +7,7 @@ interface MonthYearState {
 }
 
 const initialState: MonthYearState = {
-  month: "",
+  month: monthNumberToName[new Date().getMonth() + 1],
   year: new Date().getFullYear(),
 };
 
