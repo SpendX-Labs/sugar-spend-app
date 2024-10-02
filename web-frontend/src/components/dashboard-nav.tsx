@@ -14,7 +14,7 @@ import {
 } from "./ui/tooltip";
 import { NavItem } from "@/lib/types";
 import { useAppSelector } from "@/hooks/use-app";
-import { selectIsMinimized } from "@/store/sidebar/sidebar-slice";
+import { selectIsMinimized } from "@/store/slices/sidebar-slice";
 
 interface DashboardNavProps {
   items: NavItem[];

@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Modal } from "../ui/modal";
-import { useSignupMutation, useVerifyOtpMutation } from "@/store/auth/auth-api";
+import { useSignupMutation, useVerifyOtpMutation } from "@/store/apis/auth-api";
 import { useRouter } from "next/navigation";
 import { useRedirectAuth } from "@/hooks/use-redirect-auth";
 

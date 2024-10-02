@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { Income } from "@/lib/types";
-import { useGetIncomesQuery } from "@/store/income/income-api";
+import { useGetIncomesQuery } from "@/store/apis/income-api";
 import { Plus } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { columns } from "./columns";

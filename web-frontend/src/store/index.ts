@@ -1,18 +1,22 @@
 import type { Action, ThunkAction } from "@reduxjs/toolkit";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import { authApi } from "./auth/auth-api";
-import { authSlice } from "./auth/auth-slice";
-import { creditCardApi } from "./credit-card/credit-card-api";
-import { expenseApi } from "./expense/expense-api";
-import { sidebarSlice } from "./sidebar/sidebar-slice";
-import { bankAccountApi } from "./bank-account/bank-account-api";
-import { incomeApi } from "./income/income-api";
+import { authApi } from "./apis/auth-api";
+import { bankAccountApi } from "./apis/bank-account-api";
+import { budgetApi } from "./apis/budget-api";
+import { creditCardApi } from "./apis/credit-card-api";
+import { expenseApi } from "./apis/expense-api";
+import { incomeApi } from "./apis/income-api";
+import { authSlice } from "./slices/auth-slice";
+import { monthYearSlice } from "./slices/month-year-slice";
+import { sidebarSlice } from "./slices/sidebar-slice";
 
 const rootReducer = combineReducers({
   auth: authSlice.reducer,
+  monthYear: monthYearSlice.reducer,
   sidebar: sidebarSlice.reducer,
   [authApi.reducerPath]: authApi.reducer,
   [bankAccountApi.reducerPath]: bankAccountApi.reducer,
+  [budgetApi.reducerPath]: budgetApi.reducer,
   [creditCardApi.reducerPath]: creditCardApi.reducer,
   [expenseApi.reducerPath]: expenseApi.reducer,
   [incomeApi.reducerPath]: incomeApi.reducer,
@@ -26,6 +30,7 @@ export const makeStore = () => {
       return getDefaultMiddleware().concat(
         authApi.middleware,
         bankAccountApi.middleware,
+        budgetApi.middleware,
         creditCardApi.middleware,
         expenseApi.middleware,
         incomeApi.middleware

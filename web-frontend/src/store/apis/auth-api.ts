@@ -1,6 +1,6 @@
 import { authBaseQuery } from "@/lib/api-queries";
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { logout } from "./auth-slice";
+import { logout } from "../slices/auth-slice";
 
 export type LoginRequestBody = { username: string; password: string };
 

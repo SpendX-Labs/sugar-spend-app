@@ -62,3 +62,56 @@ export type Income = {
   timeOfEvent: string;
   message: string;
 };
+
+export type RemainingAutoDebitDetail = {
+  id: number;
+  lender: string;
+  last4Digit: string;
+  budgetMonth: string;
+  budgetYear: number;
+  actualAmount: number;
+  remainingAmount: number;
+  updateDate: string;
+  dueDate: string;
+};
+
+export type RemainingAutoDebit = {
+  totalAmount: number;
+  remainingAmount: number;
+  details: RemainingAutoDebitDetail[];
+};
+
+export type TimeBasedSummary = {
+  dataKey: string;
+  manualAmount: number | null;
+  cardAmount: number | null;
+};
+
+export type ExpenseReport = {
+  totalExpense: number;
+  autoDebitAmount: number;
+  manualSpendAmount: number;
+  cardSpendAmount: number;
+  totalImcome: number;
+  availableAmount: number;
+  remainingAutoDebit: RemainingAutoDebit;
+  timeBasedSummary: TimeBasedSummary[];
+};
+
+export type BudgetDetail = {
+  id: number;
+  lender: string;
+  last4Digit: string;
+  budgetMonth: string;
+  budgetYear: number;
+  actualAmount: number;
+  remainingAmount: number;
+  updateDate: string;
+  dueDate: string;
+};
+
+export type NextMonthReport = {
+  totalAmount: number;
+  remainingAmount: number;
+  details: BudgetDetail[];
+};

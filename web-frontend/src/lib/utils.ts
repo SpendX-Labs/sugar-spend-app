@@ -1,5 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
+import { format } from "date-fns";
 import { twMerge } from "tailwind-merge";
+import { monthNameToNumber, monthNumberToName } from "./constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -58,11 +60,84 @@ export const createQueryString = (params: Record<string, any>): string => {
   const queryString = new URLSearchParams();
 
   Object.entries(params).forEach(([key, value]) => {
-    // Ensure the value is not undefined or null
     if (value !== undefined && value !== null) {
-      queryString.append(key, String(value)); // Convert value to string
+      queryString.append(key, String(value));
     }
   });
 
   return queryString.toString();
+};
+
+export const generateMonthlyExpenses = (
+  month: string,
+  year: number,
+  inputData: any[]
+) => {
+  const monthNumber = monthNameToNumber[month];
+
+  if (!monthNumber) return [];
+
+  const daysInMonth = new Date(year, monthNumber, 0).getDate();
+  const expenseMap = new Map<
+    string,
+    { manualAmount: number; cardAmount: number }
+  >();
+
+  inputData.forEach((item) => {
+    if (!new Date(item.dataKey).valueOf()) return;
+    const formattedDate = format(new Date(item.dataKey), "yyyy-MM-dd");
+    expenseMap.set(formattedDate, {
+      manualAmount: item.manualAmount,
+      cardAmount: item.cardAmount,
+    });
+  });
+
+  const result = [];
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = `${year}-${String(monthNumber).padStart(2, "0")}-${String(
+      day
+    ).padStart(2, "0")}`;
+    const expense = expenseMap.get(date) || {
+      manualAmount: 0,
+      cardAmount: 0,
+    };
+
+    result.push({
+      date,
+      auto: expense.cardAmount,
+      direct: expense.manualAmount,
+      total: expense.cardAmount + expense.manualAmount,
+    });
+  }
+
+  return result;
+};
+
+export const generateYearlyExpenses = (year: number, inputData: any[]) => {
+  const yearlyData: {
+    [key: number]: { manualAmount: number; cardAmount: number };
+  } = {};
+
+  for (let m = 1; m <= 12; m++) {
+    yearlyData[m] = { manualAmount: 0, cardAmount: 0 };
+  }
+
+  inputData.forEach((item) => {
+    const monthNumber = monthNameToNumber[item.dataKey];
+    if (!monthNumber) return;
+    yearlyData[monthNumber].manualAmount += item.manualAmount || 0;
+    yearlyData[monthNumber].cardAmount += item.cardAmount || 0;
+  });
+
+  const result = [];
+  for (let m = 1; m <= 12; m++) {
+    result.push({
+      month: monthNumberToName[m],
+      auto: yearlyData[m].cardAmount,
+      direct: yearlyData[m].manualAmount,
+      total: yearlyData[m].cardAmount + yearlyData[m].manualAmount,
+    });
+  }
+
+  return result;
 };

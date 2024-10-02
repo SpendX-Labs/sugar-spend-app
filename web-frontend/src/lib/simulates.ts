@@ -1,4 +1,4 @@
-import { CreditCardsResponse } from "@/store/credit-card/credit-card-api";
+import { CreditCardsResponse } from "@/store/apis/credit-card-api";
 import { CreditCard } from "./types";
 
 export function simulateApi(simulatedData: CreditCardsResponse) {

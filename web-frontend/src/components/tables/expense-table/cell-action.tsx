@@ -11,7 +11,7 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { Expense } from "@/lib/types";
 import { createQueryString } from "@/lib/utils";
-import { useDeleteExpenseMutation } from "@/store/expense/expense-api";
+import { useDeleteExpenseMutation } from "@/store/apis/expense-api";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

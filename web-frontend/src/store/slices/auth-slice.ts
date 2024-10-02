@@ -1,6 +1,6 @@
 import { setCookie, deleteCookie } from "cookies-next";
 import { createSlice } from "@reduxjs/toolkit";
-import { authApi } from "./auth-api";
+import { authApi } from "../apis/auth-api";
 import { COOKIES_TOKEN_NAME } from "@/lib/constants";
 
 export type AuthState = {

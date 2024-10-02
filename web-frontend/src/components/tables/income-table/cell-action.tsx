@@ -12,7 +12,7 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { Income } from "@/lib/types";
 import { createQueryString } from "@/lib/utils";
-import { useDeleteIncomeMutation } from "@/store/income/income-api";
+import { useDeleteIncomeMutation } from "@/store/apis/income-api";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

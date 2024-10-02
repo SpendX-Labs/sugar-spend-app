@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRedirectAuth } from "@/hooks/use-redirect-auth";
-import { useLoginMutation } from "@/store/auth/auth-api";
+import { useLoginMutation } from "@/store/apis/auth-api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";

@@ -23,7 +23,7 @@ import {
   useAddCreditCardMutation,
   useDeleteCreditCardMutation,
   useEditCreditCardMutation,
-} from "@/store/credit-card/credit-card-api";
+} from "@/store/apis/credit-card-api";
 import { AlertModal } from "../modal/alert-modal";
 
 const formSchema = z.object({

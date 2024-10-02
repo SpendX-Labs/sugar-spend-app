@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { BankAccount } from "@/lib/types";
-import { useGetBankAccountsQuery } from "@/store/bank-account/bank-account-api";
+import { useGetBankAccountsQuery } from "@/store/apis/bank-account-api";
 import {
   PaginationState,
   getCoreRowModel,
