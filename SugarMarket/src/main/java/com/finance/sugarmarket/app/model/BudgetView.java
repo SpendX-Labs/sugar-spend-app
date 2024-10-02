@@ -116,9 +116,12 @@ public class BudgetView {
 		this.dueDate = dueDate;
 	}
 
-	public BudgetView(String budgetMonth, Integer budgetYear, BigDecimal actualAmount,
-			BigDecimal remainingAmount, Date updateDate, Date dueDate, CreditCard creditCard, Loan loan) {
-		this.budgetMonth = budgetMonth;
+	public BudgetView() {
+		super();
+	}
+
+	public BudgetView(Integer budgetYear, BigDecimal actualAmount, BigDecimal remainingAmount, Date updateDate,
+			Date dueDate, CreditCard creditCard, Loan loan) {
 		this.budgetYear = budgetYear;
 		this.actualAmount = actualAmount;
 		this.remainingAmount = remainingAmount;

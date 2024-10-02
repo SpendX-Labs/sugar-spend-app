@@ -18,7 +18,7 @@ public interface BudgetViewRepo extends JpaRepository<BudgetView, Long> {
 
 	@Transactional
 	@Modifying(clearAutomatically = true)
-	@Query(value = "call update_budget_view(:date, :id);", nativeQuery = true)
+	@Query(value = "call UpdateBudgetViewByCard(:date, :id);", nativeQuery = true)
 	public void updateBudgetView(Date date, Long id);
 
 	@Query("SELECT b.creditCard, SUM(b.actualAmount), SUM(b.remainingAmount) " + "FROM BudgetView b "
@@ -33,11 +33,10 @@ public interface BudgetViewRepo extends JpaRepository<BudgetView, Long> {
 	@Query("SELECT b FROM BudgetView b WHERE b.user.id = :userId AND b.budgetMonth=:month AND b.budgetYear = :year ORDER BY b.dueDate")
 	List<BudgetView> findAllByMonth(Integer year, String month, Long userId);
 
-	@Query("SELECT new com.finance.sugarmarket.app.model.BudgetView(b.user, b.budgetMonth, b.budgetYear, SUM(b.actualAmount), SUM(b.remainingAmount), MIN(b.updateDate), MIN(b.dueDate), "
-			+ "CASE WHEN b.creditCard IS NOT NULL THEN b.creditCard ELSE b.loan END, "
-			+ "CASE WHEN b.creditCard IS NOT NULL THEN NULL ELSE b.creditCard END) " + "FROM BudgetView b "
-			+ "WHERE b.user.id = :userId AND b.budgetYear = :year "
-			+ "GROUP BY b.user.id, b.budgetMonth, b.budgetYear, b.creditCard.id, b.loan.id "
-			+ "ORDER BY MIN(b.dueDate)")
+//	@Query("SELECT new com.finance.sugarmarket.app.model.BudgetView(b.budgetYear, SUM(b.actualAmount), SUM(b.remainingAmount), MAX(b.updateDate), MAX(b.dueDate), "
+//			+ "b.creditCard, b.loan) FROM BudgetView b LEFT JOIN b.creditCard c LEFT JOIN b.loan l "
+//			+ "WHERE b.user.id = :userId AND b.budgetYear = :year "
+//			+ "GROUP BY b.user, b.budgetYear, b.creditCard, b.loan " + "ORDER BY MAX(b.dueDate)")
+	@Query("SELECT b FROM BudgetView b WHERE b.user.id = :userId AND b.budgetYear = :year ORDER BY b.dueDate")
 	List<BudgetView> findAllByYear(Integer year, Long userId);
 }

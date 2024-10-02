@@ -24,7 +24,7 @@ import com.finance.sugarmarket.constants.AppConstants;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
-@RequestMapping("/app/buget")
+@RequestMapping("/app/budget")
 public class BudgetViewerController extends BaseController {
 
 	@Autowired
