@@ -30,7 +30,7 @@ const chartConfig = {
     label: `Amount (${CURRENCY_RUPEE_SYMBOL})`,
   },
   [AUTO]: {
-    label: "Auto Debits",
+    label: "Credit Card Expense",
     color: "hsl(var(--chart-2))",
   },
   [DIRECT]: {
@@ -74,8 +74,12 @@ export function DailyExpenseChart() {
           className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 data-[active=false]:bg-muted/50 sm:py-6"
           onClick={() => setActiveChart(TOTAL)}
         >
-          <CardTitle>Daily Expense</CardTitle>
-          <CardDescription>Showing expenses per day</CardDescription>
+          <CardTitle>
+            {monthNameToNumber[month] ? "Daily" : "Monthly"} Expense
+          </CardTitle>
+          <CardDescription>
+            Showing expenses per {monthNameToNumber[month] ? "day" : "month"}
+          </CardDescription>
         </button>
         <div className="flex space-x-[1px]">
           {[AUTO, DIRECT].map((key) => {

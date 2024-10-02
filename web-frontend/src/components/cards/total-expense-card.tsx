@@ -36,7 +36,7 @@ const TotalExpenseCard: React.FC = () => {
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">
-          {CURRENCY_RUPEE_SYMBOL} {data?.totalExpense}
+          {CURRENCY_RUPEE_SYMBOL} {data?.totalExpense.toLocaleString()}
         </div>
         <p className="text-xs text-muted-foreground">+20.1% from last month</p>
       </CardContent>

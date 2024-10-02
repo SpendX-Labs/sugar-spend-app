@@ -14,7 +14,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { useAppSelector } from "@/hooks/use-app";
-import { CURRENCY_RUPEE_SYMBOL } from "@/lib/constants";
+import { CURRENCY_RUPEE_SYMBOL, monthNumberToName } from "@/lib/constants";
 import { useGetExpenseReportQuery } from "@/store/apis/budget-api";
 import { selectMonth, selectYear } from "@/store/slices/month-year-slice";
 import * as React from "react";
@@ -63,7 +63,9 @@ export function UpcomingDeductionChart() {
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
         <CardTitle>Upcoming Deductions</CardTitle>
-        <CardDescription>This Month (May 2024)</CardDescription>
+        <CardDescription>
+          This Month ({monthNumberToName[new Date().getMonth()]} 2024)
+        </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer

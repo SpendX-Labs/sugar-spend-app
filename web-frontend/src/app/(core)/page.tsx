@@ -10,6 +10,7 @@ import { MonthYearPicker } from "@/components/month-year-picker";
 import { RecentTransactions } from "@/components/recent-transactions";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import AutoDebitExpenseCard from "@/components/cards/auto-debit-expense-card";
 
 export default function HomePage() {
   return (
@@ -32,9 +33,10 @@ export default function HomePage() {
           <TabsContent value="overview" className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               <TotalExpenseCard />
+              <AutoDebitExpenseCard />
               <AvailableBalanceCard />
               <NextMonthDeductionsCard />
-              <MutualFundsCard />
+              {/* <MutualFundsCard /> */}
             </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7">
               <div className="col-span-4">

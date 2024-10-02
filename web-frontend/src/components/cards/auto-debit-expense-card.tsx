@@ -1,11 +1,18 @@
 "use client";
 
+import { useAppSelector } from "@/hooks/use-app";
 import { CURRENCY_RUPEE_SYMBOL } from "@/lib/constants";
-import { useGetNextMonthReportQuery } from "@/store/apis/budget-api";
+import { useGetExpenseReportQuery } from "@/store/apis/budget-api";
+import { selectMonth, selectYear } from "@/store/slices/month-year-slice";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
-const NextMonthDeductionsCard: React.FC = () => {
-  const { data, error, isLoading } = useGetNextMonthReportQuery();
+const AutoDebitExpenseCard: React.FC = () => {
+  const month = useAppSelector(selectMonth);
+  const year = useAppSelector(selectYear);
+  const { data, error, isLoading } = useGetExpenseReportQuery({
+    year,
+    month,
+  });
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error Occured</div>;
@@ -14,7 +21,7 @@ const NextMonthDeductionsCard: React.FC = () => {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">
-          Next Month Auto Deductions
+          Auto Debit Expense
         </CardTitle>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -26,18 +33,17 @@ const NextMonthDeductionsCard: React.FC = () => {
           strokeWidth="2"
           className="h-4 w-4 text-muted-foreground"
         >
-          <rect width="20" height="14" x="2" y="5" rx="2" />
-          <path d="M2 10h20" />
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
         </svg>
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">
-          {CURRENCY_RUPEE_SYMBOL} {data?.totalAmount.toLocaleString()}
+          {CURRENCY_RUPEE_SYMBOL} {data?.autoDebitAmount.toLocaleString()}
         </div>
-        <p className="text-xs text-muted-foreground">+19% from this month</p>
+        <p className="text-xs text-muted-foreground">+20.1% from last month</p>
       </CardContent>
     </Card>
   );
 };
 
-export default NextMonthDeductionsCard;
+export default AutoDebitExpenseCard;
