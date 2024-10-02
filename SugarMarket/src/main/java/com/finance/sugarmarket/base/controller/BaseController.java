@@ -72,7 +72,7 @@ public class BaseController {
 		int page = 0;
 		int size = 10;
 
-		String pageParam = request.getParameter(FilterFieldConstant.PAGE);
+		String pageParam = request.getParameter(FilterFieldConstant.OFFSET);
 		if (pageParam != null && !pageParam.isEmpty()) {
 			try {
 				page = Integer.parseInt(pageParam);
@@ -81,7 +81,7 @@ public class BaseController {
 			}
 		}
 
-		String sizeParam = request.getParameter(FilterFieldConstant.SIZE);
+		String sizeParam = request.getParameter(FilterFieldConstant.LIMIT);
 		if (sizeParam != null && !sizeParam.isEmpty()) {
 			try {
 				size = Integer.parseInt(sizeParam);
