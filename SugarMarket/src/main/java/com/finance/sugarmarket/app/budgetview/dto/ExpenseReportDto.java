@@ -8,7 +8,7 @@ public class ExpenseReportDto {
 	private BigDecimal autoDebitAmount;
 	private BigDecimal manualSpendAmount;
 	private BigDecimal cardSpendAmount;
-	private BigDecimal totalImcome;
+	private BigDecimal totalIncome;
 	private BigDecimal availableAmount;
 	private AutoDebitDto remainingAutoDebit;
 	private List<TimeBasedSummary> timeBasedSummary;
@@ -18,14 +18,14 @@ public class ExpenseReportDto {
 	}
 
 	public ExpenseReportDto(BigDecimal totalExpense, BigDecimal autoDebitAmount, BigDecimal manualSpendAmount,
-			BigDecimal cardSpendAmount, BigDecimal totalImcome, BigDecimal availableAmount,
+			BigDecimal cardSpendAmount, BigDecimal totalIncome, BigDecimal availableAmount,
 			AutoDebitDto remainingAutoDebit, List<TimeBasedSummary> timeBasedSummary) {
 		super();
 		this.totalExpense = totalExpense;
 		this.autoDebitAmount = autoDebitAmount;
 		this.manualSpendAmount = manualSpendAmount;
 		this.cardSpendAmount = cardSpendAmount;
-		this.totalImcome = totalImcome;
+		this.totalIncome = totalIncome;
 		this.availableAmount = availableAmount;
 		this.remainingAutoDebit = remainingAutoDebit;
 		this.timeBasedSummary = timeBasedSummary;
@@ -63,12 +63,12 @@ public class ExpenseReportDto {
 		this.cardSpendAmount = cardSpendAmount;
 	}
 
-	public BigDecimal getTotalImcome() {
-		return totalImcome;
+	public BigDecimal getTotalIncome() {
+		return totalIncome;
 	}
 
-	public void setTotalImcome(BigDecimal totalImcome) {
-		this.totalImcome = totalImcome;
+	public void setTotalIncome(BigDecimal totalIncome) {
+		this.totalIncome = totalIncome;
 	}
 
 	public BigDecimal getAvailableAmount() {

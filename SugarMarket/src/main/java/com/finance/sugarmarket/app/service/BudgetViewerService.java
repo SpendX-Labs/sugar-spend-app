@@ -91,7 +91,7 @@ public class BudgetViewerService {
 
 		setAutoDebit(budgetList, reportDto, today);
 		reportDto.setTotalExpense(manualSpendAmount.add(reportDto.getAutoDebitAmount()));
-		reportDto.setTotalImcome(totalIncome);
+		reportDto.setTotalIncome(totalIncome);
 		reportDto.setAvailableAmount(totalIncome.subtract(reportDto.getTotalExpense()));
 
 		return reportDto;

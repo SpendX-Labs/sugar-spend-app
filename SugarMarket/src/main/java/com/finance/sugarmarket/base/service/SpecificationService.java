@@ -13,7 +13,7 @@ import com.finance.sugarmarket.constants.FilterFieldConstant;
 import jakarta.persistence.criteria.From;
 import jakarta.persistence.criteria.Path;
 
-public class SpecificationService<T> {
+abstract public class SpecificationService<T> {
 	
 	public Specification<T> getSpecificationFilters(List<Filter> filters, Map<String, String> filterMap) {
 		Specification<T> specificationFilters = Specification.where(null);
