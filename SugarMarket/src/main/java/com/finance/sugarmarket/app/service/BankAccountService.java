@@ -22,7 +22,7 @@ import com.finance.sugarmarket.base.dto.Filter;
 import com.finance.sugarmarket.base.dto.ListViewDto;
 import com.finance.sugarmarket.base.service.SpecificationService;
 import com.finance.sugarmarket.constants.AppConstants;
-import com.finance.sugarmarket.constants.FilterFieldConstant;
+import com.finance.sugarmarket.constants.FieldConstant;
 
 @Service
 public class BankAccountService extends SpecificationService<BankAccount> {
@@ -41,7 +41,7 @@ public class BankAccountService extends SpecificationService<BankAccount> {
 	private static final Map<String, String> filterMap = new HashMap<String, String>();
 
 	static {
-		filterMap.put(FilterFieldConstant.USER_ID, "user.id");
+		filterMap.put(FieldConstant.USER_ID, "user.id");
 	}
 
 	public ListViewDto<BankAccountDto> findAllBankAccount(PageRequest pageRequest, List<Filter> filters) {

@@ -3,23 +3,33 @@ package com.finance.sugarmarket.app.service;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
 import com.finance.sugarmarket.app.dto.LoanDto;
 import com.finance.sugarmarket.app.dto.ModifyLoanDto;
 import com.finance.sugarmarket.app.enums.LoanType;
+import com.finance.sugarmarket.app.model.CreditCard;
 import com.finance.sugarmarket.app.model.Loan;
 import com.finance.sugarmarket.app.repo.CreditCardRepo;
 import com.finance.sugarmarket.app.repo.LoanRepo;
 import com.finance.sugarmarket.auth.repo.MFUserRepo;
+import com.finance.sugarmarket.base.dto.Filter;
+import com.finance.sugarmarket.base.dto.ListViewDto;
+import com.finance.sugarmarket.base.service.SpecificationService;
+import com.finance.sugarmarket.constants.AppConstants;
+import com.finance.sugarmarket.constants.FieldConstant;
 
 @Service
-public class LoanService {
+public class LoanService extends SpecificationService<Loan> {
 	@Autowired
 	private LoanRepo loanRepo;
 	@Autowired
@@ -31,27 +41,58 @@ public class LoanService {
 	private static final BigDecimal HUNDRED = new BigDecimal(100);
 	private static final BigDecimal TWELVE = new BigDecimal(12);
 
-	public List<LoanDto> findAllLoans(String username) {
-		List<Loan> loans = loanRepo.findAll();
-		return loans.stream().map(loan -> {
-			LoanDto dto = modelMapper.map(loan, LoanDto.class);
+	private static final Map<String, String> filterMap = new HashMap<String, String>();
+
+	static {
+		filterMap.put(FieldConstant.USER_ID, "user.id");
+	}
+
+	public ListViewDto<LoanDto> findAllLoans(PageRequest pageRequest, List<Filter> filters) {
+		Specification<Loan> specificationFilters = getSpecificationFilters(filters, filterMap);
+		Page<Loan> pages = loanRepo.findAll(specificationFilters, pageRequest);
+		List<LoanDto> listDto = new ArrayList<>();
+		for (Loan loan : pages.getContent()) {
+			LoanDto loanDto = modelMapper.map(loan, LoanDto.class);
 			if (loan.getCreditCard() != null) {
-				dto.setCreditCardName(
+				loanDto.setCreditCardName(
 						loan.getCreditCard().getBankName() + " " + loan.getCreditCard().getCreditCardName());
+				loanDto.setLast4Digit(loan.getCreditCard().getLast4Digit());
 			}
-			return dto;
-		}).collect(Collectors.toList());
+			listDto.add(loanDto);
+		}
+		return new ListViewDto<LoanDto>(listDto, pages.getTotalElements(), pageRequest.getOffset(),
+				pageRequest.getPageSize());
 
 	}
 
-	public void saveOrUpdateLoanDetails(LoanDto loandto, String username) throws Exception {
-		if (loandto.getId() != null && loanRepo.findById(loandto.getId()).get().isUpdateLock()) {
-			throw new Exception("Update for this emi is not possible");
-		}
+	public void saveLoan(LoanDto loandto, Long userId) throws Exception {
 		Loan loan = modelMapper.map(loandto, Loan.class);
-		loan.setUser(userRepo.findByUsername(username));
+		loan.setUser(userRepo.findById(userId).get());
+		persistLoan(loandto, loan, userId);
+	}
+
+	public void updateLoan(LoanDto loanDto, Long id, Long userId) throws Exception {
+		Specification<Loan> specificationFilters = getAuditSpecificationFilters(filterMap, id, userId);
+		List<Loan> loanList = loanRepo.findAll(specificationFilters);
+		if (loanList.isEmpty()) {
+			throw new Exception("You are not authorised to modify");
+		}
+		Loan existingLoan = loanList.get(0);
+		if (existingLoan.isUpdateLock()) {
+			throw new Exception("Update is not possible for this Loan Details");
+		}
+		modelMapper.map(loanDto, existingLoan);
+		existingLoan.setId(id);
+		persistLoan(loanDto, existingLoan, userId);
+	}
+
+	public void persistLoan(LoanDto loandto, Loan loan, Long userId) throws Exception {
 		if (loandto.getCreditCardId() != null && loandto.getCreditCardId() > 0) {
-			loan.setCreditCard(creditCardRepo.findById(loandto.getCreditCardId()).get());
+			CreditCard creditCard = creditCardRepo.findById(loandto.getCreditCardId()).get();
+			if (creditCard.getUser().getId() != userId) {
+				throw new Exception("user is different from the credit card.");
+			}
+			loan.setCreditCard(creditCard);
 		} else {
 			loan.setCreditCard(null);
 		}
@@ -59,7 +100,8 @@ public class LoanService {
 			if (loan.getPrincipalAmount() == null || loan.getInterestAmount() == null) {
 				loan.setEmiAmount(
 						loan.getTotalAmount().divide(new BigDecimal(loan.getTenure()), 2, RoundingMode.HALF_UP));
-				loan.setPrincipalAmount(calculatePrincipal(loan.getEmiAmount(), loan.getInterestRate(), loan.getTenure()));
+				loan.setPrincipalAmount(
+						calculatePrincipal(loan.getEmiAmount(), loan.getInterestRate(), loan.getTenure()));
 				loan.setInterestAmount(loan.getTotalAmount().subtract(loan.getPrincipalAmount()));
 			}
 		} else if (loan.getLoanType().equals(LoanType.REDUCING)) {
@@ -82,22 +124,22 @@ public class LoanService {
 
 		loanRepo.save(loan);
 	}
-	
+
 	private BigDecimal calculatePrincipal(BigDecimal emi, BigDecimal annualRate, int tenureMonths) {
-        // Convert annual interest rate to monthly interest rate
-        BigDecimal monthlyRate = annualRate.divide(TWELVE.multiply(HUNDRED), MathContext.DECIMAL128);
-        
-        // Calculate (1 + monthlyRate) ^ tenureMonths
-        BigDecimal one = BigDecimal.ONE;
-        BigDecimal compoundFactor = one.add(monthlyRate).pow(tenureMonths, MathContext.DECIMAL128);
-        
-        // Calculate principal using the rearranged EMI formula
-        BigDecimal numerator = emi.multiply(compoundFactor.subtract(one));
-        BigDecimal denominator = monthlyRate.multiply(compoundFactor);
-        BigDecimal principal = numerator.divide(denominator, MathContext.DECIMAL128).setScale(2, RoundingMode.HALF_UP);
-        
-        return principal;
-    }
+		// Convert annual interest rate to monthly interest rate
+		BigDecimal monthlyRate = annualRate.divide(TWELVE.multiply(HUNDRED), MathContext.DECIMAL128);
+
+		// Calculate (1 + monthlyRate) ^ tenureMonths
+		BigDecimal one = BigDecimal.ONE;
+		BigDecimal compoundFactor = one.add(monthlyRate).pow(tenureMonths, MathContext.DECIMAL128);
+
+		// Calculate principal using the rearranged EMI formula
+		BigDecimal numerator = emi.multiply(compoundFactor.subtract(one));
+		BigDecimal denominator = monthlyRate.multiply(compoundFactor);
+		BigDecimal principal = numerator.divide(denominator, MathContext.DECIMAL128).setScale(2, RoundingMode.HALF_UP);
+
+		return principal;
+	}
 
 	private BigDecimal calculateReducingEMI(BigDecimal principal, BigDecimal rate, Integer tenure) {
 		// Monthly rate calculation: rate / 12 / 100
@@ -206,6 +248,17 @@ public class LoanService {
 	private BigDecimal calculateRemainingInterestFlat(BigDecimal totalInterest, int totalTenure, int paidMonths) {
 		BigDecimal remainingTenure = BigDecimal.valueOf(totalTenure - paidMonths);
 		return totalInterest.multiply(remainingTenure).divide(BigDecimal.valueOf(totalTenure), 2, RoundingMode.HALF_UP);
+	}
+
+	public String deleteLoan(Long id, Long userId) throws Exception {
+		Specification<Loan> specificationFilters = getAuditSpecificationFilters(filterMap, id, userId);
+		List<Loan> loanList = loanRepo.findAll(specificationFilters);
+		if (loanList.isEmpty()) {
+			throw new Exception("You are not authorised to delete");
+		}
+		Loan loan = loanList.get(0);
+		loanRepo.deleteById(loan.getId());
+		return AppConstants.SUCCESS;
 	}
 
 }

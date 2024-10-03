@@ -8,12 +8,12 @@ import org.springframework.data.jpa.domain.Specification;
 
 import com.finance.sugarmarket.base.dto.Filter;
 import com.finance.sugarmarket.base.enums.FilterOperation;
-import com.finance.sugarmarket.constants.FilterFieldConstant;
+import com.finance.sugarmarket.constants.FieldConstant;
 
 import jakarta.persistence.criteria.From;
 import jakarta.persistence.criteria.Path;
 
-public class SpecificationService<T> {
+abstract public class SpecificationService<T> {
 	
 	public Specification<T> getSpecificationFilters(List<Filter> filters, Map<String, String> filterMap) {
 		Specification<T> specificationFilters = Specification.where(null);
@@ -57,8 +57,8 @@ public class SpecificationService<T> {
 	
 	public Specification<T> getAuditSpecificationFilters(Map<String, String> filterMap, Long id, Long userId) {
 		List<Filter> filters = new ArrayList<>();
-		filters.add(new Filter(FilterFieldConstant.ID, FilterOperation.EQUAL, id.toString()));
-		filters.add(new Filter(FilterFieldConstant.USER_ID, FilterOperation.EQUAL, userId.toString()));
+		filters.add(new Filter(FieldConstant.ID, FilterOperation.EQUAL, id.toString()));
+		filters.add(new Filter(FieldConstant.USER_ID, FilterOperation.EQUAL, userId.toString()));
  		return getSpecificationFilters(filters, filterMap);
 	}
 }

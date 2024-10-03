@@ -11,7 +11,7 @@ public class LoanDto {
 	private String creditCardName;
 	private CreditCardDto creditCardDTO;
 	private String lenderName;
-	private Integer last4Digit;
+	private String last4Digit;
 	private BigDecimal totalAmount;
 	private LoanType loanType = LoanType.FLAT;
 	private BigDecimal interestRate;
@@ -58,10 +58,10 @@ public class LoanDto {
 	public void setLenderName(String lenderName) {
 		this.lenderName = lenderName;
 	}
-	public Integer getLast4Digit() {
+	public String getLast4Digit() {
 		return last4Digit;
 	}
-	public void setLast4Digit(Integer last4Digit) {
+	public void setLast4Digit(String last4Digit) {
 		this.last4Digit = last4Digit;
 	}
 	public BigDecimal getTotalAmount() {

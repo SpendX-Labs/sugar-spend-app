@@ -1,11 +1,14 @@
 package com.finance.sugarmarket.app.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +28,9 @@ import com.finance.sugarmarket.base.controller.BaseController;
 import com.finance.sugarmarket.base.dto.Filter;
 import com.finance.sugarmarket.base.dto.ListViewDto;
 import com.finance.sugarmarket.constants.AppConstants;
+import com.finance.sugarmarket.constants.FieldConstant;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -73,5 +79,14 @@ public class ExpenseController extends BaseController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
 		return ResponseEntity.ok(AppConstants.SUCCESS);
+	}
+
+	@Override
+	public Map<String, Sort.Direction> getDefaultSortColumns(HttpServletRequest request) {
+		Map<String, Sort.Direction> map = new HashMap<>();
+		map.putAll(super.getDefaultSortColumns(request));
+		map.put(FieldConstant.EXPENSE_DATE, Sort.Direction.DESC);
+		map.put(FieldConstant.EXPENSE_TIME, Sort.Direction.DESC);
+		return map;
 	}
 }

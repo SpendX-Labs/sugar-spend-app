@@ -1009,6 +1009,31 @@ databaseChangeLog:
                   name: debitCardLast4Digit
                   value: "5678"
 
+  - changeSet:
+      id: "AddLoanIdInExpense"
+      author: subham.biswas
+      changes:
+        - addColumn:
+            tableName: Expense
+            columns:
+              - column:
+                  name: loanId
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+
+  - changeSet:
+      id: "AddForeignKeyExpenseLoanId"
+      author: subham.biswas
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: Expense
+            baseColumnNames: loanId
+            referencedTableName: Loan
+            referencedColumnNames: loanId
+            constraintName: fk_Expense_loanId
+            onDelete: CASCADE
+
   - include:
       file: classpath:/db/changelog/db.changelog-store-procedure.yaml
 
