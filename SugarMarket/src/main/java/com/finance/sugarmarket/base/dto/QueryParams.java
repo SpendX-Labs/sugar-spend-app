@@ -7,7 +7,7 @@ public class QueryParams {
 	private Integer size = 10;
 	private String sortName;
 	private String orderby = "asc";
-	private List<Filter> filters;
+	private List<Operands> filters;
 
 	// Getters and setters
 
@@ -43,11 +43,11 @@ public class QueryParams {
 		this.orderby = orderby;
 	}
 
-	public List<Filter> getFilters() {
+	public List<Operands> getFilters() {
 		return filters;
 	}
 
-	public void setFilters(List<Filter> filters) {
+	public void setFilters(List<Operands> filters) {
 		this.filters = filters;
 	}
 }

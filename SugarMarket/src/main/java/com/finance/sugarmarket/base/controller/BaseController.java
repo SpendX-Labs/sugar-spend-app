@@ -20,7 +20,8 @@ import com.finance.sugarmarket.auth.repo.MapRoleUserRepo;
 import com.finance.sugarmarket.auth.service.JwtCacheService;
 import com.finance.sugarmarket.auth.service.JwtService;
 import com.finance.sugarmarket.base.dto.Filter;
-import com.finance.sugarmarket.base.enums.FilterOperation;
+import com.finance.sugarmarket.base.dto.Operands;
+import com.finance.sugarmarket.base.enums.Operators;
 import com.finance.sugarmarket.constants.FieldConstant;
 import com.finance.sugarmarket.constants.QueryParamConstants;
 
@@ -131,7 +132,7 @@ abstract public class BaseController {
 
 	public List<Filter> getFilterParams(HttpServletRequest request) {
 		List<Filter> filters = new ArrayList<>();
-		filters.add(new Filter(FieldConstant.USER_ID, FilterOperation.EQUAL, getUserId().toString()));
+
 		String filtersParam = request.getParameter(QueryParamConstants.FILTERS);
 		if (StringUtils.isNotEmpty(filtersParam)) {
 			try {
@@ -142,6 +143,8 @@ abstract public class BaseController {
 			}
 		}
 
+		filters.add(getUserIdFilter());
+
 		// Search
 		String searchBy = request.getParameter(QueryParamConstants.SEARCH_BY);
 		if (StringUtils.isNotEmpty(searchBy)) {
@@ -149,6 +152,12 @@ abstract public class BaseController {
 		}
 
 		return filters;
+	}
+
+	public Filter getUserIdFilter() {
+		List<Operands> operands = new ArrayList<>();
+		operands.add(new Operands(FieldConstant.USER_ID, Operators.EQUAL, getUserId().toString()));
+		return new Filter(Operators.AND, operands);
 	}
 
 	public void setSearchFilters(List<Filter> list, String searchBy) {

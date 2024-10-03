@@ -7,6 +7,7 @@ public class ListViewDto<T> {
 	private long total;
 	private long offset;
 	private int limit;
+	private String message;
 
 	public ListViewDto(List<T> data, long total, long offset, int limit) {
 		super();
@@ -14,6 +15,11 @@ public class ListViewDto<T> {
 		this.total = total;
 		this.offset = offset;
 		this.limit = limit;
+	}
+	
+	public ListViewDto(String message) {
+		super();
+		this.message = message;
 	}
 
 	public ListViewDto() {
@@ -50,5 +56,13 @@ public class ListViewDto<T> {
 
 	public void setLimit(int limit) {
 		this.limit = limit;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 }

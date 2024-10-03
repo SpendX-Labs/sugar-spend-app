@@ -48,7 +48,7 @@ public class IncomeService extends SpecificationService<Income> {
 		filterMap.put(FieldConstant.CREDIT_CARD_ID, "creditCard.id");
 	}
 
-	public ListViewDto<IncomeDto> findAllIncome(PageRequest pageRequest, List<Filter> filters) {
+	public ListViewDto<IncomeDto> findAllIncome(PageRequest pageRequest, List<Filter> filters) throws Exception {
 		Specification<Income> specificationFilters = getSpecificationFilters(filters, filterMap);
 		Page<Income> pages = incomeRepo.findAll(specificationFilters, pageRequest);
 		List<IncomeDto> listDto = new ArrayList<>();

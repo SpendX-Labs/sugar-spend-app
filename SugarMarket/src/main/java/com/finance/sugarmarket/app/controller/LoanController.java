@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.finance.sugarmarket.app.dto.LoanDto;
-import com.finance.sugarmarket.app.dto.ModifyLoanDto;
+import com.finance.sugarmarket.app.dto.LoanPrepaymentRequestDto;
 import com.finance.sugarmarket.app.service.LoanService;
 import com.finance.sugarmarket.base.controller.BaseController;
 import com.finance.sugarmarket.base.dto.Filter;
@@ -38,9 +38,15 @@ public class LoanController extends BaseController {
 	private static final Logger log = LoggerFactory.getLogger(LoanController.class);
 
 	@GetMapping
-	public ListViewDto<LoanDto> findAllCreditCard() {
-		Pair<PageRequest, List<Filter>> pair = getPageRequestAndFilters();
-		return loanService.findAllLoans(pair.getFirst(), pair.getSecond());
+	public ResponseEntity<ListViewDto<LoanDto>> findAllCreditCard() {
+		try {
+			Pair<PageRequest, List<Filter>> pair = getPageRequestAndFilters();
+			return ResponseEntity.ok(loanService.findAllLoans(pair.getFirst(), pair.getSecond()));
+		} catch (Exception e) {
+			log.error("error while getting loan: ", e);
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body(new ListViewDto<LoanDto>("Internal server error"));
 	}
 
 	@PostMapping
@@ -48,7 +54,7 @@ public class LoanController extends BaseController {
 		try {
 			loanService.saveLoan(loanDto, getUserId());
 		} catch (Exception e) {
-			log.error("error while saving credit card: ", e);
+			log.error("error while saving loan: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(AppConstants.FAILED);
 		}
 		return ResponseEntity.ok(AppConstants.SUCCESS);
@@ -59,18 +65,19 @@ public class LoanController extends BaseController {
 		try {
 			loanService.updateLoan(loanDto, id, getUserId());
 		} catch (Exception e) {
-			log.error("error while saving credit card: ", e);
+			log.error("error while updaing loan: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(AppConstants.FAILED);
 		}
 		return ResponseEntity.ok(AppConstants.SUCCESS);
 	}
 
-	@PatchMapping("/modify/{id}")
-	public ResponseEntity<String> modifyLoan(@PathVariable("id") Long id, @RequestBody ModifyLoanDto modifyLoanDto) {
+	@PatchMapping("{id}/prepayment")
+	public ResponseEntity<String> makePrincipalPrepayment(@PathVariable("id") Long id,
+			@RequestBody LoanPrepaymentRequestDto modifyLoanDto) {
 		try {
-			loanService.modifyLoanDetails(modifyLoanDto);
+			loanService.makePrincipalPrepayment(modifyLoanDto, id, getUserId());
 		} catch (Exception e) {
-			log.error("error while saving credit card: ", e);
+			log.error("error while pre paying loan: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(AppConstants.FAILED);
 		}
 		return ResponseEntity.ok(AppConstants.SUCCESS);
@@ -81,7 +88,7 @@ public class LoanController extends BaseController {
 		try {
 			loanService.deleteLoan(id, getUserId());
 		} catch (Exception e) {
-			log.error("error while deleting expense: ", e);
+			log.error("error while deleting loan: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
 		return ResponseEntity.ok(AppConstants.SUCCESS);

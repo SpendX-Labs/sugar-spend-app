@@ -44,7 +44,7 @@ public class BankAccountService extends SpecificationService<BankAccount> {
 		filterMap.put(FieldConstant.USER_ID, "user.id");
 	}
 
-	public ListViewDto<BankAccountDto> findAllBankAccount(PageRequest pageRequest, List<Filter> filters) {
+	public ListViewDto<BankAccountDto> findAllBankAccount(PageRequest pageRequest, List<Filter> filters) throws Exception {
 		Specification<BankAccount> specificationFilters = getSpecificationFilters(filters, filterMap);
 		Page<BankAccount> pages = bankAccountRepo.findAll(specificationFilters, pageRequest);
 
