@@ -13,7 +13,12 @@ import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CashFlowDetails, CashFlowType, BankAccount } from "@/lib/types";
+import {
+  CashFlowDetails,
+  CashFlowType,
+  BankAccount,
+  CreditCard,
+} from "@/lib/types";
 import { useGetBankAccountsQuery } from "@/store/apis/bank-account-api";
 import {
   useAddIncomeMutation,
@@ -23,7 +28,7 @@ import {
 import { Trash } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import * as z from "zod";
 import { AlertModal } from "../modal/alert-modal";
 import {
@@ -35,9 +40,14 @@ import {
 } from "../ui/select";
 import { useToast } from "../ui/use-toast";
 import { Textarea } from "../ui/textarea";
+import { useGetCreditCardsQuery } from "@/store/apis/credit-card-api";
+import { mergeBankAccountDetails, mergeCreditCardDetails } from "@/lib/utils";
 
 const formSchema = z.object({
-  bankName: z.string().min(1, { message: "Please select a credit card" }),
+  cashFlowName: z
+    .string()
+    .min(1, { message: "Please select a account name" })
+    .optional(),
   amount: z.coerce
     .number()
     .positive({ message: "Statement Date must be greater than 0" }),
@@ -89,6 +99,14 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
     size: 100,
   });
   const bankAccounts: BankAccount[] = bankAccountRes?.data || [];
+  const { data: creditCardRes } = useGetCreditCardsQuery({
+    page: 0,
+    size: 100,
+  });
+  const creditCards: CreditCard[] = creditCardRes?.data || [];
+  const [selectedType, setSelectedType] = useState<CashFlowType | string>(
+    CashFlowType.BANK
+  );
   const router = useRouter();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
@@ -130,6 +148,24 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
     defaultValues,
   });
 
+  const getCashFlowId = (data: IncomeFormValues): number => {
+    if (data.incomeType === CashFlowType.BANK) {
+      return (
+        bankAccounts.filter(
+          (bankAccount) => bankAccount.bankName === data.cashFlowName
+        )?.[0]?.id || -1
+      );
+    }
+    if (data.incomeType === CashFlowType.CREDITCARD) {
+      return (
+        creditCards.filter(
+          (creditCard) => creditCard.creditCardName === data.cashFlowName
+        )?.[0]?.id || -1
+      );
+    }
+    return -1;
+  };
+
   const onSubmit = async (data: IncomeFormValues) => {
     try {
       setLoading(true);
@@ -138,11 +174,8 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
           ...data,
           id: Number(initialData.id),
           cashFlowDetails: {
-            cashFlowId:
-              bankAccounts.filter(
-                (bankAccount) => bankAccount.bankName === data.bankName
-              )?.[0].id || -1,
-            cashFlowName: data.bankName,
+            cashFlowId: getCashFlowId(data),
+            cashFlowName: data.cashFlowName || "",
           },
           dateOfEvent: new Date(data.dateOfEvent).toISOString(),
         }).unwrap();
@@ -150,11 +183,8 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
         await addIncome({
           ...data,
           cashFlowDetails: {
-            cashFlowId:
-              bankAccounts.filter(
-                (bankAccount) => bankAccount.bankName === data.bankName
-              )?.[0].id || -1,
-            cashFlowName: data.bankName,
+            cashFlowId: getCashFlowId(data),
+            cashFlowName: data.cashFlowName || "",
           },
           dateOfEvent: new Date(data.dateOfEvent).toISOString(),
         }).unwrap();
@@ -230,7 +260,10 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
                   <FormLabel>Income Type</FormLabel>
                   <Select
                     disabled={loading}
-                    onValueChange={field.onChange}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      setSelectedType(value);
+                    }}
                     value={field.value}
                     defaultValue={CashFlowType.BANK}
                   >
@@ -256,35 +289,64 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
             />
             <FormField
               control={form.control}
-              name="bankName"
+              name="cashFlowName"
+              disabled={selectedType === CashFlowType.CASH}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Bank Name</FormLabel>
-                  <Select
-                    disabled={loading}
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Select a Bank Name"
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {bankAccounts.map((bankAccount) => (
-                        <SelectItem
-                          key={bankAccount.bankName}
-                          value={bankAccount.bankName}
-                        >
-                          {bankAccount.bankName}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormLabel>Account Name</FormLabel>
+                  {selectedType === CashFlowType.BANK ? (
+                    <Select
+                      disabled={loading}
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue
+                            defaultValue={field.value}
+                            placeholder="Select a Bank Name"
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {bankAccounts.map((bankAccount) => (
+                          <SelectItem
+                            key={bankAccount.bankName}
+                            value={bankAccount.bankName}
+                          >
+                            {mergeBankAccountDetails(bankAccount)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Select
+                      disabled={loading || selectedType === CashFlowType.CASH}
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue
+                            defaultValue={field.value}
+                            placeholder="Select a Credit Card Name"
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {creditCards.map((creditCard) => (
+                          <SelectItem
+                            key={creditCard.creditCardName}
+                            value={creditCard.creditCardName}
+                          >
+                            {mergeCreditCardDetails(creditCard)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}

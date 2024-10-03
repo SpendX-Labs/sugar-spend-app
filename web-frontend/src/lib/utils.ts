@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { format } from "date-fns";
 import { twMerge } from "tailwind-merge";
 import { monthNameToNumber, monthNumberToName } from "./constants";
+import { BankAccount, CreditCard } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -140,4 +141,12 @@ export const generateYearlyExpenses = (year: number, inputData: any[]) => {
   }
 
   return result;
+};
+
+export const mergeBankAccountDetails = (bankAccount: BankAccount) => {
+  return bankAccount.bankName + " (XXXX " + bankAccount.last4Digit + ")";
+};
+
+export const mergeCreditCardDetails = (creditCard: CreditCard) => {
+  return creditCard.bankName + " (XXXX " + creditCard.last4Digit + ")";
 };
