@@ -11,6 +11,7 @@ import { RecentTransactions } from "@/components/recent-transactions";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AutoDebitExpenseCard from "@/components/cards/auto-debit-expense-card";
+import { NextMonthDeductionsTable } from "@/components/tables/next-month-deductions-table";
 
 export default function HomePage() {
   return (
@@ -45,10 +46,11 @@ export default function HomePage() {
               <div className="col-span-4 md:col-span-3">
                 <UpcomingDeductionChart />
               </div>
-              <div className="col-span-4">
-                <MonthlyProjectionChart />
+              <div className="col-span-4 h-[440px] md:min-h-[200x] md:h-full">
+                {/* <MonthlyProjectionChart /> */}
+                <NextMonthDeductionsTable />
               </div>
-              <div className="col-span-4 md:col-span-3">
+              <div className="col-span-4 md:col-span-3 h-[440px]">
                 <RecentTransactions />
               </div>
             </div>
