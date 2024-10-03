@@ -60,7 +60,8 @@ export function RecentTransactions() {
     .sort((a, b) => {
       if (a.date == b.date ? a.time < b.time : a.date < b.date) return 1;
       return -1;
-    });
+    })
+    .slice(0, 5);
 
   return (
     <Card className="h-full">
