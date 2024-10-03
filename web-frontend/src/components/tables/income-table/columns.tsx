@@ -32,7 +32,7 @@ export const columns: ColumnDef<Income>[] = [
   },
   {
     accessorKey: "cashFlowDetails.cashFlowName",
-    header: "BANK NAME",
+    header: "ACCOUNT NAME",
   },
   {
     accessorKey: "amount",

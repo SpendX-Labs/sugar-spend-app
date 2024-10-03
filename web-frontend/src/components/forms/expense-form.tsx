@@ -13,7 +13,12 @@ import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CashFlowDetails, CashFlowType, CreditCard } from "@/lib/types";
+import {
+  BankAccount,
+  CashFlowDetails,
+  CashFlowType,
+  CreditCard,
+} from "@/lib/types";
 import { useGetCreditCardsQuery } from "@/store/apis/credit-card-api";
 import {
   useAddExpenseMutation,
@@ -35,9 +40,14 @@ import {
 } from "../ui/select";
 import { useToast } from "../ui/use-toast";
 import { Textarea } from "../ui/textarea";
+import { useGetBankAccountsQuery } from "@/store/apis/bank-account-api";
+import { mergeBankAccountDetails, mergeCreditCardDetails } from "@/lib/utils";
 
 const formSchema = z.object({
-  creditCardName: z.string().min(1, { message: "Please select a credit card" }),
+  cashFlowName: z
+    .string()
+    .min(1, { message: "Please select a account name" })
+    .optional(),
   amount: z.coerce
     .number()
     .positive({ message: "Statement Date must be greater than 0" }),
@@ -84,11 +94,19 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
   const [addExpense] = useAddExpenseMutation();
   const [deleteExpense] = useDeleteExpenseMutation();
   const [editExpense] = useEditExpenseMutation();
+  const { data: bankAccountRes } = useGetBankAccountsQuery({
+    page: 0,
+    size: 100,
+  });
+  const bankAccounts: BankAccount[] = bankAccountRes?.data || [];
   const { data: creditCardRes } = useGetCreditCardsQuery({
     page: 0,
     size: 100,
   });
   const creditCards: CreditCard[] = creditCardRes?.data || [];
+  const [selectedType, setSelectedType] = useState<CashFlowType | string>(
+    CashFlowType.BANK
+  );
   const router = useRouter();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
@@ -116,7 +134,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
     : {
         bankName: "",
         expenseName: "",
-        expenseType: CashFlowType.CREDITCARD,
+        expenseType: CashFlowType.BANK,
         statementDate: null,
         dueDate: null,
         last4Digit: "",
@@ -128,6 +146,24 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
     defaultValues,
   });
 
+  const getCashFlowId = (data: ExpenseFormValues): number => {
+    if (data.expenseType === CashFlowType.BANK) {
+      return (
+        bankAccounts.filter(
+          (bankAccount) => bankAccount.bankName === data.cashFlowName
+        )?.[0]?.id || -1
+      );
+    }
+    if (data.expenseType === CashFlowType.CREDITCARD) {
+      return (
+        creditCards.filter(
+          (creditCard) => creditCard.creditCardName === data.cashFlowName
+        )?.[0]?.id || -1
+      );
+    }
+    return -1;
+  };
+
   const onSubmit = async (data: ExpenseFormValues) => {
     try {
       setLoading(true);
@@ -136,10 +172,8 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
           ...data,
           id: Number(initialData.id),
           cashFlowDetails: {
-            cashFlowId: creditCards.filter(
-              (creditCard) => creditCard.creditCardName === data.creditCardName
-            )?.[0].id,
-            cashFlowName: data.creditCardName,
+            cashFlowId: getCashFlowId(data),
+            cashFlowName: data.cashFlowName || "",
           },
           expenseDate: new Date(data.expenseDate).toISOString(),
         }).unwrap();
@@ -147,10 +181,8 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
         await addExpense({
           ...data,
           cashFlowDetails: {
-            cashFlowId: creditCards.filter(
-              (creditCard) => creditCard.creditCardName === data.creditCardName
-            )?.[0].id,
-            cashFlowName: data.creditCardName,
+            cashFlowId: getCashFlowId(data),
+            cashFlowName: data.cashFlowName || "",
           },
           expenseDate: new Date(data.expenseDate).toISOString(),
         }).unwrap();
@@ -226,14 +258,17 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
                   <FormLabel>Expense Type</FormLabel>
                   <Select
                     disabled={loading}
-                    onValueChange={field.onChange}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      setSelectedType(value);
+                    }}
                     value={field.value}
-                    defaultValue={CashFlowType.CREDITCARD}
+                    defaultValue={CashFlowType.BANK}
                   >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue
-                          defaultValue={CashFlowType.CREDITCARD}
+                          defaultValue={CashFlowType.BANK}
                           placeholder="Select Expense Type"
                         />
                       </SelectTrigger>
@@ -255,32 +290,60 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
               name="creditCardName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Credit Card</FormLabel>
-                  <Select
-                    disabled={loading}
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Select a Credit Card"
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {creditCards.map((creditCard) => (
-                        <SelectItem
-                          key={creditCard.creditCardName}
-                          value={creditCard.creditCardName}
-                        >
-                          {creditCard.creditCardName}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormLabel>Account Name</FormLabel>
+                  {selectedType === CashFlowType.BANK ? (
+                    <Select
+                      disabled={loading}
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue
+                            defaultValue={field.value}
+                            placeholder="Select a Bank Name"
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {bankAccounts.map((bankAccount) => (
+                          <SelectItem
+                            key={bankAccount.bankName}
+                            value={bankAccount.bankName}
+                          >
+                            {mergeBankAccountDetails(bankAccount)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Select
+                      disabled={loading || selectedType === CashFlowType.CASH}
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue
+                            defaultValue={field.value}
+                            placeholder="Select a Credit Card Name"
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {creditCards.map((creditCard) => (
+                          <SelectItem
+                            key={creditCard.creditCardName}
+                            value={creditCard.creditCardName}
+                          >
+                            {mergeCreditCardDetails(creditCard)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}

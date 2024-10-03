@@ -32,7 +32,7 @@ export const columns: ColumnDef<Expense>[] = [
   },
   {
     accessorKey: "cashFlowDetails.cashFlowName",
-    header: "CREDIT CARD",
+    header: "ACCOUNT NAME",
   },
   {
     accessorKey: "amount",
