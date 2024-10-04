@@ -26,7 +26,7 @@ export type CreditCard = {
 };
 
 export type CashFlowDetails = {
-  cashFlowId: number;
+  cashFlowId: number | null;
   cashFlowName: string;
 };
 
@@ -114,4 +114,33 @@ export type NextMonthReport = {
   totalAmount: number;
   remainingAmount: number;
   details: BudgetDetail[];
+};
+
+export enum LoanType {
+  REDUCING = "REDUCING",
+  OTHER_TYPES = "OTHER_TYPES",
+}
+
+export type Loan = {
+  id: number;
+  creditCardId?: number | null;
+  lenderId?: number;
+  lenderName?: string;
+  creditCardName?: string;
+  last4Digit?: string;
+  totalAmount: number;
+  loanType: LoanType;
+  interestRate: number;
+  noCostEmi: boolean;
+  tenure: number;
+  remainingTenure: number;
+  loanStartDate: string;
+  emiDateOfMonth: number;
+  principalAmount: number;
+  interestAmount: number;
+  updateLock: boolean;
+  remainingAmount: number;
+  remainingPrincipalAmount: number;
+  remainingInterestAmount: number;
+  emiAmount: number;
 };

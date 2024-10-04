@@ -91,6 +91,15 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
   expenseType,
   reason,
 }) => {
+  console.log({
+    id,
+    cashFlowDetails,
+    amount,
+    expenseDate,
+    expenseTime,
+    expenseType,
+    reason,
+  });
   const [addExpense] = useAddExpenseMutation();
   const [deleteExpense] = useDeleteExpenseMutation();
   const [editExpense] = useEditExpenseMutation();
@@ -105,7 +114,11 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
   });
   const creditCards: CreditCard[] = creditCardRes?.data || [];
   const [selectedType, setSelectedType] = useState<CashFlowType | string>(
-    CashFlowType.BANK
+    expenseType === CashFlowType.CREDITCARD
+      ? CashFlowType.CREDITCARD
+      : expenseType === CashFlowType.BANK
+      ? CashFlowType.BANK
+      : CashFlowType.CASH
   );
   const router = useRouter();
   const { toast } = useToast();
@@ -146,22 +159,22 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
     defaultValues,
   });
 
-  const getCashFlowId = (data: ExpenseFormValues): number => {
+  const getCashFlowId = (data: ExpenseFormValues): number | null => {
     if (data.expenseType === CashFlowType.BANK) {
       return (
         bankAccounts.filter(
           (bankAccount) => bankAccount.bankName === data.cashFlowName
-        )?.[0]?.id || -1
+        )?.[0]?.id || null
       );
     }
     if (data.expenseType === CashFlowType.CREDITCARD) {
       return (
         creditCards.filter(
           (creditCard) => creditCard.creditCardName === data.cashFlowName
-        )?.[0]?.id || -1
+        )?.[0]?.id || null
       );
     }
-    return -1;
+    return null;
   };
 
   const onSubmit = async (data: ExpenseFormValues) => {

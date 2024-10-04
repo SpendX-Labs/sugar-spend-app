@@ -148,22 +148,22 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
     defaultValues,
   });
 
-  const getCashFlowId = (data: IncomeFormValues): number => {
+  const getCashFlowId = (data: IncomeFormValues): number | null => {
     if (data.incomeType === CashFlowType.BANK) {
       return (
         bankAccounts.filter(
           (bankAccount) => bankAccount.bankName === data.cashFlowName
-        )?.[0]?.id || -1
+        )?.[0]?.id || null
       );
     }
     if (data.incomeType === CashFlowType.CREDITCARD) {
       return (
         creditCards.filter(
           (creditCard) => creditCard.creditCardName === data.cashFlowName
-        )?.[0]?.id || -1
+        )?.[0]?.id || null
       );
     }
-    return -1;
+    return null;
   };
 
   const onSubmit = async (data: IncomeFormValues) => {
