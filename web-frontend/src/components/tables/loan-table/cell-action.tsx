@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertModal } from "@/components/modal/alert-modal";
+import { LoanModal } from "@/components/modal/loan-modal";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -26,6 +27,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [showLoanDetails, setShowLoanDetails] = useState(false);
 
   const onConfirm = async () => {
     try {
@@ -53,6 +55,11 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         onConfirm={onConfirm}
         loading={loading}
       />
+      <LoanModal
+        loan={data}
+        isOpen={showLoanDetails}
+        onClose={() => setShowLoanDetails(false)}
+      />
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
@@ -63,11 +70,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-          <DropdownMenuItem
-          // onClick={() =>
-          //   router.push(`/loan/${data.id}?${createQueryString(data)}`)
-          // }
-          >
+          <DropdownMenuItem onClick={() => setShowLoanDetails(true)}>
             <View className="mr-2 h-4 w-4" /> View
           </DropdownMenuItem>
           <DropdownMenuItem
