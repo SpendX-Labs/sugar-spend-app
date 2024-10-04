@@ -150,3 +150,10 @@ export const mergeBankAccountDetails = (bankAccount: BankAccount) => {
 export const mergeCreditCardDetails = (creditCard: CreditCard) => {
   return creditCard.bankName + " (XXXX " + creditCard.last4Digit + ")";
 };
+
+export const convertMonthsToYearsMonths = (totalMonths: number) => {
+  const years = Math.floor(totalMonths / 12);
+  const months = totalMonths % 12;
+
+  return `${years} year(s) ${months} month(s)`;
+};
