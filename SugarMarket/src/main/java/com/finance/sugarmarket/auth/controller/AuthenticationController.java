@@ -88,7 +88,7 @@ public class AuthenticationController {
 				.body(new SignUpResponseDTO("There are some internal error", false));
 	}
 
-	@PostMapping("/forget/password")
+	@PostMapping("forget-password")
 	public ResponseEntity<GenericResponse> forgetPassword(@RequestBody AuthenticationRequest request) {
 		try {
 			GenericResponse response = authenticationService.forgetPassword(request);
@@ -102,7 +102,7 @@ public class AuthenticationController {
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new GenericResponse("Failed to reset password", false));
 	}
 
-	@PostMapping("/forget/password/verifyotp")
+	@PostMapping("password-verifyotp")
 	public ResponseEntity<GenericResponse> verifyOTPForPassword(@RequestBody SignUpRequestDTO request) {
 		try {
 			GenericResponse signUpDto = authenticationService.confirmPasswordCheckWithOtp(request.getOtp(),

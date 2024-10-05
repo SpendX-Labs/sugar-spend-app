@@ -39,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		}
 
 		final String jwt = jwtCacheService.extractJwtFromHeader(authHeader);
-		
+
 		final String userName = jwtService.extractUsername(jwt);
 
 		if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -47,13 +47,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			try {
 				UserDetails redisUserDetails = jwtCacheService.getUserDetailsByToken(jwt);
 				if (redisUserDetails != null && jwtService.isTokenValid(jwt, redisUserDetails)) {
-					UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(redisUserDetails,
-							null, redisUserDetails.getAuthorities());
+					UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+							redisUserDetails, null, redisUserDetails.getAuthorities());
 					authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 					SecurityContextHolder.getContext().setAuthentication(authToken);
 				}
 			} catch (Exception e) {
-				throw new ServletException("JWT Token not found");
+				logger.error("JWT token validation failed: " + e.getMessage());
 			}
 		}
 
