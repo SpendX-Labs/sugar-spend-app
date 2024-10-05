@@ -22,7 +22,7 @@ import com.finance.sugarmarket.auth.dto.GenericResponse;
 import com.finance.sugarmarket.auth.dto.SignUpRequestDTO;
 import com.finance.sugarmarket.auth.dto.SignUpResponseDTO;
 import com.finance.sugarmarket.auth.service.AuthenticationService;
-import com.finance.sugarmarket.auth.service.JwtCacheService;
+import com.finance.sugarmarket.auth.service.UserJwtCacheService;
 import com.finance.sugarmarket.constants.AppConstants;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -32,7 +32,7 @@ public class AuthenticationController {
 	@Autowired
 	private AuthenticationService authenticationService;
 	@Autowired
-	private JwtCacheService jwtCacheService;
+	private UserJwtCacheService jwtCacheService;
 
 	private static final Logger log = LoggerFactory.getLogger(AuthenticationService.class);
 
@@ -41,7 +41,7 @@ public class AuthenticationController {
 		try {
 			return ResponseEntity.ok(authenticationService.authenticate(request));
 		} catch (Exception e) {
-			log.error("getUserDetailsByJWT failed", e.getMessage());
+			log.error("getUserDetailsByJWT failed", e);
 		}
 		return ResponseEntity.status(HttpStatus.FORBIDDEN)
 				.body(new AuthenticationResponse("Incorrect Username or password", false));
@@ -53,7 +53,7 @@ public class AuthenticationController {
 			String jwt = jwtCacheService.extractJwtFromHeader(request.get(AppConstants.AUTHORIZATION));
 			return ResponseEntity.ok(jwtCacheService.getUserDetailsByToken(jwt));
 		} catch (Exception e) {
-			log.error("getUserDetailsByJWT failed", e.getMessage());
+			log.error("getUserDetailsByJWT failed", e);
 		}
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
 	}
@@ -61,9 +61,13 @@ public class AuthenticationController {
 	@PostMapping("/signup")
 	public ResponseEntity<SignUpResponseDTO> signup(@RequestBody SignUpRequestDTO request) {
 		try {
-			return ResponseEntity.ok(authenticationService.signup(request));
+			SignUpResponseDTO signUpDto = authenticationService.signup(request);
+			if (signUpDto.getStatus()) {
+				return ResponseEntity.ok(signUpDto);
+			}
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(signUpDto);
 		} catch (Exception e) {
-			log.error("getUserDetailsByJWT failed", e.getMessage());
+			log.error("getUserDetailsByJWT failed", e);
 		}
 		return ResponseEntity.status(HttpStatus.FORBIDDEN)
 				.body(new SignUpResponseDTO("There are some internal error", false));
@@ -72,7 +76,11 @@ public class AuthenticationController {
 	@PostMapping("/verifyotp")
 	public ResponseEntity<SignUpResponseDTO> verifyotp(@RequestBody SignUpRequestDTO request) {
 		try {
-			return ResponseEntity.ok(authenticationService.verifyotp(request));
+			SignUpResponseDTO signUpDto = authenticationService.verifyotp(request);
+			if (signUpDto.getStatus()) {
+				return ResponseEntity.ok(signUpDto);
+			}
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(signUpDto);
 		} catch (Exception e) {
 			log.error("getUserDetailsByJWT failed", e.getMessage());
 		}
@@ -80,15 +88,34 @@ public class AuthenticationController {
 				.body(new SignUpResponseDTO("There are some internal error", false));
 	}
 
-	@PostMapping("/forget-password")
-	public ResponseEntity<GenericResponse> forgetPassword(@RequestBody Map<String, String> request) {
+	@PostMapping("/forget/password")
+	public ResponseEntity<GenericResponse> forgetPassword(@RequestBody AuthenticationRequest request) {
 		try {
-			return ResponseEntity.ok(authenticationService.forgetPassword(request));
+			GenericResponse response = authenticationService.forgetPassword(request);
+			if (response.getStatus()) {
+				return ResponseEntity.ok(response);
+			}
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
 		} catch (Exception e) {
 			log.error("forgetPassword failed", e.getMessage());
 		}
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new GenericResponse("Failed to reset password", false));
+	}
+
+	@PostMapping("/forget/password/verifyotp")
+	public ResponseEntity<GenericResponse> verifyOTPForPassword(@RequestBody SignUpRequestDTO request) {
+		try {
+			GenericResponse signUpDto = authenticationService.confirmPasswordCheckWithOtp(request.getOtp(),
+					request.getUsername());
+			if (signUpDto.getStatus()) {
+				return ResponseEntity.ok(signUpDto);
+			}
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(signUpDto);
+		} catch (Exception e) {
+			log.error("getUserDetailsByJWT failed", e.getMessage());
+		}
 		return ResponseEntity.status(HttpStatus.FORBIDDEN)
-				.body(new GenericResponse("Failed to reset password", false));
+				.body(new SignUpResponseDTO("There are some internal error", false));
 	}
 
 }

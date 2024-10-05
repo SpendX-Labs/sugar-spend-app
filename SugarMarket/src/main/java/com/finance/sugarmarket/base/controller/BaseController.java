@@ -17,7 +17,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finance.sugarmarket.auth.model.MFRole;
 import com.finance.sugarmarket.auth.repo.MapRoleUserRepo;
-import com.finance.sugarmarket.auth.service.JwtCacheService;
+import com.finance.sugarmarket.auth.service.UserJwtCacheService;
 import com.finance.sugarmarket.auth.service.JwtService;
 import com.finance.sugarmarket.base.dto.Filter;
 import com.finance.sugarmarket.base.dto.Operands;
@@ -34,7 +34,7 @@ abstract public class BaseController {
 	@Autowired
 	private MapRoleUserRepo mapRoleUserRepo;
 	@Autowired
-	private JwtCacheService jwtCacheService;
+	private UserJwtCacheService jwtCacheService;
 	@Autowired
 	private ObjectMapper objectMapper;
 

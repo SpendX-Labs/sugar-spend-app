@@ -1,9 +1,9 @@
 package com.finance.sugarmarket.auth.service;
 
 import java.security.SecureRandom;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,16 +20,17 @@ import com.finance.sugarmarket.auth.dto.AuthenticationResponse;
 import com.finance.sugarmarket.auth.dto.GenericResponse;
 import com.finance.sugarmarket.auth.dto.SignUpRequestDTO;
 import com.finance.sugarmarket.auth.dto.SignUpResponseDTO;
+import com.finance.sugarmarket.auth.dto.UpdatePasswordDto;
 import com.finance.sugarmarket.auth.dto.UserDetailsDTO;
-import com.finance.sugarmarket.auth.memory.UserOTPs;
+import com.finance.sugarmarket.auth.dto.UserTempData;
 import com.finance.sugarmarket.auth.model.MFRole;
 import com.finance.sugarmarket.auth.model.MFUser;
 import com.finance.sugarmarket.auth.model.MapRoleUser;
-import com.finance.sugarmarket.auth.model.OTPDetails;
 import com.finance.sugarmarket.auth.repo.MFUserRepo;
 import com.finance.sugarmarket.auth.repo.MapRoleUserRepo;
 import com.finance.sugarmarket.auth.repo.RoleRepo;
 import com.finance.sugarmarket.auth.util.AuthenticationUtil;
+import com.finance.sugarmarket.base.enums.SignUpPrefixType;
 import com.finance.sugarmarket.constants.AppConstants;
 import com.finance.sugarmarket.sms.service.EmailService;
 
@@ -55,11 +56,14 @@ public class AuthenticationService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	@Autowired
-	private JwtCacheService jtwCacheService;
+	private UserJwtCacheService jtwCacheService;
+	@Autowired
+	private UserOTPCacheService userOtpCacheService;
+	@Autowired
+	private ModelMapper modelMapper;
 
 	private static final SecureRandom secureRandom = new SecureRandom();
 	private static final int OTP_LENGTH = 6;
-	private static final long OTP_EXPIRATION_TIME_MS = 5 * 60 * 1000;
 
 	public AuthenticationResponse authenticate(AuthenticationRequest request) {
 		authenticationManager
@@ -89,43 +93,42 @@ public class AuthenticationService {
 		}
 
 		MFUser user = new MFUser();
+		if (!AuthenticationUtil.getInstance().isValidEmail(request.getEmailId())) {
+			return new SignUpResponseDTO("Invalid email", false);
+		}
 		user.setEmail(request.getEmailId());
 		user.setFullname(request.getFullName());
+		String passwordPolicy = AuthenticationUtil.getInstance().checkPasswordPolicy(request.getPassword());
+		if (!passwordPolicy.equals(AppConstants.SUCCESS)) {
+			return new SignUpResponseDTO(passwordPolicy, false);
+		}
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
 		user.setPhonenumber(request.getPhoneNumber());
 		user.setUsername(request.getUsername());
-		user.setIsActive(false);
-		user = userRepo.save(user);
-		MapRoleUser mapRoleUser = saveMapRoleUser(user);
-		if (!sendOTPEmailandSave(request.getEmailId(), request.getUsername(), request.getFullName())) {
-			removeUserAndRoleMapping(user, mapRoleUser);
+		user.setIsActive(true);
+
+		String otpDetail = sendOTPEmailandSave(request.getEmailId(), request.getUsername(), request.getFullName());
+
+		if (StringUtils.isBlank(otpDetail)) {
 			return new SignUpResponseDTO("Failed to send OTP. Please try again.", false);
 		}
+		userOtpCacheService.saveUserInCache(new UserTempData(user, otpDetail), request.getUsername());
 		return new SignUpResponseDTO(request.getUsername(), request.getEmailId(),
 				"OTP is sent to the registered email ID", true);
 	}
 
-	private MapRoleUser saveMapRoleUser(MFUser user) {
-		MFRole role = roleRepo.getReferenceById(2L);
-		MapRoleUser mapRoleUser = new MapRoleUser();
-		mapRoleUser.setRole(role);
-		mapRoleUser.setUser(user);
-		return mapRoleUserRepo.save(mapRoleUser);
-	}
-
-	private boolean sendOTPEmailandSave(String emailId, String username, String fullName) {
+	private String sendOTPEmailandSave(String emailId, String username, String fullName) {
+		String otp = null;
 		try {
 			log.info("sending otp for " + username);
-			OTPDetails otp = new OTPDetails(generateOTP(), OTP_EXPIRATION_TIME_MS);
-			UserOTPs.getInstance().addOtp(username, otp); // add otp
+			otp = generateOTP();
 			String subject = fullName + "! Here is your OTP";
-			String body = otp.getOtp() + " is your OTP for Sugar Spend. Please do not share to anyone.\nArigato";
+			String body = otp + " is your OTP for Sugar Spend. Please do not share to anyone.\nArigato";
 			emailService.sendSMS(emailId, subject, body);
 		} catch (Exception e) {
 			log.error("Error while sending OTP.", e);
-			return false;
 		}
-		return true;
+		return otp;
 	}
 
 	private String generateOTP() throws Exception {
@@ -136,43 +139,37 @@ public class AuthenticationService {
 		return otp.toString();
 	}
 
-	private void removeUserAndRoleMapping(MFUser user, MapRoleUser mapRoleUser) {
-		mapRoleUserRepo.delete(mapRoleUser);
-		userRepo.delete(user);
-	}
-
 	public SignUpResponseDTO verifyotp(SignUpRequestDTO request) {
-		OTPDetails otp = UserOTPs.getInstance().getOtp(request.getUsername());
-		if (otp != null
-				&& (otp.getExpirationTime() > System.currentTimeMillis() || otp.getOtp().equals(request.getOtp()))) {
-			MFUser user = userRepo.findByUsername(request.getUsername());
-			user.setIsActive(true);
-			userRepo.save(user);
-			UserOTPs.getInstance().removeOtp(request.getUsername());
+		UserTempData userTempData = userOtpCacheService.getUserInCache(SignUpPrefixType.USER_SIGNUP,
+				request.getUsername());
+		if (userTempData != null && userTempData.getOtp() != null && userTempData.getOtp().equals(request.getOtp())) {
+			MFUser user = userTempData.getUser();
+			user = userRepo.save(user);
+			saveMapRoleUser(user);
 			return new SignUpResponseDTO(request.getUsername(), request.getEmailId(), "Signup successful please login",
 					true);
-		} else if (otp != null && otp.getExpirationTime() < System.currentTimeMillis()) {
-			UserOTPs.getInstance().removeOtp(request.getUsername());
-			return new SignUpResponseDTO(request.getUsername(), request.getEmailId(), "OTP Expired", false);
+		} else if (userTempData != null && userTempData.getOtp() != null
+				&& !userTempData.getOtp().equals(request.getOtp())) {
+			return new SignUpResponseDTO(request.getUsername(), request.getEmailId(), "incorrect OTP", false);
 		}
-		return new SignUpResponseDTO(request.getUsername(), request.getEmailId(), "incorrect OTP", false);
+		return new SignUpResponseDTO(request.getUsername(), request.getEmailId(), "OTP Expired", false);
 	}
 
-	public UserDetails saveUserDetails(UserDetailsDTO userDto, String userName) {
-		MFUser user = userRepo.findByUsername(userName);
-		user.setFullname(userDto.getFullName());
-		user.setPhonenumber(user.getPhonenumber());
-		OTPDetails otp = UserOTPs.getInstance().getOtp(userName);
-		if (otp != null
-				&& (otp.getExpirationTime() > System.currentTimeMillis() || otp.getOtp().equals(userDto.getOtp()))) {
-			if (StringUtils.isNotBlank(userDto.getEmail())) {
-				user.setEmail(userDto.getEmail());
-			}
-			if (StringUtils.isNotBlank(userName))
-				user.setPassword(userDto.getPassword());
-		}
+	private MapRoleUser saveMapRoleUser(MFUser user) {
+		MFRole role = roleRepo.getReferenceById(2L);
+		MapRoleUser mapRoleUser = new MapRoleUser();
+		mapRoleUser.setRole(role);
+		mapRoleUser.setUser(user);
+		return mapRoleUserRepo.save(mapRoleUser);
+	}
+
+	public UserDetails saveUserDetails(UserDetailsDTO userDto, Long userId) throws Exception {
+		MFUser user = userRepo.findById(userId).get();
+		modelMapper.map(userDto, user);
 		userRepo.saveAndFlush(user);
-		return getUserDetailsByUserName(userName);
+		UserDetails userDetails = getUserDetailsByUserName(user.getUsername());
+		jtwCacheService.updateAllCacheKeyValues(user.getId(), userDetails);
+		return userDetails;
 	}
 
 	private UserDetails getUserDetailsByUserName(String userName) {
@@ -181,24 +178,95 @@ public class AuthenticationService {
 		return user;
 	}
 
-	public GenericResponse forgetPassword(Map<String, String> request) {
+	public GenericResponse forgetPassword(AuthenticationRequest request) {
 		MFUser user = null;
-		if (AuthenticationUtil.getInstance().isValidEmail(request.get(AppConstants.REQUEST_ID))) {
-			user = userRepo.findByEmailAndISActive(request.get(AppConstants.REQUEST_ID));
+		String passwordPolicy = AuthenticationUtil.getInstance().checkPasswordPolicy(request.getPassword());
+		if (!passwordPolicy.equals(AppConstants.SUCCESS)) {
+			return new SignUpResponseDTO(passwordPolicy, false);
+		}
+		String password = passwordEncoder.encode(request.getPassword());
+		if (AuthenticationUtil.getInstance().isValidEmail(request.getUsername())) {
+			user = userRepo.findByEmailAndISActive(request.getUsername());
 		} else {
-			user = userRepo.findBYUsernameAndISActive(request.get(AppConstants.REQUEST_ID));
+			user = userRepo.findBYUsernameAndISActive(request.getUsername());
 		}
 
 		if (user == null) {
 			return new GenericResponse("User doesn't exits", false);
 		}
 
-		if (!sendOTPEmailandSave(user.getEmail(), user.getUsername(), user.getFullname())) {
-			return new GenericResponse("Failed to send OTP, Please try later", false);
+		String otpDetail = sendOTPEmailandSave(user.getEmail(), user.getUsername(), user.getFullname());
+
+		if (StringUtils.isBlank(otpDetail)) {
+			return new GenericResponse("Failed to send OTP. Please try again.", false);
 		}
-
-		return new GenericResponse("OTP sent to your email", true);
-
+		userOtpCacheService.saveUserInCache(new UserTempData(password, otpDetail, SignUpPrefixType.FORGET_PASSWORD),
+				user.getUsername());
+		return new GenericResponse("OTP is sent to the registered email ID", true);
 	}
 
+	public GenericResponse confirmPasswordCheckWithOtp(String otp, String username) {
+		MFUser user = null;
+		if (AuthenticationUtil.getInstance().isValidEmail(username)) {
+			user = userRepo.findByEmailAndISActive(username);
+		} else {
+			user = userRepo.findBYUsernameAndISActive(username);
+		}
+		UserTempData userTempData = userOtpCacheService.getUserInCache(SignUpPrefixType.FORGET_PASSWORD,
+				user.getUsername());
+		if (userTempData != null && userTempData.getOtp() != null && userTempData.getOtp().equals(otp)) {
+			user.setPassword(userTempData.getPassword());
+			user = userRepo.save(user);
+			return new GenericResponse("Email Changed Successfully", true);
+		} else if (userTempData != null && userTempData.getOtp() != null && !userTempData.getOtp().equals(otp)) {
+			return new GenericResponse("incorrect OTP", false);
+		}
+		return new GenericResponse("OTP Expired", false);
+	}
+
+	public GenericResponse updateEmail(String email, Long userId) {
+		MFUser user = userRepo.findById(userId).get();
+		String otpDetail = sendOTPEmailandSave(email, user.getUsername(), user.getFullname());
+		if (StringUtils.isBlank(otpDetail)) {
+			return new GenericResponse("Failed to send OTP. Please try again.", false);
+		}
+		userOtpCacheService.saveUserInCache(new UserTempData(email, otpDetail, SignUpPrefixType.UPDATE_EMAIL),
+				user.getUsername());
+		return new GenericResponse("OTP is sent to the registered email ID", true);
+	}
+
+	public GenericResponse confirmEmailCheckWithOtp(String otp, Long userId) {
+		MFUser user = userRepo.findById(userId).get();
+		UserTempData userTempData = userOtpCacheService.getUserInCache(SignUpPrefixType.UPDATE_EMAIL,
+				user.getUsername());
+		if (userTempData != null && userTempData.getOtp() != null && userTempData.getOtp().equals(otp)) {
+			user.setEmail(userTempData.getEmail());
+			user = userRepo.save(user);
+			return new GenericResponse("Email Changed Successfully", true);
+		} else if (userTempData != null && userTempData.getOtp() != null && !userTempData.getOtp().equals(otp)) {
+			return new GenericResponse("incorrect OTP", false);
+		}
+		return new GenericResponse("OTP Expired", false);
+	}
+
+	public GenericResponse updatePassword(UpdatePasswordDto passwordDto, Long userId) {
+		MFUser user = userRepo.findById(userId).get();
+
+		if (!passwordDto.getNewPassword().equals(passwordDto.getConfirmPassword())) {
+			return new GenericResponse("Password Didn't match ", false);
+		}
+
+		String encyptedCurrentPassword = passwordEncoder.encode(passwordDto.getCurrentPassword());
+		String encryptedNewPassword = passwordEncoder.encode(passwordDto.getNewPassword());
+
+		if (!user.getPassword().equals(encyptedCurrentPassword)) {
+			return new GenericResponse("Wrong password", false);
+		}
+
+		user.setPassword(encryptedNewPassword);
+
+		userRepo.save(user);
+
+		return new GenericResponse("Email Changed Successfully", true);
+	}
 }

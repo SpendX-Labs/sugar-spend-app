@@ -14,18 +14,22 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class LogoutService implements LogoutHandler {
-	
+
 	private static final Logger log = LoggerFactory.getLogger(LogoutService.class);
-	
+
 	@Autowired
-	private JwtCacheService jwtCacheService;
+	private UserJwtCacheService jwtCacheService;
 
 	@Override
 	public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-		log.info("inside LogoutService()");
-		final String authHeader = request.getHeader(AppConstants.AUTHORIZATION);
-		final String jwt = jwtCacheService.extractJwtFromHeader(authHeader);
-		jwtCacheService.removeToken(jwt);
+		try {
+			log.info("inside LogoutService()");
+			final String authHeader = request.getHeader(AppConstants.AUTHORIZATION);
+			final String jwt = jwtCacheService.extractJwtFromHeader(authHeader);
+			jwtCacheService.removeToken(jwt);
+		} catch (Exception e) {
+			log.error("error while doing logout", e);
+		}
 
 	}
 }
