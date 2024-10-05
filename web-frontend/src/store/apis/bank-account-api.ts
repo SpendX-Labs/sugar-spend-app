@@ -47,10 +47,10 @@ export const bankAccountApi = createApi({
     }),
     getBankAccounts: builder.query<
       BankAccountsResponse,
-      { page: number; size: number }
+      { offset: number; limit: number }
     >({
-      query: ({ page, size }) => ({
-        url: `${bankAccountUrl}?${createQueryString({ page, size })}`,
+      query: ({ offset, limit }) => ({
+        url: `${bankAccountUrl}?${createQueryString({ offset, limit })}`,
         method: "GET",
       }),
       providesTags: ["BankAccount"],

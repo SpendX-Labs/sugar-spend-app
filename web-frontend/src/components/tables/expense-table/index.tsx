@@ -22,17 +22,21 @@ export const ExpenseTable = () => {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const page = Number(searchParams.get("page")) || 1;
-  const size = Number(searchParams.get("size")) || 10;
+  const offset = Number(searchParams.get("offset")) || 0;
+  const limit = Number(searchParams.get("limit")) || 10;
 
   const {
     data: expenseRes,
     error,
     isLoading,
+    refetch,
   } = useGetExpensesQuery({
-    page: page - 1,
-    size,
+    offset,
+    limit,
   });
+  const totalExpenses = expenseRes?.total || 0;
+  const pageCount = Math.ceil(totalExpenses / limit);
+  const expenses: Expense[] = expenseRes?.data || [];
 
   const createQueryString = React.useCallback(
     (params: Record<string, string | number | null>) => {
@@ -53,26 +57,14 @@ export const ExpenseTable = () => {
 
   const [{ pageIndex, pageSize }, setPagination] =
     React.useState<PaginationState>({
-      pageIndex: page - 1,
-      pageSize: size,
+      pageIndex: offset,
+      pageSize: limit,
     });
 
-  React.useEffect(() => {
-    router.push(
-      `${pathname}?${createQueryString({
-        page: pageIndex + 1,
-        size: pageSize,
-      })}`,
-      {
-        scroll: false,
-      }
-    );
-  }, [pageIndex, pageSize]);
-
   const table = useReactTable({
-    data: expenseRes?.data || [],
+    data: expenses,
     columns,
-    pageCount: page ?? -1,
+    pageCount,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     state: {
@@ -84,18 +76,29 @@ export const ExpenseTable = () => {
     manualFiltering: true,
   });
 
+  React.useEffect(() => {
+    router.push(
+      `${pathname}?${createQueryString({
+        offset: pageIndex,
+        limit: pageSize,
+      })}`,
+      {
+        scroll: false,
+      }
+    );
+    refetch();
+  }, [pageIndex, pageSize, refetch]);
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error fetching credit cards</div>;
-
-  const totalExpenses = expenseRes?.total || 0;
-  const pageCount = Math.ceil(totalExpenses / size);
-  const expenses: Expense[] = expenseRes?.data || [];
 
   return (
     <>
       <div className="flex items-start justify-between">
         <Heading
-          title={"Expenses" + (expenses.length ? `(${expenses.length})` : "")}
+          title={
+            "Expenses" + (expenseRes?.total ? `(${expenseRes.total})` : "")
+          }
           description="Manage your expenses"
         />
         <Button

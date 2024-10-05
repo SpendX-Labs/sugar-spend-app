@@ -144,3 +144,21 @@ export type Loan = {
   remainingInterestAmount: number;
   emiAmount: number;
 };
+
+export type UserInfo = {
+  username: string;
+  password: null;
+  fullName: string;
+  authorities: [
+    {
+      authority: string;
+    }
+  ];
+  message: string | null;
+  email: string;
+  phoneNumber: string;
+  enabled: boolean;
+  accountNonExpired: boolean;
+  accountNonLocked: boolean;
+  credentialsNonExpired: boolean;
+};

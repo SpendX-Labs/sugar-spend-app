@@ -45,10 +45,10 @@ export const expenseApi = createApi({
     }),
     getExpenses: builder.query<
       ExpensesResponse,
-      { page: number; size: number }
+      { offset: number; limit: number }
     >({
-      query: ({ page, size }) => ({
-        url: `${expenseUrl}?${createQueryString({ page, size })}`,
+      query: ({ offset, limit }) => ({
+        url: `${expenseUrl}?${createQueryString({ offset, limit })}`,
         method: "GET",
       }),
       providesTags: ["Expense"],

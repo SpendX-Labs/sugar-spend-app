@@ -22,16 +22,17 @@ export const IncomeTable = () => {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const page = Number(searchParams.get("page")) || 1;
-  const size = Number(searchParams.get("size")) || 10;
+  const offset = Number(searchParams.get("offset")) || 0;
+  const limit = Number(searchParams.get("limit")) || 10;
 
   const {
     data: incomeRes,
     error,
     isLoading,
+    refetch,
   } = useGetIncomesQuery({
-    page: page - 1,
-    size,
+    offset: offset,
+    limit,
   });
 
   const createQueryString = React.useCallback(
@@ -53,26 +54,18 @@ export const IncomeTable = () => {
 
   const [{ pageIndex, pageSize }, setPagination] =
     React.useState<PaginationState>({
-      pageIndex: page - 1,
-      pageSize: size,
+      pageIndex: offset,
+      pageSize: limit,
     });
 
-  React.useEffect(() => {
-    router.push(
-      `${pathname}?${createQueryString({
-        page: pageIndex + 1,
-        size: pageSize,
-      })}`,
-      {
-        scroll: false,
-      }
-    );
-  }, [pageIndex, pageSize]);
+  const totalIncomes = incomeRes?.total || 0;
+  const pageCount = Math.ceil(totalIncomes / limit);
+  const incomes: Income[] = incomeRes?.data || [];
 
   const table = useReactTable({
     data: incomeRes?.data || [],
     columns,
-    pageCount: page ?? -1,
+    pageCount,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     state: {
@@ -84,12 +77,21 @@ export const IncomeTable = () => {
     manualFiltering: true,
   });
 
+  React.useEffect(() => {
+    router.push(
+      `${pathname}?${createQueryString({
+        offset: pageIndex,
+        limit: pageSize,
+      })}`,
+      {
+        scroll: false,
+      }
+    );
+    refetch();
+  }, [pageIndex, pageSize, refetch]);
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error fetching credit cards</div>;
-
-  const totalIncomes = incomeRes?.total || 0;
-  const pageCount = Math.ceil(totalIncomes / size);
-  const incomes: Income[] = incomeRes?.data || [];
 
   return (
     <>

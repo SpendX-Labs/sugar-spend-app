@@ -1,6 +1,7 @@
 import { authBaseQuery } from "@/lib/api-queries";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { logout } from "../slices/auth-slice";
+import { UserInfo } from "@/lib/types";
 
 export type LoginRequestBody = { username: string; password: string };
 
@@ -35,24 +36,6 @@ export type SignupResponse = {
   status: boolean;
   username: string;
   emailI: string;
-};
-
-export type UserInfoResponse = {
-  username: string;
-  password: null;
-  fullName: string;
-  authorities: [
-    {
-      authority: string;
-    }
-  ];
-  message: string | null;
-  email: string;
-  phoneNumber: string;
-  enabled: boolean;
-  accountNonExpired: boolean;
-  accountNonLocked: boolean;
-  credentialsNonExpired: boolean;
 };
 
 export type AuthDataResponse = {
@@ -103,7 +86,7 @@ export const authApi = createApi({
         body: data,
       }),
     }),
-    userInfo: builder.query<UserInfoResponse, void>({
+    userInfo: builder.query<UserInfo, void>({
       query: () => ({
         url: "/auth/userinfo",
         method: "GET",

@@ -22,17 +22,21 @@ export const LoanTable = () => {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const page = Number(searchParams.get("page")) || 1;
-  const size = Number(searchParams.get("size")) || 10;
+  const offset = Number(searchParams.get("offset")) || 0;
+  const limit = Number(searchParams.get("limit")) || 10;
 
   const {
     data: loanRes,
     error,
     isLoading,
+    refetch,
   } = useGetLoansQuery({
-    page: page - 1,
-    size,
+    offset,
+    limit,
   });
+  const totalLoans = loanRes?.total || 0;
+  const pageCount = Math.ceil(totalLoans / limit);
+  const loans: Loan[] = loanRes?.data || [];
 
   const createQueryString = React.useCallback(
     (params: Record<string, string | number | null>) => {
@@ -53,26 +57,14 @@ export const LoanTable = () => {
 
   const [{ pageIndex, pageSize }, setPagination] =
     React.useState<PaginationState>({
-      pageIndex: page - 1,
-      pageSize: size,
+      pageIndex: offset,
+      pageSize: limit,
     });
-
-  React.useEffect(() => {
-    router.push(
-      `${pathname}?${createQueryString({
-        page: pageIndex + 1,
-        size: pageSize,
-      })}`,
-      {
-        scroll: false,
-      }
-    );
-  }, [pageIndex, pageSize]);
 
   const table = useReactTable({
     data: loanRes?.data || [],
     columns,
-    pageCount: page ?? -1,
+    pageCount,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     state: {
@@ -84,12 +76,21 @@ export const LoanTable = () => {
     manualFiltering: true,
   });
 
+  React.useEffect(() => {
+    router.push(
+      `${pathname}?${createQueryString({
+        offset: pageIndex,
+        limit: pageSize,
+      })}`,
+      {
+        scroll: false,
+      }
+    );
+    refetch();
+  }, [pageIndex, pageSize, refetch]);
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error fetching credit cards</div>;
-
-  const totalLoans = loanRes?.total || 0;
-  const pageCount = Math.ceil(totalLoans / size);
-  const loans: Loan[] = loanRes?.data || [];
 
   return (
     <>

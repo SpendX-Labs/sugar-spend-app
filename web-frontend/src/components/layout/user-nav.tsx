@@ -55,9 +55,13 @@ export function UserNav() {
               Billing
               <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
             </DropdownMenuItem> */}
-            <DropdownMenuItem>
-              Settings
-              <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+            <DropdownMenuItem
+              onClick={async () => {
+                router.push("/profile");
+              }}
+            >
+              Edit Profile
+              <DropdownMenuShortcut>⌘P</DropdownMenuShortcut>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />

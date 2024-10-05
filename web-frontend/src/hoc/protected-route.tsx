@@ -17,7 +17,7 @@ const ProtectedRoute: React.FC<React.PropsWithChildren<any>> = ({
     } else if (!isLoading) {
       router.push("/login");
     }
-  }, [user, router]);
+  }, [user, router, isLoading]);
 
   if (isLoading) {
     return <div>Loading...</div>;

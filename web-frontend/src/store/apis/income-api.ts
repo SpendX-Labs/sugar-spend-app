@@ -43,9 +43,12 @@ export const incomeApi = createApi({
       }),
       invalidatesTags: ["Income"],
     }),
-    getIncomes: builder.query<IncomesResponse, { page: number; size: number }>({
-      query: ({ page, size }) => ({
-        url: `${incomeUrl}?${createQueryString({ page, size })}`,
+    getIncomes: builder.query<
+      IncomesResponse,
+      { offset: number; limit: number }
+    >({
+      query: ({ offset, limit }) => ({
+        url: `${incomeUrl}?${createQueryString({ offset, limit })}`,
         method: "GET",
       }),
       providesTags: ["Income"],

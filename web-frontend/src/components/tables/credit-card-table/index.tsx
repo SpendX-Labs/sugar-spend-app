@@ -1,4 +1,5 @@
 "use client";
+
 import {
   ColumnDef,
   PaginationState,
@@ -33,11 +34,11 @@ export function CreditCardTable<TData, TValue>({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const page = searchParams?.get("page") ?? "1";
-  const pageAsNumber = Number(page);
+  const offset = searchParams?.get("offset") ?? "0";
+  const pageAsNumber = Number(offset);
   const fallbackPage =
-    isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber;
-  const per_page = searchParams?.get("size") ?? "10";
+    isNaN(pageAsNumber) || pageAsNumber < 0 ? 0 : pageAsNumber;
+  const per_page = searchParams?.get("limit") ?? "10";
   const perPageAsNumber = Number(per_page);
   const fallbackPerPage = isNaN(perPageAsNumber) ? 10 : perPageAsNumber;
 
@@ -60,15 +61,15 @@ export function CreditCardTable<TData, TValue>({
 
   const [{ pageIndex, pageSize }, setPagination] =
     React.useState<PaginationState>({
-      pageIndex: fallbackPage - 1,
+      pageIndex: fallbackPage,
       pageSize: fallbackPerPage,
     });
 
   React.useEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
-        page: pageIndex + 1,
-        size: pageSize,
+        offset: pageIndex,
+        limit: pageSize,
       })}`,
       {
         scroll: false,
@@ -81,7 +82,7 @@ export function CreditCardTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
-    pageCount: pageCount ?? -1,
+    pageCount,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     state: {
@@ -99,8 +100,8 @@ export function CreditCardTable<TData, TValue>({
     if (searchValue?.length > 0) {
       router.push(
         `${pathname}?${createQueryString({
-          page: null,
-          size: null,
+          offset: null,
+          limit: null,
           search: searchValue,
         })}`,
         {
@@ -111,8 +112,8 @@ export function CreditCardTable<TData, TValue>({
     if (searchValue?.length === 0 || searchValue === undefined) {
       router.push(
         `${pathname}?${createQueryString({
-          page: null,
-          size: null,
+          offset: null,
+          limit: null,
           search: null,
         })}`,
         {

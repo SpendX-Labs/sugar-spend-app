@@ -22,16 +22,17 @@ export const BankAccountTable = () => {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const page = Number(searchParams.get("page")) || 1;
-  const size = Number(searchParams.get("size")) || 10;
+  const offset = Number(searchParams.get("offset")) || 0;
+  const limit = Number(searchParams.get("limit")) || 10;
 
   const {
     data: bankAccountRes,
     error,
     isLoading,
+    refetch,
   } = useGetBankAccountsQuery({
-    page: page - 1,
-    size,
+    offset: offset,
+    limit,
   });
 
   const createQueryString = React.useCallback(
@@ -53,26 +54,18 @@ export const BankAccountTable = () => {
 
   const [{ pageIndex, pageSize }, setPagination] =
     React.useState<PaginationState>({
-      pageIndex: page - 1,
-      pageSize: size,
+      pageIndex: offset,
+      pageSize: limit,
     });
 
-  React.useEffect(() => {
-    router.push(
-      `${pathname}?${createQueryString({
-        page: pageIndex + 1,
-        size: pageSize,
-      })}`,
-      {
-        scroll: false,
-      }
-    );
-  }, [pageIndex, pageSize]);
+  const totalBankAccounts = bankAccountRes?.total || 0;
+  const pageCount = Math.ceil(totalBankAccounts / limit);
+  const bankAccounts: BankAccount[] = bankAccountRes?.data || [];
 
   const table = useReactTable({
     data: bankAccountRes?.data || [],
     columns,
-    pageCount: page ?? -1,
+    pageCount,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     state: {
@@ -84,12 +77,21 @@ export const BankAccountTable = () => {
     manualFiltering: true,
   });
 
+  React.useEffect(() => {
+    router.push(
+      `${pathname}?${createQueryString({
+        offset: pageIndex,
+        limit: pageSize,
+      })}`,
+      {
+        scroll: false,
+      }
+    );
+    refetch();
+  }, [pageIndex, pageSize, refetch]);
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error fetching bank accounts</div>;
-
-  const totalBankAccounts = bankAccountRes?.total || 0;
-  const pageCount = Math.ceil(totalBankAccounts / size);
-  const bankAccounts: BankAccount[] = bankAccountRes?.data || [];
 
   return (
     <>
