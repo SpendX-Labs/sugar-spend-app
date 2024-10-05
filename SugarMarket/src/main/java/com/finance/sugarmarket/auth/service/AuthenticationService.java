@@ -250,15 +250,20 @@ public class AuthenticationService {
 	}
 
 	public GenericResponse updatePassword(UpdatePasswordDto passwordDto, Long userId) {
-		MFUser user = userRepo.findById(userId).get();
 
 		if (!passwordDto.getNewPassword().equals(passwordDto.getConfirmPassword())) {
 			return new GenericResponse("Password Didn't match ", false);
+		}
+		String passwordPolicy = AuthenticationUtil.getInstance().checkPasswordPolicy(passwordDto.getNewPassword());
+
+		if (!passwordPolicy.equals(AppConstants.SUCCESS)) {
+			return new SignUpResponseDTO(passwordPolicy, false);
 		}
 
 		String encyptedCurrentPassword = passwordEncoder.encode(passwordDto.getCurrentPassword());
 		String encryptedNewPassword = passwordEncoder.encode(passwordDto.getNewPassword());
 
+		MFUser user = userRepo.findById(userId).get();
 		if (!user.getPassword().equals(encyptedCurrentPassword)) {
 			return new GenericResponse("Wrong password", false);
 		}
