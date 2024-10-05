@@ -54,10 +54,10 @@ export const creditCardApi = createApi({
     }),
     getCreditCards: builder.query<
       CreditCardsResponse,
-      { page: number; size: number }
+      { offset: number; limit: number }
     >({
-      query: ({ page, size }) => ({
-        url: `${creditCardUrl}?${createQueryString({ page, size })}`,
+      query: ({ offset, limit }) => ({
+        url: `${creditCardUrl}?${createQueryString({ offset, limit })}`,
         method: "GET",
       }),
       providesTags: ["CreditCard"],

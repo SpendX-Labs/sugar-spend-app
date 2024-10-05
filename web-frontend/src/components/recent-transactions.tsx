@@ -19,16 +19,16 @@ export function RecentTransactions() {
     error: expenseError,
     isLoading: isExpenseLoading,
   } = useGetExpensesQuery({
-    page: 0,
-    size: 10,
+    offset: 0,
+    limit: 10,
   });
   const {
     data: incomeRes,
     error: incomeError,
     isLoading: isIncomeLoading,
   } = useGetIncomesQuery({
-    page: 0,
-    size: 10,
+    offset: 0,
+    limit: 10,
   });
 
   if (isExpenseLoading || isIncomeLoading) return <div>Loading...</div>;

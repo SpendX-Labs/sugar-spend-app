@@ -13,6 +13,7 @@ import { useGetCreditCardsQuery } from "@/store/apis/credit-card-api";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import React from "react";
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/" },
@@ -21,23 +22,28 @@ const breadcrumbItems = [
 
 export default function page() {
   const searchParams = useSearchParams();
-  const page = Number(searchParams.get("page")) || 1;
-  const size = Number(searchParams.get("size")) || 10;
+  const offset = Number(searchParams.get("offset")) || 0;
+  const limit = Number(searchParams.get("limit")) || 10;
 
   const {
     data: creditCardRes,
     error,
     isLoading,
+    refetch,
   } = useGetCreditCardsQuery({
-    page: page - 1,
-    size,
+    offset,
+    limit,
   });
+
+  React.useEffect(() => {
+    refetch();
+  }, [offset, limit, refetch]);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error fetching credit cards</div>;
 
   const totalCreditCards = creditCardRes?.total || 0;
-  const pageCount = Math.ceil(totalCreditCards / size);
+  const pageCount = Math.ceil(totalCreditCards / limit);
   const creditCards: CreditCard[] = creditCardRes?.data || [];
 
   return (

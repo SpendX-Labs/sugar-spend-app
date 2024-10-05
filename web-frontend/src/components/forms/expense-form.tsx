@@ -104,13 +104,13 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
   const [deleteExpense] = useDeleteExpenseMutation();
   const [editExpense] = useEditExpenseMutation();
   const { data: bankAccountRes } = useGetBankAccountsQuery({
-    page: 0,
-    size: 100,
+    offset: 0,
+    limit: 100,
   });
   const bankAccounts: BankAccount[] = bankAccountRes?.data || [];
   const { data: creditCardRes } = useGetCreditCardsQuery({
-    page: 0,
-    size: 100,
+    offset: 0,
+    limit: 100,
   });
   const creditCards: CreditCard[] = creditCardRes?.data || [];
   const [selectedType, setSelectedType] = useState<CashFlowType | string>(

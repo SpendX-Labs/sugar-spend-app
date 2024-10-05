@@ -58,9 +58,9 @@ export const loanApi = createApi({
       }),
       invalidatesTags: ["Loan"],
     }),
-    getLoans: builder.query<LoansResponse, { page: number; size: number }>({
-      query: ({ page, size }) => ({
-        url: `${loanUrl}?${createQueryString({ page, size })}`,
+    getLoans: builder.query<LoansResponse, { offset: number; limit: number }>({
+      query: ({ offset, limit }) => ({
+        url: `${loanUrl}?${createQueryString({ offset, limit })}`,
         method: "GET",
       }),
       providesTags: ["Loan"],
