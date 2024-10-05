@@ -9,7 +9,7 @@ export const userApi = createApi({
   baseQuery: authBaseQuery,
   tagTypes: ["User"],
   endpoints: (builder) => ({
-    updateBasicInfo: builder.mutation<UserInfo, any>({
+    updateBasicInfo: builder.mutation<any, UserInfo>({
       query: (data) => ({
         url: userUrl,
         method: "POST",

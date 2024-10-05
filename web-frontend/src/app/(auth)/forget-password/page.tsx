@@ -16,7 +16,7 @@ export default function ForgetPasswordPage() {
         <ForgetPasswordForm />
       </Suspense>
       <Link href="/login">
-        <Button variant="link">{"<- xGo to Login"} </Button>
+        <Button variant="link">{"<- Go to Login"} </Button>
       </Link>
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
