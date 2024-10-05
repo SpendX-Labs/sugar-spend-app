@@ -53,7 +53,7 @@ public class ExpenseService extends SpecificationService<Expense> {
 		filterMap.put(FieldConstant.CREDIT_CARD_ID, "creditCard.id");
 	}
 
-	public ListViewDto<ExpenseDto> findAllExpense(PageRequest pageRequest, List<Filter> filters) {
+	public ListViewDto<ExpenseDto> findAllExpense(PageRequest pageRequest, List<Filter> filters) throws Exception {
 		Specification<Expense> specificationFilters = getSpecificationFilters(filters, filterMap);
 		Page<Expense> pages = expenseRepo.findAll(specificationFilters, pageRequest);
 		List<ExpenseDto> listDto = new ArrayList<>();

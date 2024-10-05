@@ -1,5 +1,6 @@
 package com.finance.sugarmarket.app.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -22,9 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.finance.sugarmarket.app.dto.BankAccountDto;
 import com.finance.sugarmarket.app.service.BankAccountService;
 import com.finance.sugarmarket.base.controller.BaseController;
+import com.finance.sugarmarket.base.dto.Operands;
 import com.finance.sugarmarket.base.dto.Filter;
 import com.finance.sugarmarket.base.dto.ListViewDto;
-import com.finance.sugarmarket.base.enums.FilterOperation;
+import com.finance.sugarmarket.base.enums.Operators;
 import com.finance.sugarmarket.constants.AppConstants;
 import com.finance.sugarmarket.constants.FieldConstant;
 
@@ -39,9 +41,15 @@ public class BankAccountController extends BaseController {
 	private static final Logger log = LoggerFactory.getLogger(CreditCardController.class);
 
 	@GetMapping
-	public ListViewDto<BankAccountDto> findAllBankAccount() {
-		Pair<PageRequest, List<Filter>> pair = getPageRequestAndFilters();
-		return bankAccountService.findAllBankAccount(pair.getFirst(), pair.getSecond());
+	public ResponseEntity<ListViewDto<BankAccountDto>> findAllBankAccount() {
+		try {
+			Pair<PageRequest, List<Filter>> pair = getPageRequestAndFilters();
+			return ResponseEntity.ok(bankAccountService.findAllBankAccount(pair.getFirst(), pair.getSecond()));
+		} catch (Exception e) {
+			log.error("error while getting bank account: ", e);
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body(new ListViewDto<BankAccountDto>("Internal server error"));
 	}
 
 	@PostMapping
@@ -49,7 +57,7 @@ public class BankAccountController extends BaseController {
 		try {
 			bankAccountService.saveBankAccount(bankAccountDto, getUserId());
 		} catch (Exception e) {
-			log.error("error while saving credit card: ", e);
+			log.error("error while saving bank account: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
 		return ResponseEntity.ok(AppConstants.SUCCESS);
@@ -61,7 +69,7 @@ public class BankAccountController extends BaseController {
 		try {
 			bankAccountService.updateBankAccount(bankAccountDto, id, getUserId());
 		} catch (Exception e) {
-			log.error("error while saving credit card: ", e);
+			log.error("error while updating bank account: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
 		return ResponseEntity.ok(AppConstants.SUCCESS);
@@ -72,15 +80,20 @@ public class BankAccountController extends BaseController {
 		try {
 			return ResponseEntity.ok(bankAccountService.deleteBankAccount(id, getUserId()));
 		} catch (Exception e) {
-			log.error("error while saving credit card: ", e);
+			log.error("error while deleting bank account: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
 	}
 
+	@Override
 	public void setSearchFilters(List<Filter> list, String searchBy) {
-		list.add(new Filter(FieldConstant.BANK_NAME, FilterOperation.LIKE, searchBy));
-		list.add(new Filter(FieldConstant.LAST_4_DIGIT, FilterOperation.LIKE, searchBy));
-		list.add(new Filter(FieldConstant.DEBIT_CARD_LAST_4_DIGIT, FilterOperation.LIKE, searchBy));
+		List<Operands> operandList = new ArrayList<>();
+		operandList.add(new Operands(FieldConstant.BANK_NAME, Operators.LIKE, searchBy));
+		operandList.add(new Operands(FieldConstant.LAST_4_DIGIT, Operators.LIKE, searchBy));
+		operandList.add(new Operands(FieldConstant.DEBIT_CARD_LAST_4_DIGIT, Operators.LIKE, searchBy));
+
+		list.add(new Filter(Operators.OR, operandList));
+
 	}
 
 }

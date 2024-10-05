@@ -1,37 +1,36 @@
 package com.finance.sugarmarket.base.dto;
 
-import com.finance.sugarmarket.base.enums.FilterOperation;
+import java.util.List;
+
+import com.finance.sugarmarket.base.enums.Operators;
 
 public class Filter {
-	private String column;
-    private FilterOperation operation;
-    private String value;
-    
-    public Filter() {
-    }
-    
-    public Filter(String column, FilterOperation operation, String value) {
-    	this.column = column;
-    	this.operation = operation;
-    	this.value = value;
-    }
-    
-	public String getColumn() {
-		return column;
+	private Operators operator;
+	private List<Operands> operands;
+
+	public Operators getOperator() {
+		return operator;
 	}
-	public void setColumn(String column) {
-		this.column = column;
+
+	public void setOperator(Operators operator) {
+		this.operator = operator;
 	}
-	public FilterOperation getOperation() {
-		return operation;
+
+	public List<Operands> getOperands() {
+		return operands;
 	}
-	public void setOperation(FilterOperation operation) {
-		this.operation = operation;
+
+	public void setOperands(List<Operands> operands) {
+		this.operands = operands;
 	}
-	public String getValue() {
-		return value;
+
+	public Filter() {
+		super();
 	}
-	public void setValue(String value) {
-		this.value = value;
+
+	public Filter(Operators operator, List<Operands> operands) {
+		super();
+		this.operator = operator;
+		this.operands = operands;
 	}
 }

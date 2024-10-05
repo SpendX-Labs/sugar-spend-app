@@ -15,7 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import com.finance.sugarmarket.app.dto.LoanDto;
-import com.finance.sugarmarket.app.dto.ModifyLoanDto;
+import com.finance.sugarmarket.app.dto.LoanPrepaymentRequestDto;
 import com.finance.sugarmarket.app.enums.LoanType;
 import com.finance.sugarmarket.app.model.CreditCard;
 import com.finance.sugarmarket.app.model.Loan;
@@ -47,7 +47,7 @@ public class LoanService extends SpecificationService<Loan> {
 		filterMap.put(FieldConstant.USER_ID, "user.id");
 	}
 
-	public ListViewDto<LoanDto> findAllLoans(PageRequest pageRequest, List<Filter> filters) {
+	public ListViewDto<LoanDto> findAllLoans(PageRequest pageRequest, List<Filter> filters) throws Exception {
 		Specification<Loan> specificationFilters = getSpecificationFilters(filters, filterMap);
 		Page<Loan> pages = loanRepo.findAll(specificationFilters, pageRequest);
 		List<LoanDto> listDto = new ArrayList<>();
@@ -72,18 +72,22 @@ public class LoanService extends SpecificationService<Loan> {
 	}
 
 	public void updateLoan(LoanDto loanDto, Long id, Long userId) throws Exception {
-		Specification<Loan> specificationFilters = getAuditSpecificationFilters(filterMap, id, userId);
-		List<Loan> loanList = loanRepo.findAll(specificationFilters);
-		if (loanList.isEmpty()) {
-			throw new Exception("You are not authorised to modify");
-		}
-		Loan existingLoan = loanList.get(0);
+		Loan existingLoan = getExistingLoanData(id, userId);
 		if (existingLoan.isUpdateLock()) {
 			throw new Exception("Update is not possible for this Loan Details");
 		}
 		modelMapper.map(loanDto, existingLoan);
 		existingLoan.setId(id);
 		persistLoan(loanDto, existingLoan, userId);
+	}
+
+	private Loan getExistingLoanData(Long id, Long userId) throws Exception {
+		Specification<Loan> specificationFilters = getAuditSpecificationFilters(filterMap, id, userId);
+		List<Loan> loanList = loanRepo.findAll(specificationFilters);
+		if (loanList.isEmpty()) {
+			throw new Exception("You are not authorised to modify");
+		}
+		return loanList.get(0);
 	}
 
 	public void persistLoan(LoanDto loandto, Loan loan, Long userId) throws Exception {
@@ -179,10 +183,11 @@ public class LoanService extends SpecificationService<Loan> {
 																								// places
 	}
 
-	public void modifyLoanDetails(ModifyLoanDto modifyLoanDto) {
-		Loan loan = loanRepo.findById(modifyLoanDto.getId()).get();
+	public void makePrincipalPrepayment(LoanPrepaymentRequestDto prepaymentDto, Long id, Long userId) throws Exception {
+
+		Loan loan = getExistingLoanData(id, userId);
 		loan.setUpdateLock(true);
-		Integer paidMonths = modifyLoanDto.getAlreadyPaidMonth();
+		Integer paidMonths = prepaymentDto.getAlreadyPaidMonth();
 		if (paidMonths != null && paidMonths > 0) {
 			if (loan.getLoanType().equals(LoanType.REDUCING)) {
 				loan.setRemainingPrincipalAmount(calculateRemainingPrincipalReducing(loan.getPrincipalAmount(),

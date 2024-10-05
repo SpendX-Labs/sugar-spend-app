@@ -44,7 +44,7 @@ public class CreditCardService extends SpecificationService<CreditCard> {
 		filterMap.put(FieldConstant.USER_ID, "user.id");
 	}
 
-	public ListViewDto<CreditCardDto> findAllCreditCard(PageRequest pageRequest, List<Filter> filters) {
+	public ListViewDto<CreditCardDto> findAllCreditCard(PageRequest pageRequest, List<Filter> filters) throws Exception {
 		Specification<CreditCard> specificationFilters = getSpecificationFilters(filters, filterMap);
 		Page<CreditCard> pages = creditCardRepo.findAll(specificationFilters, pageRequest);
 

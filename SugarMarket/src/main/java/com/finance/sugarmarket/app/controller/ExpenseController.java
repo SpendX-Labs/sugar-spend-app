@@ -43,9 +43,15 @@ public class ExpenseController extends BaseController {
 	private static final Logger log = LoggerFactory.getLogger(ExpenseController.class);
 
 	@GetMapping
-	public ListViewDto<ExpenseDto> findAllExpense() {
-		Pair<PageRequest, List<Filter>> pair = getPageRequestAndFilters();
-		return expenseService.findAllExpense(pair.getFirst(), pair.getSecond());
+	public ResponseEntity<ListViewDto<ExpenseDto>> findAllExpense() {
+		try {
+			Pair<PageRequest, List<Filter>> pair = getPageRequestAndFilters();
+			return ResponseEntity.ok(expenseService.findAllExpense(pair.getFirst(), pair.getSecond()));
+		} catch (Exception e) {
+			log.error("error while getting expense: ", e);
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body(new ListViewDto<ExpenseDto>("Internal server error"));
 	}
 
 	@PostMapping
@@ -64,7 +70,7 @@ public class ExpenseController extends BaseController {
 		try {
 			expenseService.updateExpense(expenseDto, id, getUserId());
 		} catch (Exception e) {
-			log.error("error while saving expense: ", e);
+			log.error("error while updating expense: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
 		return ResponseEntity.ok(AppConstants.SUCCESS);

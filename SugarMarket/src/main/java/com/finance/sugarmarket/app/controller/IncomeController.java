@@ -42,9 +42,15 @@ public class IncomeController extends BaseController {
 	private static final Logger log = LoggerFactory.getLogger(IncomeController.class);
 
 	@GetMapping
-	public ListViewDto<IncomeDto> findAllIncome() {
-		Pair<PageRequest, List<Filter>> pair = getPageRequestAndFilters();
-		return incomeService.findAllIncome(pair.getFirst(), pair.getSecond());
+	public ResponseEntity<ListViewDto<IncomeDto>> findAllIncome() {
+		try {
+			Pair<PageRequest, List<Filter>> pair = getPageRequestAndFilters();
+			return ResponseEntity.ok(incomeService.findAllIncome(pair.getFirst(), pair.getSecond()));
+		} catch (Exception e) {
+			log.error("error while getting income: ", e);
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body(new ListViewDto<IncomeDto>("Internal server error"));
 	}
 
 	@PostMapping
@@ -63,7 +69,7 @@ public class IncomeController extends BaseController {
 		try {
 			incomeService.updateIncome(incomeDto, id, getUserId());
 		} catch (Exception e) {
-			log.error("error while saving income: ", e);
+			log.error("error while updating income: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
 		return ResponseEntity.ok(AppConstants.SUCCESS);

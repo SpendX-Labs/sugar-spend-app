@@ -2,7 +2,7 @@ package com.finance.sugarmarket.app.dto;
 
 import java.math.BigDecimal;
 
-public class ModifyLoanDto {
+public class LoanPrepaymentRequestDto {
 	private Long id;
 	private Integer updatedRemainingTenure;
 	private BigDecimal principalRepay;
