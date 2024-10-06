@@ -15,7 +15,7 @@ public class UserJwtCacheService {
 
 	private static final String TOKEN_MID = "_JWT_TOKEN:";
 	private static final String TOKEN_PREFIX_PATTERN = "*_JWT_TOKEN:";
-	private static final String ID_PREFIX = "JWT_TOKEN:*";
+	private static final String ID_PREFIX = "_JWT_TOKEN:*";
 
 	@Autowired
 	private RedisTemplate<String, Object> redisTemplate;
