@@ -21,30 +21,6 @@ import * as React from "react";
 import { Label, Pie, PieChart } from "recharts";
 import PieChartSkeleton from "../skeletons/pie-chart-skeleton";
 
-const chartData = [
-  { category: "cards", amount: 500, fill: "var(--color-cards)" },
-  { category: "loans", amount: 1200, fill: "var(--color-loans)" },
-  { category: "others", amount: 300, fill: "var(--color-others)" },
-];
-
-const chartConfig = {
-  amount: {
-    label: "Amount",
-  },
-  cards: {
-    label: "Cards",
-    color: "hsl(var(--chart-1))",
-  },
-  loans: {
-    label: "Loans",
-    color: "hsl(var(--chart-2))",
-  },
-  others: {
-    label: "Others",
-    color: "hsl(var(--chart-3))",
-  },
-} satisfies ChartConfig;
-
 export function UpcomingDeductionChart() {
   const month = useAppSelector(selectMonth);
   const year = useAppSelector(selectYear);
@@ -56,6 +32,29 @@ export function UpcomingDeductionChart() {
     year,
     month,
   });
+
+  const chartData = expenseReport?.remainingAutoDebit.details.map(
+    (remainingAutoDebit, index) => ({
+      category: remainingAutoDebit.id.toString(),
+      amount: remainingAutoDebit.actualAmount,
+      fill: `hsl(var(--chart-${(index % 5) + 1}))`,
+    })
+  );
+
+  const chartConfig =
+    expenseReport?.remainingAutoDebit.details.reduce(
+      (acc, obj) => {
+        (acc as Record<string, { label: string }>)[obj.id.toString()] = {
+          label: obj.lender + " " + CURRENCY_RUPEE_SYMBOL,
+        };
+        return acc;
+      },
+      {
+        amount: {
+          label: "Amount",
+        },
+      }
+    ) ?? ({} satisfies ChartConfig);
 
   if (isLoading) return <PieChartSkeleton />;
   if (error) return <div>Error Occured</div>;
