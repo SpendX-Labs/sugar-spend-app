@@ -28,6 +28,7 @@ import {
 import React from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { columns } from "./columns";
+import DataTableSkeleton from "@/components/skeletons/data-table-skeleton";
 
 export const NextMonthDeductionsTable = () => {
   const pathname = usePathname();
@@ -49,7 +50,7 @@ export const NextMonthDeductionsTable = () => {
     manualFiltering: true,
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <DataTableSkeleton pagination={false} />;
   if (error) return <div>Error fetching credit cards</div>;
 
   const totalNextMonthDeductions = nextMonthDeductionRes?.details.length || 0;

@@ -5,6 +5,7 @@ import { CURRENCY_RUPEE_SYMBOL } from "@/lib/constants";
 import { useGetExpenseReportQuery } from "@/store/apis/budget-api";
 import { selectMonth, selectYear } from "@/store/slices/month-year-slice";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import SmartCardSkeleton from "../skeletons/smart-card-skeleton";
 
 const MutualFundsCard: React.FC = () => {
   const month = useAppSelector(selectMonth);
@@ -14,7 +15,7 @@ const MutualFundsCard: React.FC = () => {
     month,
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <SmartCardSkeleton />;
   if (error) return <div>Error Occured</div>;
 
   return (

@@ -5,6 +5,7 @@ import { CURRENCY_RUPEE_SYMBOL } from "@/lib/constants";
 import { useGetExpenseReportQuery } from "@/store/apis/budget-api";
 import { selectMonth, selectYear } from "@/store/slices/month-year-slice";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import SmartCardSkeleton from "../skeletons/smart-card-skeleton";
 
 const AutoDebitExpenseCard: React.FC = () => {
   const month = useAppSelector(selectMonth);
@@ -14,7 +15,7 @@ const AutoDebitExpenseCard: React.FC = () => {
     month,
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <SmartCardSkeleton />;
   if (error) return <div>Error Occured</div>;
 
   return (
@@ -33,7 +34,8 @@ const AutoDebitExpenseCard: React.FC = () => {
           strokeWidth="2"
           className="h-4 w-4 text-muted-foreground"
         >
-          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+          <rect width="20" height="14" x="2" y="5" rx="2" />
+          <path d="M2 10h20" />
         </svg>
       </CardHeader>
       <CardContent>

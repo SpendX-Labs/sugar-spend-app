@@ -20,6 +20,7 @@ import { useGetExpenseReportQuery } from "@/store/apis/budget-api";
 import { selectMonth, selectYear } from "@/store/slices/month-year-slice";
 import * as React from "react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import BarChartSkeleton from "../skeletons/bar-chart-skeleton";
 
 const AUTO = "auto";
 const DIRECT = "direct";
@@ -58,7 +59,7 @@ export function DailyExpenseChart() {
   const [activeChart, setActiveChart] =
     React.useState<keyof typeof chartConfig>(TOTAL);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <BarChartSkeleton />;
   if (error) return <div>Error Occured</div>;
 
   const total = {
