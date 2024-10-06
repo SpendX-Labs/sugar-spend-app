@@ -260,13 +260,12 @@ public class AuthenticationService {
 			return new SignUpResponseDTO(passwordPolicy, false);
 		}
 
-		String encyptedCurrentPassword = passwordEncoder.encode(passwordDto.getCurrentPassword());
-		String encryptedNewPassword = passwordEncoder.encode(passwordDto.getNewPassword());
-
 		MFUser user = userRepo.findById(userId).get();
-		if (!user.getPassword().equals(encyptedCurrentPassword)) {
-			return new GenericResponse("Wrong password", false);
-		}
+		if (!passwordEncoder.matches(passwordDto.getCurrentPassword(), user.getPassword())) {
+	        return new GenericResponse("Wrong password", false);
+	    }
+		
+		String encryptedNewPassword = passwordEncoder.encode(passwordDto.getNewPassword());
 
 		user.setPassword(encryptedNewPassword);
 
