@@ -12,7 +12,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import * as z from "zod";
 import { useToast } from "@/components/ui/use-toast";
@@ -26,6 +25,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   fullName: z.string().min(1, { message: "Full name is required" }),
@@ -43,22 +43,28 @@ export const UserBasicInfoForm = () => {
   const [updateUser] = useUpdateBasicInfoMutation();
   const router = useRouter();
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
-
-  const defaultValues = {
-    fullName: user?.fullName || "",
-    username: user?.username || "",
-    phoneNumber: user?.phoneNumber || "",
-  };
 
   const form = useForm<UserFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues,
+    defaultValues: {
+      fullName: user?.fullName || "",
+      username: user?.username || "",
+      phoneNumber: user?.phoneNumber || "",
+    },
   });
+
+  useEffect(() => {
+    if (user) {
+      form.reset({
+        fullName: user.fullName || "",
+        username: user.username || "",
+        phoneNumber: user.phoneNumber || "",
+      });
+    }
+  }, [user, form]);
 
   const onSubmit = async (data: UserFormValues) => {
     try {
-      setLoading(true);
       await updateUser({
         fullName: data.fullName,
         phonenumber: data.phoneNumber,
@@ -74,8 +80,6 @@ export const UserBasicInfoForm = () => {
         title: "Uh oh! Something went wrong.",
         description: "There was a problem updating your profile.",
       });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -109,7 +113,7 @@ export const UserBasicInfoForm = () => {
                   <FormLabel>Full Name</FormLabel>
                   <FormControl>
                     <Input
-                      disabled={loading}
+                      disabled={isLoading}
                       placeholder="Full Name"
                       {...field}
                     />
@@ -137,7 +141,7 @@ export const UserBasicInfoForm = () => {
             />
           </CardContent>
           <CardFooter>
-            <Button disabled={loading} className="ml-auto" type="submit">
+            <Button disabled={isLoading} className="ml-auto" type="submit">
               Save Changes
             </Button>
           </CardFooter>

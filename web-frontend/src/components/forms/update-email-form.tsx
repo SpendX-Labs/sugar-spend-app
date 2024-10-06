@@ -56,23 +56,25 @@ export const UpdateEmailForm = () => {
     },
   ] = useVerifyEmailMutation();
 
-  const defaultValues = {
-    email: userInfo?.email || "",
-  };
-
   const form = useForm<UserEmailFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues,
+    defaultValues: {
+      email: userInfo?.email || "",
+    },
   });
+
+  useEffect(() => {
+    if (userInfo) {
+      form.reset({
+        email: userInfo?.email || "",
+      });
+    }
+  }, [userInfo, form]);
 
   const onSubmit = async (data: UserEmailFormValues) => {
     try {
       await updateEmail({ emailId: data.email }).unwrap();
-      router.refresh();
-      toast({
-        variant: "default",
-        title: "Email updated successfully",
-      });
+      setIsOtpModalOpen(true);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -82,13 +84,24 @@ export const UpdateEmailForm = () => {
     }
   };
 
-  const handleOtpSubmit = (e: React.FormEvent) => {
+  const handleOtpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!updateEmailSuccess) return;
-
-    verifyOtp({ otp });
-    setIsOtpModalOpen(false);
+    try {
+      await verifyOtp({ otp }).unwrap();
+      setIsOtpModalOpen(false);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem updating your email.",
+      });
+    }
   };
+
+  useEffect(() => {
+    console.log("Loading state:", updateEmailLoading);
+  }, [updateEmailLoading]);
 
   useEffect(() => {
     if (updateEmailSuccess) {
@@ -117,7 +130,7 @@ export const UpdateEmailForm = () => {
             required
           />
           <Button type="submit" disabled={verifyOtpLoading}>
-            Verify OTP
+            {verifyOtpLoading ? "Verifying..." : "Verify OTP"}
           </Button>
         </form>
       </Modal>
@@ -153,7 +166,7 @@ export const UpdateEmailForm = () => {
                 className="ml-auto"
                 type="submit"
               >
-                Save Changes
+                {updateEmailLoading ? "Saving..." : "Save Changes"}
               </Button>
             </CardFooter>
           </form>
