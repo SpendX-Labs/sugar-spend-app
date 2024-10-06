@@ -133,7 +133,7 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
   const form = useForm<any>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-      cashFlowId: 0,
+      cashFlowId: "",
       incomeType: selectedType,
       incomeName: "",
       amount: null,

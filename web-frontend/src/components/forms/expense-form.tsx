@@ -131,7 +131,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
       bankName: "",
       expenseName: "",
       expenseType: selectedType,
-      cashFlowId: 0,
+      cashFlowId: "",
       statementDate: null,
       dueDate: null,
       last4Digit: "",
@@ -329,7 +329,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
                         {creditCards.map((creditCard) => (
                           <SelectItem
                             key={creditCard.id}
-                            value={creditCard.id.toString()}
+                            value={creditCard.id.toString() || ""}
                           >
                             {mergeCreditCardDetails(creditCard)}
                           </SelectItem>
