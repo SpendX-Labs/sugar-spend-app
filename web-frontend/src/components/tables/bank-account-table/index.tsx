@@ -17,6 +17,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import { columns } from "./columns";
 import { DataPaginationTable } from "../data-pagination-table";
+import DataTableSkeleton from "@/components/skeletons/data-table-skeleton";
 
 export const BankAccountTable = () => {
   const pathname = usePathname();
@@ -90,7 +91,7 @@ export const BankAccountTable = () => {
     refetch();
   }, [pageIndex, pageSize, refetch]);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <DataTableSkeleton columns={columns.length} />;
   if (error) return <div>Error fetching bank accounts</div>;
 
   return (

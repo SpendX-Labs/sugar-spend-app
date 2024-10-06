@@ -14,6 +14,7 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import React from "react";
+import DataTableSkeleton from "@/components/skeletons/data-table-skeleton";
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/" },
@@ -39,7 +40,7 @@ export default function page() {
     refetch();
   }, [offset, limit, refetch]);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <DataTableSkeleton columns={columns.length} />;
   if (error) return <div>Error fetching credit cards</div>;
 
   const totalCreditCards = creditCardRes?.total || 0;

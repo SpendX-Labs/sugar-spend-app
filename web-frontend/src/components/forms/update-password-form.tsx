@@ -16,8 +16,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import * as z from "zod";
 import { useToast } from "@/components/ui/use-toast";
-import { useUserInfoQuery } from "@/store/apis/auth-api";
-import { useUpdateBasicInfoMutation } from "@/store/apis/user-api";
+import { useUpdatePasswordMutation } from "@/store/apis/user-api";
 import {
   Card,
   CardContent,
@@ -45,8 +44,7 @@ const formSchema = z
 type UserFormValues = z.infer<typeof formSchema>;
 
 export const UpdatePasswordForm = () => {
-  const { data: user, isLoading, isError } = useUserInfoQuery();
-  const [updateUser] = useUpdateBasicInfoMutation();
+  const [updatePassword] = useUpdatePasswordMutation();
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -65,7 +63,7 @@ export const UpdatePasswordForm = () => {
   const onSubmit = async (data: UserFormValues) => {
     try {
       setLoading(true);
-      await updateUser(data).unwrap();
+      await updatePassword(data).unwrap();
       router.refresh();
       toast({
         variant: "default",

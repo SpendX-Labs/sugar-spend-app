@@ -17,6 +17,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { DataPaginationTable } from "../data-pagination-table";
+import DataTableSkeleton from "@/components/skeletons/data-table-skeleton";
 
 export const ExpenseTable = () => {
   const pathname = usePathname();
@@ -89,7 +90,7 @@ export const ExpenseTable = () => {
     refetch();
   }, [pageIndex, pageSize, refetch]);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <DataTableSkeleton columns={columns.length} />;
   if (error) return <div>Error fetching credit cards</div>;
 
   return (

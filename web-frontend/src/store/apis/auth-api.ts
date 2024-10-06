@@ -99,6 +99,23 @@ export const authApi = createApi({
         body: data,
       }),
     }),
+    forgetPassword: builder.mutation<UserInfo, LoginRequestBody>({
+      query: (data) => ({
+        url: `/auth/forget/password`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+    forgetPasswordVerifyOtp: builder.mutation<
+      UserInfo,
+      { username: string; otp: string }
+    >({
+      query: (data) => ({
+        url: `/auth/forget/password/verifyotp`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -109,4 +126,6 @@ export const {
   useSignupMutation,
   useUserInfoQuery,
   useVerifyOtpMutation,
+  useForgetPasswordMutation,
+  useForgetPasswordVerifyOtpMutation,
 } = authApi;

@@ -19,6 +19,7 @@ import { useGetExpenseReportQuery } from "@/store/apis/budget-api";
 import { selectMonth, selectYear } from "@/store/slices/month-year-slice";
 import * as React from "react";
 import { Label, Pie, PieChart } from "recharts";
+import PieChartSkeleton from "../skeletons/pie-chart-skeleton";
 
 const chartData = [
   { category: "cards", amount: 500, fill: "var(--color-cards)" },
@@ -56,7 +57,7 @@ export function UpcomingDeductionChart() {
     month,
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <PieChartSkeleton />;
   if (error) return <div>Error Occured</div>;
 
   return (

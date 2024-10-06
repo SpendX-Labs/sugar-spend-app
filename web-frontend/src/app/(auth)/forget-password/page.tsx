@@ -1,20 +1,22 @@
-import LoginForm from "@/components/forms/login-form";
+import ForgetPasswordForm from "@/components/forms/forget-password-form";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Suspense } from "react";
 
-export default function LoginPge() {
+export default function ForgetPasswordPage() {
   return (
     <>
       <div className="flex flex-col space-y-2 text-center">
-        <h1 className="text-2xl font-semibold tracking-tight">Welcome!</h1>
-        <p className="text-sm text-muted-foreground">Login to your account</p>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          Forget Password!
+        </h1>
+        <p className="text-sm text-muted-foreground">Update your password</p>
       </div>
       <Suspense fallback={<div>Loading...</div>}>
-        <LoginForm />
+        <ForgetPasswordForm />
       </Suspense>
-      <Link href="/forget-password">
-        <Button variant="link">{"Forget Password ->"} </Button>
+      <Link href="/login">
+        <Button variant="link">{"<- Go to Login"} </Button>
       </Link>
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
