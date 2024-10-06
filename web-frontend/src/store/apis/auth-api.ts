@@ -101,7 +101,7 @@ export const authApi = createApi({
     }),
     forgetPassword: builder.mutation<UserInfo, LoginRequestBody>({
       query: (data) => ({
-        url: `/auth/forget/password`,
+        url: `/auth/forget-password`,
         method: "POST",
         body: data,
       }),
@@ -111,7 +111,7 @@ export const authApi = createApi({
       { username: string; otp: string }
     >({
       query: (data) => ({
-        url: `/auth/forget/password/verifyotp`,
+        url: `/auth/forget/password-verifyotp`,
         method: "POST",
         body: data,
       }),

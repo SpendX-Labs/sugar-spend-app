@@ -66,6 +66,7 @@ export const UpdatePasswordForm = () => {
         variant: "default",
         title: "Password updated successfully",
       });
+      form.reset();
     } catch (error: any) {
       toast({
         variant: "destructive",
