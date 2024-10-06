@@ -9,11 +9,13 @@ export default function HomeLayout({
 }) {
   return (
     <div className="flex">
-      <Sidebar />
-      <main className="w-full flex-1 overflow-hidden">
-        <Header />
-        <ProtectedRoute>{children}</ProtectedRoute>
-      </main>
+      <ProtectedRoute>
+        <Sidebar />
+        <main className="w-full flex-1 overflow-hidden">
+          <Header />
+          {children}
+        </main>
+      </ProtectedRoute>
     </div>
   );
 }

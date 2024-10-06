@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useGetAuthDataQuery } from "@/store/apis/auth-api";
-import MainSectionSkeleton from "@/components/skeletons/page-skeleton";
+import PageSkeleton from "@/components/skeletons/page-skeleton";
 
 const ProtectedRoute: React.FC<React.PropsWithChildren<any>> = ({
   children,
@@ -21,7 +21,7 @@ const ProtectedRoute: React.FC<React.PropsWithChildren<any>> = ({
   }, [user, router, isLoading]);
 
   if (isLoading) {
-    return <MainSectionSkeleton />;
+    return <PageSkeleton />;
   }
 
   return isLoggedIn ? children : null;

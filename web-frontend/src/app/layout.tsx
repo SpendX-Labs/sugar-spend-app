@@ -4,6 +4,7 @@ import "./globals.css";
 import { StoreProvider } from "@/hoc/store-provider";
 import ThemeProvider from "@/hoc/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
+import NextTopLoader from "nextjs-toploader";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,6 +34,7 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
           suppressHydrationWarning={true}
         >
+          <NextTopLoader showSpinner={false} />
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <Toaster />
             {children}
