@@ -100,10 +100,6 @@ export const UpdateEmailForm = () => {
   };
 
   useEffect(() => {
-    console.log("Loading state:", updateEmailLoading);
-  }, [updateEmailLoading]);
-
-  useEffect(() => {
     if (updateEmailSuccess) {
       if (verifyOtpSuccess) {
         router.push("/");

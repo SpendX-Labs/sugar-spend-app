@@ -1,7 +1,8 @@
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { ExpenseForm } from "@/components/forms/expense-form";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { CashFlowDetails, CashFlowType } from "@/lib/types";
+import { CashFlowType } from "@/lib/types";
+import { format } from "date-fns";
 import { FC } from "react";
 
 interface ExpensePageProps {
@@ -9,7 +10,7 @@ interface ExpensePageProps {
     expenseId: string;
   };
   searchParams: {
-    cashFlowDetails?: CashFlowDetails | null;
+    cashFlowId?: string;
     amount?: string;
     expenseDate?: string;
     expenseTime?: string;
@@ -27,7 +28,7 @@ const breadcrumbItems = [
 const Page: FC<ExpensePageProps> = ({ params, searchParams }) => {
   const { expenseId } = params;
   const {
-    cashFlowDetails = null,
+    cashFlowId = null,
     amount = null,
     expenseDate = null,
     expenseTime = null,
@@ -40,10 +41,18 @@ const Page: FC<ExpensePageProps> = ({ params, searchParams }) => {
         <Breadcrumbs items={breadcrumbItems} />
         <ExpenseForm
           id={expenseId}
-          cashFlowDetails={cashFlowDetails}
+          cashFlowId={cashFlowId}
           amount={amount}
-          expenseDate={expenseDate}
-          expenseTime={expenseTime}
+          expenseDate={
+            new Date(expenseDate || "").valueOf()
+              ? format(new Date(expenseDate || ""), "yyyy-MM-dd")
+              : null
+          }
+          expenseTime={
+            expenseDate
+              ? expenseDate.split(":")[0] + ":" + expenseDate.split(":")[1]
+              : null
+          }
           expenseType={expenseType}
           reason={reason}
         />

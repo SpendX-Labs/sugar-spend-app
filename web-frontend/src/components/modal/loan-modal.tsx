@@ -33,11 +33,11 @@ const chartConfig2 = {
     label: "Amount",
   },
   remaining: {
-    label: "Remaining",
+    label: "Principal",
     color: "hsl(var(--chart-3))",
   },
   paid: {
-    label: "Paid",
+    label: "Interest",
     color: "hsl(var(--chart-4))",
   },
 } satisfies ChartConfig;
@@ -162,7 +162,9 @@ export const LoanModal: React.FC<LoanModalProps> = ({
                                 className="fill-foreground text-2xl font-bold"
                               >
                                 {CURRENCY_RUPEE_SYMBOL}
-                                {totalAmount.toLocaleString()}
+                                {(
+                                  principalAmount + interestAmount
+                                ).toLocaleString()}
                               </tspan>
                               <tspan
                                 x={viewBox.cx}

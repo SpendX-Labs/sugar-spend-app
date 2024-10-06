@@ -64,7 +64,11 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
           <DropdownMenuItem
             onClick={() =>
-              router.push(`/expense/${data.id}?${createQueryString(data)}`)
+              router.push(
+                `/expense/${data.id}?${createQueryString(
+                  data
+                )}&${createQueryString(data.cashFlowDetails)}`
+              )
             }
           >
             <Edit className="mr-2 h-4 w-4" /> Update

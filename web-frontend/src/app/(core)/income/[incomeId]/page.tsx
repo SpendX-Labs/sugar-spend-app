@@ -1,7 +1,8 @@
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { IncomeForm } from "@/components/forms/income-form";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { CashFlowDetails, CashFlowType } from "@/lib/types";
+import { CashFlowType } from "@/lib/types";
+import { format } from "date-fns";
 import { FC } from "react";
 
 interface IncomePageProps {
@@ -9,7 +10,7 @@ interface IncomePageProps {
     incomeId: string;
   };
   searchParams: {
-    cashFlowDetails?: CashFlowDetails | null;
+    cashFlowId?: string;
     amount?: string;
     dateOfEvent?: string;
     timeOfEvent?: string;
@@ -27,23 +28,32 @@ const breadcrumbItems = [
 const Page: FC<IncomePageProps> = ({ params, searchParams }) => {
   const { incomeId } = params;
   const {
-    cashFlowDetails = null,
+    cashFlowId = null,
     amount = null,
     dateOfEvent = null,
     timeOfEvent = null,
     incomeType = null,
     message = null,
   } = searchParams;
+
   return (
     <ScrollArea className="h-full">
       <div className="flex-1 space-y-4 p-8">
         <Breadcrumbs items={breadcrumbItems} />
         <IncomeForm
           id={incomeId}
-          cashFlowDetails={cashFlowDetails}
+          cashFlowId={cashFlowId}
           amount={amount}
-          dateOfEvent={dateOfEvent}
-          timeOfEvent={timeOfEvent}
+          dateOfEvent={
+            new Date(dateOfEvent || "").valueOf()
+              ? format(new Date(dateOfEvent || ""), "yyyy-MM-dd")
+              : null
+          }
+          timeOfEvent={
+            timeOfEvent
+              ? timeOfEvent.split(":")[0] + ":" + timeOfEvent.split(":")[1]
+              : null
+          }
           incomeType={incomeType}
           message={message}
         />
