@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRedirectAuth } from "@/hooks/use-redirect-auth";
+import { passwordSchema } from "@/lib/utils";
 import { useLoginMutation } from "@/store/apis/auth-api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -19,7 +20,7 @@ import * as z from "zod";
 
 const loginSchema = z.object({
   username: z.string().min(1, "Username or email is required"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: passwordSchema,
 });
 
 type LoginFormValue = z.infer<typeof loginSchema>;
