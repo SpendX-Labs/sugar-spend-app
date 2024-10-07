@@ -90,6 +90,10 @@ export const UpdateEmailForm = () => {
     try {
       await verifyOtp({ otp }).unwrap();
       setIsOtpModalOpen(false);
+      toast({
+        variant: "default",
+        title: "Email updated successfully",
+      });
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -102,7 +106,8 @@ export const UpdateEmailForm = () => {
   useEffect(() => {
     if (updateEmailSuccess) {
       if (verifyOtpSuccess) {
-        router.push("/");
+        setIsOtpModalOpen(false);
+        setOtp("");
       } else {
         setIsOtpModalOpen(true);
       }

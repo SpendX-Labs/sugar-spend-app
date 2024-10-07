@@ -111,7 +111,7 @@ export const authApi = createApi({
       { username: string; otp: string }
     >({
       query: (data) => ({
-        url: `/auth/forget/password-verifyotp`,
+        url: `/auth/password-verifyotp`,
         method: "POST",
         body: data,
       }),

@@ -67,7 +67,7 @@ const ForgetPasswordForm = () => {
       username: data.username,
       password: data.newPassword,
     });
-    setUsername(username);
+    setUsername(data.username);
   };
 
   const handleOtpSubmit = (e: React.FormEvent) => {
