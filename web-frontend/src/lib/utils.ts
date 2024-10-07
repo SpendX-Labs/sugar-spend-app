@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import { twMerge } from "tailwind-merge";
 import { monthNameToNumber, monthNumberToName } from "./constants";
 import { BankAccount, CreditCard } from "./types";
+import { z } from "zod";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -157,3 +158,19 @@ export const convertMonthsToYearsMonths = (totalMonths: number) => {
 
   return `${years} year(s) ${months} month(s)`;
 };
+
+const MIN_PASSWORD_LENGTH = 8;
+
+export const passwordSchema = z
+  .string()
+  .min(
+    MIN_PASSWORD_LENGTH,
+    `Password must be at least ${MIN_PASSWORD_LENGTH} characters long.`
+  )
+  .regex(/[A-Z]/, "Password must contain at least one uppercase letter.")
+  .regex(/[a-z]/, "Password must contain at least one lowercase letter.")
+  .regex(/[0-9]/, "Password must contain at least one digit.")
+  .regex(
+    /[@#$%^&+=]/,
+    "Password must contain at least one special character (@#$%^&+=)."
+  );

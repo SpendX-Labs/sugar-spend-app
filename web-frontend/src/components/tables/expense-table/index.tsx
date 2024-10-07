@@ -91,7 +91,7 @@ export const ExpenseTable = () => {
   }, [pageIndex, pageSize, refetch]);
 
   if (isLoading) return <DataTableSkeleton columns={columns.length} />;
-  if (error) return <div>Error fetching credit cards</div>;
+  if (error) return <div>Error fetching expenses</div>;
 
   return (
     <>

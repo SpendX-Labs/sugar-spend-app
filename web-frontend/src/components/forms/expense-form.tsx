@@ -13,12 +13,7 @@ import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  BankAccount,
-  CashFlowDetails,
-  CashFlowType,
-  CreditCard,
-} from "@/lib/types";
+import { BankAccount, CashFlowType, CreditCard } from "@/lib/types";
 import { useGetCreditCardsQuery } from "@/store/apis/credit-card-api";
 import {
   useAddExpenseMutation,
@@ -28,7 +23,7 @@ import {
 import { Trash } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import * as z from "zod";
 import { AlertModal } from "../modal/alert-modal";
 import {
@@ -44,10 +39,7 @@ import { useGetBankAccountsQuery } from "@/store/apis/bank-account-api";
 import { mergeBankAccountDetails, mergeCreditCardDetails } from "@/lib/utils";
 
 const formSchema = z.object({
-  cashFlowName: z
-    .string()
-    .min(1, { message: "Please select a account name" })
-    .optional(),
+  cashFlowId: z.string().optional(),
   amount: z.coerce
     .number()
     .positive({ message: "Statement Date must be greater than 0" }),
@@ -74,7 +66,7 @@ type ExpenseFormValues = z.infer<typeof formSchema>;
 
 interface ExpenseFormProps {
   id: string | number;
-  cashFlowDetails: CashFlowDetails | null;
+  cashFlowId: string | null;
   amount: string | null;
   expenseDate: string | null;
   expenseTime: string | null;
@@ -84,33 +76,24 @@ interface ExpenseFormProps {
 
 export const ExpenseForm: React.FC<ExpenseFormProps> = ({
   id,
-  cashFlowDetails,
+  cashFlowId,
   amount,
   expenseDate,
   expenseTime,
   expenseType,
   reason,
 }) => {
-  console.log({
-    id,
-    cashFlowDetails,
-    amount,
-    expenseDate,
-    expenseTime,
-    expenseType,
-    reason,
-  });
   const [addExpense] = useAddExpenseMutation();
   const [deleteExpense] = useDeleteExpenseMutation();
   const [editExpense] = useEditExpenseMutation();
   const { data: bankAccountRes } = useGetBankAccountsQuery({
     offset: 0,
-    limit: 100,
+    limit: 10,
   });
   const bankAccounts: BankAccount[] = bankAccountRes?.data || [];
   const { data: creditCardRes } = useGetCreditCardsQuery({
     offset: 0,
-    limit: 100,
+    limit: 10,
   });
   const creditCards: CreditCard[] = creditCardRes?.data || [];
   const [selectedType, setSelectedType] = useState<CashFlowType | string>(
@@ -125,10 +108,10 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const initialData =
-    id && cashFlowDetails && amount && expenseDate && expenseTime && expenseType
+    id && cashFlowId && amount && expenseDate && expenseTime && expenseType
       ? {
           id,
-          cashFlowDetails,
+          cashFlowId,
           amount,
           expenseDate,
           expenseTime,
@@ -142,39 +125,36 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
   const toastMessage = initialData ? "Expense updated." : "Expense created.";
   const action = initialData ? "Save changes" : "Add";
 
-  const defaultValues = initialData
-    ? initialData
-    : {
-        bankName: "",
-        expenseName: "",
-        expenseType: CashFlowType.BANK,
-        statementDate: null,
-        dueDate: null,
-        last4Digit: "",
-        reason: "",
-      };
-
   const form = useForm<any>({
     resolver: zodResolver(formSchema),
-    defaultValues,
+    defaultValues: initialData || {
+      bankName: "",
+      expenseName: "",
+      expenseType: selectedType,
+      cashFlowId: "",
+      statementDate: null,
+      dueDate: null,
+      last4Digit: "",
+      reason: "",
+    },
   });
 
-  const getCashFlowId = (data: ExpenseFormValues): number | null => {
+  const getCashFlowName = (data: ExpenseFormValues): string => {
     if (data.expenseType === CashFlowType.BANK) {
       return (
         bankAccounts.filter(
-          (bankAccount) => bankAccount.bankName === data.cashFlowName
-        )?.[0]?.id || null
+          (bankAccount) => bankAccount.id === data.cashFlowId
+        )?.[0]?.bankName || ""
       );
     }
     if (data.expenseType === CashFlowType.CREDITCARD) {
       return (
         creditCards.filter(
-          (creditCard) => creditCard.creditCardName === data.cashFlowName
-        )?.[0]?.id || null
+          (creditCard) => creditCard.id.toString() === data.cashFlowId
+        )?.[0]?.creditCardName || ""
       );
     }
-    return null;
+    return "";
   };
 
   const onSubmit = async (data: ExpenseFormValues) => {
@@ -185,8 +165,8 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
           ...data,
           id: Number(initialData.id),
           cashFlowDetails: {
-            cashFlowId: getCashFlowId(data),
-            cashFlowName: data.cashFlowName || "",
+            cashFlowId: Number(data.cashFlowId) || null,
+            cashFlowName: getCashFlowName(data),
           },
           expenseDate: new Date(data.expenseDate).toISOString(),
         }).unwrap();
@@ -194,8 +174,8 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
         await addExpense({
           ...data,
           cashFlowDetails: {
-            cashFlowId: getCashFlowId(data),
-            cashFlowName: data.cashFlowName || "",
+            cashFlowId: Number(data.cashFlowId) || null,
+            cashFlowName: getCashFlowName(data),
           },
           expenseDate: new Date(data.expenseDate).toISOString(),
         }).unwrap();
@@ -300,7 +280,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
             />
             <FormField
               control={form.control}
-              name="creditCardName"
+              name="cashFlowId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Account Name</FormLabel>
@@ -322,8 +302,8 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
                       <SelectContent>
                         {bankAccounts.map((bankAccount) => (
                           <SelectItem
-                            key={bankAccount.bankName}
-                            value={bankAccount.bankName}
+                            key={bankAccount.id}
+                            value={bankAccount.id?.toString() || ""}
                           >
                             {mergeBankAccountDetails(bankAccount)}
                           </SelectItem>
@@ -348,8 +328,8 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
                       <SelectContent>
                         {creditCards.map((creditCard) => (
                           <SelectItem
-                            key={creditCard.creditCardName}
-                            value={creditCard.creditCardName}
+                            key={creditCard.id}
+                            value={creditCard.id.toString() || ""}
                           >
                             {mergeCreditCardDetails(creditCard)}
                           </SelectItem>

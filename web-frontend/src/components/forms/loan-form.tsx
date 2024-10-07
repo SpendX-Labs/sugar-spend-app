@@ -117,7 +117,7 @@ export const LoanForm: React.FC<LoanFormProps> = ({
   const [editLoan] = useEditLoanMutation();
   const { data: creditCardRes } = useGetCreditCardsQuery({
     offset: 0,
-    limit: 100,
+    limit: 10,
   });
   const creditCards = creditCardRes?.data || [];
   const router = useRouter();

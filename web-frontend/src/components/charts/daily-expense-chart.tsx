@@ -32,15 +32,15 @@ const chartConfig = {
   },
   [AUTO]: {
     label: "Credit Card Expense",
-    color: "hsl(var(--chart-2))",
+    color: "hsl(var(--chart-1))",
   },
   [DIRECT]: {
     label: "Direct Payments",
-    color: "hsl(var(--chart-3))",
+    color: "hsl(var(--chart-2))",
   },
   [TOTAL]: {
     label: "Total",
-    color: "hsl(var(--chart-1))",
+    color: "hsl(var(--chart-3))",
   },
 } satisfies ChartConfig;
 

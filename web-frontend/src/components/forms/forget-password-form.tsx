@@ -20,14 +20,13 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Modal } from "../ui/modal";
 import { useEffect, useState } from "react";
+import { passwordSchema } from "@/lib/utils";
 
 const forgetPasswordSchema = z
   .object({
     username: z.string().min(1, "Username or email is required"),
-    newPassword: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z
-      .string()
-      .min(6, "Password must be at least 6 characters"),
+    newPassword: passwordSchema,
+    confirmPassword: passwordSchema,
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
     message: "Passwords must match",
@@ -68,7 +67,7 @@ const ForgetPasswordForm = () => {
       username: data.username,
       password: data.newPassword,
     });
-    setUsername(username);
+    setUsername(data.username);
   };
 
   const handleOtpSubmit = (e: React.FormEvent) => {

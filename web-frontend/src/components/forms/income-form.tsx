@@ -44,10 +44,7 @@ import { useGetCreditCardsQuery } from "@/store/apis/credit-card-api";
 import { mergeBankAccountDetails, mergeCreditCardDetails } from "@/lib/utils";
 
 const formSchema = z.object({
-  cashFlowName: z
-    .string()
-    .min(1, { message: "Please select a account name" })
-    .optional(),
+  cashFlowId: z.string().optional(),
   amount: z.coerce
     .number()
     .positive({ message: "Statement Date must be greater than 0" }),
@@ -74,7 +71,7 @@ type IncomeFormValues = z.infer<typeof formSchema>;
 
 interface IncomeFormProps {
   id: string | number;
-  cashFlowDetails: CashFlowDetails | null;
+  cashFlowId: string | null;
   amount: string | null;
   dateOfEvent: string | null;
   timeOfEvent: string | null;
@@ -84,7 +81,7 @@ interface IncomeFormProps {
 
 export const IncomeForm: React.FC<IncomeFormProps> = ({
   id,
-  cashFlowDetails,
+  cashFlowId,
   amount,
   dateOfEvent,
   timeOfEvent,
@@ -96,26 +93,30 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
   const [editIncome] = useEditIncomeMutation();
   const { data: bankAccountRes } = useGetBankAccountsQuery({
     offset: 0,
-    limit: 100,
+    limit: 10,
   });
   const bankAccounts: BankAccount[] = bankAccountRes?.data || [];
   const { data: creditCardRes } = useGetCreditCardsQuery({
     offset: 0,
-    limit: 100,
+    limit: 10,
   });
   const creditCards: CreditCard[] = creditCardRes?.data || [];
   const [selectedType, setSelectedType] = useState<CashFlowType | string>(
-    CashFlowType.BANK
+    incomeType === CashFlowType.CREDITCARD
+      ? CashFlowType.CREDITCARD
+      : incomeType === CashFlowType.BANK
+      ? CashFlowType.BANK
+      : CashFlowType.CASH
   );
   const router = useRouter();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const initialData =
-    id && cashFlowDetails && amount && dateOfEvent && timeOfEvent && incomeType
+    id && cashFlowId && amount && dateOfEvent && timeOfEvent && incomeType
       ? {
           id,
-          cashFlowDetails,
+          cashFlowId,
           amount,
           dateOfEvent,
           timeOfEvent,
@@ -129,41 +130,35 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
   const toastMessage = initialData ? "Income updated." : "Income created.";
   const action = initialData ? "Save changes" : "Add";
 
-  const defaultValues = initialData
-    ? {
-        ...initialData,
-        incomeName: initialData.cashFlowDetails.cashFlowName,
-      }
-    : {
-        incomeType: "",
-        incomeName: "",
-        amount: null,
-        dateOfEvent: "",
-        timeOfEvent: "",
-        message: "",
-      };
-
   const form = useForm<any>({
     resolver: zodResolver(formSchema),
-    defaultValues,
+    defaultValues: initialData || {
+      cashFlowId: "",
+      incomeType: selectedType,
+      incomeName: "",
+      amount: null,
+      dateOfEvent: "",
+      timeOfEvent: "",
+      message: "",
+    },
   });
 
-  const getCashFlowId = (data: IncomeFormValues): number | null => {
+  const getCashFlowName = (data: IncomeFormValues): string => {
     if (data.incomeType === CashFlowType.BANK) {
       return (
         bankAccounts.filter(
-          (bankAccount) => bankAccount.bankName === data.cashFlowName
-        )?.[0]?.id || null
+          (bankAccount) => bankAccount.id === data.cashFlowId
+        )?.[0]?.bankName || ""
       );
     }
     if (data.incomeType === CashFlowType.CREDITCARD) {
       return (
         creditCards.filter(
-          (creditCard) => creditCard.creditCardName === data.cashFlowName
-        )?.[0]?.id || null
+          (creditCard) => creditCard.id.toString() === data.cashFlowId
+        )?.[0]?.creditCardName || ""
       );
     }
-    return null;
+    return "";
   };
 
   const onSubmit = async (data: IncomeFormValues) => {
@@ -174,8 +169,8 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
           ...data,
           id: Number(initialData.id),
           cashFlowDetails: {
-            cashFlowId: getCashFlowId(data),
-            cashFlowName: data.cashFlowName || "",
+            cashFlowId: Number(data.cashFlowId) || null,
+            cashFlowName: getCashFlowName(data),
           },
           dateOfEvent: new Date(data.dateOfEvent).toISOString(),
         }).unwrap();
@@ -183,8 +178,8 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
         await addIncome({
           ...data,
           cashFlowDetails: {
-            cashFlowId: getCashFlowId(data),
-            cashFlowName: data.cashFlowName || "",
+            cashFlowId: Number(data.cashFlowId) || null,
+            cashFlowName: getCashFlowName(data),
           },
           dateOfEvent: new Date(data.dateOfEvent).toISOString(),
         }).unwrap();
@@ -289,7 +284,7 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
             />
             <FormField
               control={form.control}
-              name="cashFlowName"
+              name="cashFlowId"
               disabled={selectedType === CashFlowType.CASH}
               render={({ field }) => (
                 <FormItem>
@@ -312,8 +307,8 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
                       <SelectContent>
                         {bankAccounts.map((bankAccount) => (
                           <SelectItem
-                            key={bankAccount.bankName}
-                            value={bankAccount.bankName}
+                            key={bankAccount.id}
+                            value={bankAccount.id?.toString() || ""}
                           >
                             {mergeBankAccountDetails(bankAccount)}
                           </SelectItem>
@@ -338,8 +333,8 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
                       <SelectContent>
                         {creditCards.map((creditCard) => (
                           <SelectItem
-                            key={creditCard.creditCardName}
-                            value={creditCard.creditCardName}
+                            key={creditCard.id}
+                            value={creditCard.id.toString()}
                           >
                             {mergeCreditCardDetails(creditCard)}
                           </SelectItem>

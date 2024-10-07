@@ -15,27 +15,27 @@ export default function DataTableSkeleton({
     <div className="flex flex-col space-y-4">
       {/* Search Input Skeleton */}
       <div className="w-full md:max-w-sm mb-4">
-        <Skeleton className="h-8 w-full rounded" />
+        <Skeleton className="h-10 w-full rounded" />
       </div>
 
       {/* Table Skeleton */}
       <div className="h-[calc(80vh-220px)] rounded-md border overflow-auto">
-        <div className="flex mb-2">
+        <div className="flex mb-2 gap-1">
           {Array.from({ length: columns }).map((_, index) => (
             <Skeleton
               key={`header-${index}`}
-              className="h-6 w-32 rounded mb-2"
+              className="h-12 w-full rounded mb-1"
             />
           ))}
         </div>
 
         <div>
           {Array.from({ length: rows }).map((_, rowIndex) => (
-            <div key={`row-${rowIndex}`} className="flex mb-2">
+            <div key={`row-${rowIndex}`} className="flex mb-2 gap-1">
               {Array.from({ length: columns }).map((_, colIndex) => (
                 <Skeleton
                   key={`cell-${rowIndex}-${colIndex}`}
-                  className="h-8 w-32 rounded"
+                  className="h-10 w-full rounded"
                 /> // Table cells
               ))}
             </div>
@@ -47,7 +47,7 @@ export default function DataTableSkeleton({
       {pagination && (
         <div className="flex flex-col items-center justify-end gap-2 space-x-2 py-4 sm:flex-row w-full">
           <div className="flex-1 text-sm text-muted-foreground">
-            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-8 w-32" />
           </div>
 
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6 lg:gap-8">

@@ -25,16 +25,13 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import { passwordSchema } from "@/lib/utils";
 
 const formSchema = z
   .object({
-    currentPassword: z
-      .string()
-      .min(6, "Password must be at least 6 characters"),
-    newPassword: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z
-      .string()
-      .min(6, "Password must be at least 6 characters"),
+    currentPassword: passwordSchema,
+    newPassword: passwordSchema,
+    confirmPassword: passwordSchema,
   })
   .refine((data) => data.confirmPassword === data.newPassword, {
     message: "Passwords must match",
@@ -69,6 +66,7 @@ export const UpdatePasswordForm = () => {
         variant: "default",
         title: "Password updated successfully",
       });
+      form.reset();
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -94,7 +92,7 @@ export const UpdatePasswordForm = () => {
               name="currentPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Current Password</FormLabel>
                   <FormControl>
                     <Input
                       type="password"
@@ -112,7 +110,7 @@ export const UpdatePasswordForm = () => {
               name="newPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>New Password</FormLabel>
                   <FormControl>
                     <Input
                       type="password"

@@ -22,6 +22,7 @@ export const budgetApi = createApi({
         method: "GET",
       }),
       providesTags: ["Budget"],
+      forceRefetch: () => true,
     }),
     getNextMonthReport: builder.query<NextMonthReport, void>({
       query: () => ({
@@ -29,6 +30,7 @@ export const budgetApi = createApi({
         method: "GET",
       }),
       providesTags: ["Budget"],
+      forceRefetch: () => true,
     }),
   }),
 });
