@@ -65,14 +65,14 @@ public class AuthenticationService {
 	private static final SecureRandom secureRandom = new SecureRandom();
 	private static final int OTP_LENGTH = 6;
 
-	public AuthenticationResponse authenticate(AuthenticationRequest request) {
+	public AuthenticationResponse authenticate(AuthenticationRequest request, String loggedInBy) {
 		authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
 		UserDetails user = userDetailsService.loadUserByUsername(request.getUsername());
 		removeUserPassword(user);
 		String jwtToken = jwtService.generateToken(user);
-		jtwCacheService.saveUserToken(jwtToken, user);
+		jtwCacheService.saveUserToken(jwtToken, user, loggedInBy);
 		return new AuthenticationResponse(jwtToken, user);
 	}
 

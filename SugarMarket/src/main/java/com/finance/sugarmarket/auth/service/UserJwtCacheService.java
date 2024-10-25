@@ -9,13 +9,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.finance.sugarmarket.auth.config.UserPrincipal;
+import com.finance.sugarmarket.constants.AppConstants;
 
 @Service
 public class UserJwtCacheService {
 
 	private static final String TOKEN_MID = "_JWT_TOKEN:";
-	private static final String TOKEN_PREFIX_PATTERN = "*_JWT_TOKEN:";
 	private static final String ID_PREFIX = "_JWT_TOKEN:*";
+	private static final String MOBILE_TOKEN_MID = "_MOBILE_TOKEN:";
 
 	@Autowired
 	private RedisTemplate<String, Object> redisTemplate;
@@ -27,15 +28,21 @@ public class UserJwtCacheService {
 		return null;
 	}
 
-	public void saveUserToken(String jwtToken, UserDetails user) {
+	public void saveUserToken(String jwtToken, UserDetails user, String loggedInBy) {
 		Long userId = null;
 		if (user instanceof UserPrincipal) {
 			userId = ((UserPrincipal) user).getId();
 
 		}
-		String redisKey = generateKey(jwtToken, userId);
-		redisTemplate.opsForValue().set(redisKey, user);
-		redisTemplate.expire(redisKey, 24, TimeUnit.HOURS);
+		if (!loggedInBy.equals(AppConstants.MOBILE)) {
+			String redisKey = generateKey(jwtToken, userId);
+			redisTemplate.opsForValue().set(redisKey, user);
+			redisTemplate.expire(redisKey, 24, TimeUnit.HOURS);
+		} else {
+			removeExistingMobileToken(userId);
+			String redisKey = generateMobileKey(jwtToken, userId);
+			redisTemplate.opsForValue().set(redisKey, user);
+		}
 	}
 
 	public void updateAllCacheKeyValues(Long userId, UserDetails user) throws Exception {
@@ -69,7 +76,7 @@ public class UserJwtCacheService {
 	}
 
 	private String getRedisKeyByPattern(String jwtToken) throws Exception {
-		String pattern = TOKEN_PREFIX_PATTERN + jwtToken;
+		String pattern = "*:" + jwtToken;
 		Set<String> keys = redisTemplate.keys(pattern);
 
 		if (keys == null || keys.isEmpty()) {
@@ -83,6 +90,18 @@ public class UserJwtCacheService {
 		if (userId == null)
 			userId = -1L;
 		return userId + TOKEN_MID + jwtToken;
+	}
+
+	private String generateMobileKey(String jwtToken, Long userId) {
+		if (userId == null)
+			userId = -1L;
+		return userId + MOBILE_TOKEN_MID + jwtToken;
+	}
+
+	private void removeExistingMobileToken(Long userId) {
+		String pattern = userId + MOBILE_TOKEN_MID + "*";
+		Set<String> keys = redisTemplate.keys(pattern);
+		redisTemplate.delete(keys);
 	}
 
 }
