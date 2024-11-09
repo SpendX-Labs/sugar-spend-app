@@ -6,7 +6,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AddIncomeEntry implements Job {
+public class AddIncomeEntryAgent implements Job {
 
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {

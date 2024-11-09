@@ -8,6 +8,8 @@ import java.util.Map;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -23,6 +25,7 @@ import com.finance.sugarmarket.base.dto.ListViewDto;
 import com.finance.sugarmarket.base.service.SpecificationService;
 import com.finance.sugarmarket.constants.AppConstants;
 import com.finance.sugarmarket.constants.FieldConstant;
+import com.finance.sugarmarket.constants.RedisConstants;
 
 @Service
 public class BankAccountService extends SpecificationService<BankAccount> {
@@ -43,6 +46,19 @@ public class BankAccountService extends SpecificationService<BankAccount> {
 	static {
 		filterMap.put(FieldConstant.USER_ID, "user.id");
 	}
+	
+	@Cacheable(value = RedisConstants.BANK_ACCOUNTS, key = "#userId")
+	public List<BankAccountDto> findAllBankAccountsByUserId(Long userId) {
+		List<BankAccount> accounts = bankAccountRepo.findByUserId(userId);
+		Type listType = new TypeToken<List<BankAccountDto>>() {
+		}.getType();
+		return modelMapper.map(accounts, listType);
+	}
+	
+	@CacheEvict(value = RedisConstants.BANK_ACCOUNTS, key = "#userId")
+	public void evictBankAccounts(Long userId) {
+	    // This method will clear all entries in the user specific credit Cards
+	}
 
 	public ListViewDto<BankAccountDto> findAllBankAccount(PageRequest pageRequest, List<Filter> filters) throws Exception {
 		Specification<BankAccount> specificationFilters = getSpecificationFilters(filters, filterMap);
@@ -58,6 +74,7 @@ public class BankAccountService extends SpecificationService<BankAccount> {
 		BankAccount bankAccount = modelMapper.map(bankAccountDto, BankAccount.class);
 		bankAccount.setUser(userRepo.findById(userId).get());
 		bankAccountRepo.save(bankAccount);
+		evictBankAccounts(userId);
 	}
 
 	public void updateBankAccount(BankAccountDto bankAccountDto, Long id, Long userId) throws Exception {
@@ -70,6 +87,7 @@ public class BankAccountService extends SpecificationService<BankAccount> {
 		modelMapper.map(bankAccountDto, existingBank);
 		existingBank.setId(id);
 		bankAccountRepo.save(existingBank);
+		evictBankAccounts(userId);
 	}
 
 	public String deleteBankAccount(Long id, Long userId) throws Exception {
@@ -83,6 +101,7 @@ public class BankAccountService extends SpecificationService<BankAccount> {
 			return DELETE_MSG;
 		}
 		bankAccountRepo.deleteById(existingBank.getId());
+		evictBankAccounts(userId);
 		return AppConstants.SUCCESS;
 	}
 

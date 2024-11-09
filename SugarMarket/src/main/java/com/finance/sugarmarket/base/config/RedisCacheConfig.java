@@ -47,8 +47,6 @@ public class RedisCacheConfig {
 						RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()));
 
 		Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
-		cacheConfigurations.put(RedisConstants.CREDIT_CARD,
-				RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofHours(5)));
 
 		cacheConfigurations.put(RedisConstants.JWT_TOKEN,
 				RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofHours(24)));

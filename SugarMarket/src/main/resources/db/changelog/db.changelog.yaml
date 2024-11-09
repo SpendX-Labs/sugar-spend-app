@@ -1034,8 +1034,85 @@ databaseChangeLog:
             constraintName: fk_Expense_loanId
             onDelete: CASCADE
 
+  - changeSet:
+      id: "createUserProperties"
+      author: subham.biswas
+      changes:
+        - createTable:
+            tableName: UserProperties
+            columns:
+              - column:
+                  name: userPropertiesId
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    autoIncrement: true
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: "CreateMapUserProperties"
+      author: subham.biswas
+      changes:
+        - createTable:
+            tableName: MapUserProperties
+            columns:
+              - column:
+                  name: mapUserPropertiesId
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    autoIncrement: true
+              - column:
+                  name: userPropertiesId
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: userId
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: value
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: "AddForeignKeyUserPropertiesMapUser"
+      author: subham.biswas
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: MapUserProperties
+            baseColumnNames: userId
+            referencedTableName: MFUser
+            referencedColumnNames: userId
+            constraintName: fk_MapUserProperties_userId
+            onDelete: CASCADE
+
+  - changeSet:
+      id: "AddForeignKeyUserPropertiesMapUserProperties"
+      author: subham.biswas
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: MapUserProperties
+            baseColumnNames: userPropertiesId
+            referencedTableName: UserProperties
+            referencedColumnNames: userPropertiesId
+            constraintName: fk_MapUserProperties_userPropertiesId
+            onDelete: CASCADE
+
   - include:
       file: classpath:/db/changelog/db.changelog-store-procedure.yaml
 
   - include:
       file: classpath:/db/changelog/db.changelog-mutual-funds.yaml
+
+  - include:
+      file: classpath:/db/changelog/db.changelog-properties.yaml

@@ -40,6 +40,16 @@ public class CreditCardController extends BaseController {
 
 	private static final Logger log = LoggerFactory.getLogger(CreditCardController.class);
 
+	@GetMapping("all")
+	public ResponseEntity<List<CreditCardDto>> findAllCrediCardByUserId() {
+		try {
+			return ResponseEntity.ok(creditCardService.findAllCreditCardsByUserId(getUserId()));
+		} catch (Exception e) {
+			log.error("error while getting credit card by userId: ", e);
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
+	}
+
 	@GetMapping
 	public ResponseEntity<ListViewDto<CreditCardDto>> findAllCreditCard() {
 		try {
@@ -58,6 +68,19 @@ public class CreditCardController extends BaseController {
 			creditCardService.saveCreditCard(cardDetailDto, getUserId());
 		} catch (Exception e) {
 			log.error("error while saving credit card: ", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+		return ResponseEntity.ok(AppConstants.SUCCESS);
+	}
+	
+	@PostMapping("batch")
+	public ResponseEntity<String> saveBatchCreditCards(@RequestBody List<CreditCardDto> cardDetailDtos) {
+		try {
+			for(CreditCardDto cardDetailDto: cardDetailDtos) {
+				creditCardService.saveCreditCard(cardDetailDto, getUserId());
+			}
+		} catch (Exception e) {
+			log.error("error while saving bank account: ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
 		return ResponseEntity.ok(AppConstants.SUCCESS);

@@ -1,7 +1,10 @@
 package com.finance.sugarmarket.app.dto;
 
-public class CreditCardDto {
+import java.io.Serializable;
 
+public class CreditCardDto implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String bankName;
 	private String creditCardName;

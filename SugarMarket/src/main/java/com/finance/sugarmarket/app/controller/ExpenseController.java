@@ -65,6 +65,19 @@ public class ExpenseController extends BaseController {
 		return ResponseEntity.ok(AppConstants.SUCCESS);
 	}
 
+	@PostMapping("batch")
+	public ResponseEntity<String> saveBatchExpenses(@RequestBody List<ExpenseDto> expenseDtos) {
+		try {
+			for (ExpenseDto expenseDto : expenseDtos) {
+				expenseService.saveExpense(expenseDto, getUserId());
+			}
+		} catch (Exception e) {
+			log.error("error while saving expense: ", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+		return ResponseEntity.ok(AppConstants.SUCCESS);
+	}
+
 	@PatchMapping("{id}")
 	public ResponseEntity<String> updateExpense(@PathVariable("id") Long id, @RequestBody ExpenseDto expenseDto) {
 		try {

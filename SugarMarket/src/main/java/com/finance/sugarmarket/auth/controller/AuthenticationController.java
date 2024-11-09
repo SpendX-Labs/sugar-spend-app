@@ -37,9 +37,10 @@ public class AuthenticationController {
 	private static final Logger log = LoggerFactory.getLogger(AuthenticationService.class);
 
 	@PostMapping("/authenticate")
-	public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
+	public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request,
+			@RequestHeader(value = AppConstants.LOGGED_IN_BY, required = false) String loggedInBy) {
 		try {
-			return ResponseEntity.ok(authenticationService.authenticate(request));
+			return ResponseEntity.ok(authenticationService.authenticate(request, loggedInBy));
 		} catch (Exception e) {
 			log.error("getUserDetailsByJWT failed", e);
 		}

@@ -28,7 +28,7 @@ public class Expense {
 	@ManyToOne
 	@JoinColumn(name = "userId", referencedColumnName = "userId")
 	private MFUser user;
-	
+
 	@Enumerated(EnumType.STRING)
 	private CashFlowType expenseType;
 
@@ -123,4 +123,17 @@ public class Expense {
 	public Expense() {
 		super();
 	}
+
+	public Expense(Expense expense) {
+		super();
+		this.user = expense.getUser();
+		this.expenseType = expense.getExpenseType();
+		this.bankAccount = expense.getBankAccount();
+		this.creditCard = expense.getCreditCard();
+		this.amount = expense.getAmount();
+		this.expenseDate = expense.getExpenseDate();
+		this.expenseTime = expense.getExpenseTime();
+		this.reason = expense.getReason();
+	}
+
 }

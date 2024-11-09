@@ -10,6 +10,6 @@ import com.finance.sugarmarket.app.model.CreditCard;
 
 public interface CreditCardRepo extends JpaRepository<CreditCard, Long>, JpaSpecificationExecutor<CreditCard> {
 	
-	@Query("SELECT o FROM CreditCard o WHERE o.user.username = :username")
-	public List<CreditCard> findByUsername(String username);
+	@Query("SELECT o FROM CreditCard o WHERE o.user.id = :userId")
+	public List<CreditCard> findByUserId(Long userId);
 }
