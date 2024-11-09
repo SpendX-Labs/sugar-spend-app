@@ -8,6 +8,8 @@ import java.util.Map;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -23,6 +25,7 @@ import com.finance.sugarmarket.base.dto.ListViewDto;
 import com.finance.sugarmarket.base.service.SpecificationService;
 import com.finance.sugarmarket.constants.AppConstants;
 import com.finance.sugarmarket.constants.FieldConstant;
+import com.finance.sugarmarket.constants.RedisConstants;
 
 @Service
 public class CreditCardService extends SpecificationService<CreditCard> {
@@ -43,6 +46,19 @@ public class CreditCardService extends SpecificationService<CreditCard> {
 	static {
 		filterMap.put(FieldConstant.USER_ID, "user.id");
 	}
+	
+	@Cacheable(value = RedisConstants.CREDIT_CARDS, key = "#userId")
+	public List<CreditCardDto> findAllCreditCardsByUserId(Long userId) {
+		List<CreditCard> cards = creditCardRepo.findByUserId(userId);
+		Type listType = new TypeToken<List<CreditCardDto>>() {
+		}.getType();
+		return modelMapper.map(cards, listType);
+	}
+	
+	@CacheEvict(value = RedisConstants.CREDIT_CARDS, key = "#userId")
+	public void evictCreditCards(Long userId) {
+	    // This method will clear all entries in the user specific credit Cards
+	}
 
 	public ListViewDto<CreditCardDto> findAllCreditCard(PageRequest pageRequest, List<Filter> filters) throws Exception {
 		Specification<CreditCard> specificationFilters = getSpecificationFilters(filters, filterMap);
@@ -58,6 +74,7 @@ public class CreditCardService extends SpecificationService<CreditCard> {
 		CreditCard creditCard = modelMapper.map(cardDeatilDto, CreditCard.class);
 		creditCard.setUser(userRepo.findById(userId).get());
 		creditCardRepo.save(creditCard);
+		evictCreditCards(userId);
 	}
 
 	public void updateCreditCard(CreditCardDto cardDetailDto, Long id, Long userId) throws Exception {
@@ -70,6 +87,7 @@ public class CreditCardService extends SpecificationService<CreditCard> {
 		modelMapper.map(cardDetailDto, existingCard);
 		existingCard.setId(id);
 		creditCardRepo.save(existingCard);
+		evictCreditCards(userId);
 	}
 
 	public String deleteCreditCard(Long id, Long userId) throws Exception {
@@ -83,6 +101,7 @@ public class CreditCardService extends SpecificationService<CreditCard> {
 			return DELETE_MSG;
 		}
 		creditCardRepo.deleteById(existingCard.getId());
+		evictCreditCards(userId);
 		return AppConstants.SUCCESS;
 	}
 }

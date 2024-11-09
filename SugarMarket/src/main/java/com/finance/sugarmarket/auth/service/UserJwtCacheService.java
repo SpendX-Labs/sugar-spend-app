@@ -34,7 +34,7 @@ public class UserJwtCacheService {
 			userId = ((UserPrincipal) user).getId();
 
 		}
-		if (!loggedInBy.equals(AppConstants.MOBILE)) {
+		if (!AppConstants.MOBILE.equals(loggedInBy)) {
 			String redisKey = generateKey(jwtToken, userId);
 			redisTemplate.opsForValue().set(redisKey, user);
 			redisTemplate.expire(redisKey, 24, TimeUnit.HOURS);

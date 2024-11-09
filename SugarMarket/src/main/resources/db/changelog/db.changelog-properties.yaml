@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: "user_sms_loaded_properties"
+      author: subham.biswas
+      changes:
+        - insert:
+            tableName: UserProperties
+            columns:
+              - column:
+                  name: userPropertiesId
+                  value: "1"
+              - column:
+                  name: name
+                  value: "SMS_LOADED"

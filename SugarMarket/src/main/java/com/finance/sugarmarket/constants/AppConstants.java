@@ -15,4 +15,6 @@ public class AppConstants {
 	public final static String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
 	public final static String LOGGED_IN_BY = "X-LoggedIn-By";
 	public final static String MOBILE = "mobile";
+	public final static String PROPERTY = "property";
+	public final static String VALUE = "value";
 }

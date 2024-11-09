@@ -1,9 +1,12 @@
 package com.finance.sugarmarket.app.dto;
 
+import java.io.Serializable;
+
 import com.finance.sugarmarket.app.enums.AccountType;
 
-public class BankAccountDto {
+public class BankAccountDto implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String bankName;
 	private AccountType accountType;
