@@ -1,14 +1,16 @@
 package com.finance.sugarmarket.auth.config;
 
+import com.finance.sugarmarket.auth.cache.UserCacheProvider;
+import com.finance.sugarmarket.auth.cache.WebJWTCacheProvider;
+import com.finance.sugarmarket.auth.dto.UserDetailsDTO;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.finance.sugarmarket.auth.service.UserJwtCacheService;
 import com.finance.sugarmarket.auth.service.JwtService;
 import com.finance.sugarmarket.constants.AppConstants;
 
@@ -26,7 +28,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private JwtService jwtService;
 
 	@Autowired
-	private UserJwtCacheService jwtCacheService;
+	private WebJWTCacheProvider webJWTCacheProvider;
+
+	@Autowired
+	private UserCacheProvider userCacheProvider;
+    @Autowired
+    private ModelMapper modelMapper;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -38,22 +45,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			return;
 		}
 
-		final String jwt = jwtCacheService.extractJwtFromHeader(authHeader);
+		final String jwt = webJWTCacheProvider.extractJwtFromHeader(authHeader);
 
 		final String userName = jwtService.extractUsername(jwt);
 
 		if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
 			try {
-				UserDetails redisUserDetails = jwtCacheService.getUserDetailsByToken(jwt);
+				UserDetailsDTO redisUserDetails = userCacheProvider.getUserDetails(webJWTCacheProvider.getTokenVsUserId(jwt));
 				if (redisUserDetails != null && jwtService.isTokenValid(jwt, redisUserDetails)) {
+					UserPrincipal userPrincipal = new UserPrincipal(redisUserDetails.getId(), redisUserDetails.getUsername(), null);
 					UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-							redisUserDetails, null, redisUserDetails.getAuthorities());
+							userPrincipal, null, userPrincipal.getAuthorities());
 					authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 					SecurityContextHolder.getContext().setAuthentication(authToken);
 				}
 			} catch (Exception e) {
-				logger.error("JWT token validation failed: " + e.getMessage());
+				logger.error("JWT token validation failed: ", e);
 			}
 		}
 

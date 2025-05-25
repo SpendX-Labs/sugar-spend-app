@@ -32,7 +32,7 @@ public class UserPropertiesService {
 		String[] allProperties = UserPropertiesEnum.getAllValues();
 		Map<String, String> map = new HashMap<>();
 		for (String property : allProperties) {
-			map.put(property, mapUserPropertiesRepo.fetchVlaueByPropertyName(property, userId));
+			map.put(property, mapUserPropertiesRepo.fetchValueByPropertyName(property, userId));
 		}
 		return map;
 	}

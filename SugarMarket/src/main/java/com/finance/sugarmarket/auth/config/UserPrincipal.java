@@ -1,5 +1,6 @@
 package com.finance.sugarmarket.auth.config;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -15,35 +16,18 @@ public class UserPrincipal implements UserDetails {
 	/**
 	 * 
 	 */
+	@Serial
 	private static final long serialVersionUID = -600742086637082954L;
 
 	private final Long id;
 	private final String username;
 	private String password;
-	private String fullName;
 	private final Collection<? extends GrantedAuthority> authorities;
-	private String message;
-	private String email;
-	private String phoneNumber;
 
-	public UserPrincipal(Long id, String username, String password, String role, String fullName, String email, String phoneNumber) {
+	public UserPrincipal(Long id, String username, String password) {
 		this.id = id;
 		this.username = username;
 		this.password = password;
-
-		List<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
-		authorities.add(new SimpleGrantedAuthority(role));
-
-		this.authorities = authorities;
-		this.fullName = fullName;
-		this.email = email;
-		this.phoneNumber = phoneNumber;
-	}
-
-	public UserPrincipal(String message) {
-		this.message = message;
-		this.id = null;
-		this.username = "";
 		this.authorities = null;
 	}
 
@@ -89,38 +73,6 @@ public class UserPrincipal implements UserDetails {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public String getFullName() {
-		return fullName;
-	}
-
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
 	}
 
 }

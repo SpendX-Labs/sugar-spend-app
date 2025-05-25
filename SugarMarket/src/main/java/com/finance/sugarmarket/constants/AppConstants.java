@@ -17,4 +17,5 @@ public class AppConstants {
 	public final static String MOBILE = "mobile";
 	public final static String PROPERTY = "property";
 	public final static String VALUE = "value";
+	public final static String HASH_DELIMITER = "#";
 }

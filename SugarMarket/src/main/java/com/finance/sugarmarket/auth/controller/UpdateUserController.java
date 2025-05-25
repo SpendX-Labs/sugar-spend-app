@@ -57,12 +57,12 @@ public class UpdateUserController extends BaseController {
 	}
 
 	@PatchMapping("userinfo")
-	public ResponseEntity<UserDetails> updateUserInfo(@RequestBody UserDetailsDTO request) {
+	public ResponseEntity<UserDetailsDTO> updateUserInfo(@RequestBody UserDetailsDTO request) {
 		try {
 			return ResponseEntity.ok(authenticationService.saveUserDetails(request, getUserId()));
 		} catch (Exception e) {
-			log.error("updateUserInfo failed", e.getMessage());
+			log.error("updateUserInfo failed", e);
 		}
-		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new UserPrincipal("Error while saving User details."));
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new UserDetailsDTO("Error while saving User details."));
 	}
 }
