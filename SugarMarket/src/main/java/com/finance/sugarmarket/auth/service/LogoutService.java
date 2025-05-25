@@ -1,5 +1,6 @@
 package com.finance.sugarmarket.auth.service;
 
+import com.finance.sugarmarket.auth.cache.WebJWTCacheProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +19,17 @@ public class LogoutService implements LogoutHandler {
 	private static final Logger log = LoggerFactory.getLogger(LogoutService.class);
 
 	@Autowired
-	private UserJwtCacheService jwtCacheService;
+	private WebJWTCacheProvider jWTCacheProvider;
 
 	@Override
 	public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
 		try {
 			log.info("inside LogoutService()");
 			final String authHeader = request.getHeader(AppConstants.AUTHORIZATION);
-			final String jwt = jwtCacheService.extractJwtFromHeader(authHeader);
-			jwtCacheService.removeToken(jwt);
+			final String jwt = jWTCacheProvider.extractJwtFromHeader(authHeader);
+			jWTCacheProvider.removeTokenVsUserId(jwt);
 		} catch (Exception e) {
 			log.error("error while doing logout", e);
 		}
-
 	}
 }

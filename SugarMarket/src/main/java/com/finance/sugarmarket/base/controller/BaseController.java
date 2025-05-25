@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.finance.sugarmarket.auth.cache.WebJWTCacheProvider;
+import com.finance.sugarmarket.constants.AppConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +19,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finance.sugarmarket.auth.model.MFRole;
 import com.finance.sugarmarket.auth.repo.MapRoleUserRepo;
-import com.finance.sugarmarket.auth.service.UserJwtCacheService;
 import com.finance.sugarmarket.auth.service.JwtService;
 import com.finance.sugarmarket.base.dto.Filter;
 import com.finance.sugarmarket.base.dto.Operands;
@@ -34,7 +35,7 @@ abstract public class BaseController {
 	@Autowired
 	private MapRoleUserRepo mapRoleUserRepo;
 	@Autowired
-	private UserJwtCacheService jwtCacheService;
+	private WebJWTCacheProvider jwtCacheProvider;
 	@Autowired
 	private ObjectMapper objectMapper;
 
@@ -43,9 +44,9 @@ abstract public class BaseController {
 		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder
 				.getRequestAttributes();
 		if (requestAttributes != null) {
-			token = requestAttributes.getRequest().getHeader("Authorization");
+			token = requestAttributes.getRequest().getHeader(AppConstants.AUTHORIZATION);
 		}
-		return jwtCacheService.extractJwtFromHeader(token);
+		return jwtCacheProvider.extractJwtFromHeader(token);
 	}
 
 	protected String getUserName() {

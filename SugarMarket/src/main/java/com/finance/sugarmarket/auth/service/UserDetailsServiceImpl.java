@@ -18,12 +18,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired
 	private MFUserRepo userRepo;
-	@Autowired
-	private MapRoleUserRepo mapRoleUserRepo;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		MFUser user = null;
+		MFUser user;
 		if (AuthenticationUtil.getInstance().isValidEmail(username)) {
 			user = userRepo.findByEmailAndISActive(username);
 		} else {
@@ -32,10 +30,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		if (user == null)
 			throw new UsernameNotFoundException(username + " not found");
 
-		MapRoleUser mapRoleUser = mapRoleUserRepo.findByUser(user.getId());
-
-		return new UserPrincipal(user.getId(), user.getUsername(), user.getPassword(),
-				mapRoleUser.getRole().getRoleName(), user.getFullname(), user.getEmail(), user.getPhonenumber());
+		return new UserPrincipal(user.getId(), user.getUsername(), user.getPassword());
 	}
 
 }

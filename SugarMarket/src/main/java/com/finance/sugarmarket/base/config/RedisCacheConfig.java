@@ -30,7 +30,7 @@ public class RedisCacheConfig {
 
 	@Value("${env.redis.host:localhost}")
 	private String redisHost;
-	@Value("${env.redis.port:6480}")
+	@Value("${env.redis.port:6379}")
 	private int redisPort;
 	@Value("${env.redis.username:}")
 	private String redisUsername;

@@ -10,6 +10,6 @@ import io.lettuce.core.dynamic.annotation.Param;
 public interface MapUserPropertiesRepo extends JpaRepository<MapUserProperties, Long>{
 	
 	@Query("SELECT m.value FROM MapUserProperties m WHERE m.user.id=:userId AND m.userProperties.name=:name")
-	public String fetchVlaueByPropertyName(@Param("name") String name, @Param("userId") Long userId);
+	public String fetchValueByPropertyName(@Param("name") String name, @Param("userId") Long userId);
 
 }
