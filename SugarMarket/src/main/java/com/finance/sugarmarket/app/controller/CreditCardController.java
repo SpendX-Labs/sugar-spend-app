@@ -41,7 +41,7 @@ public class CreditCardController extends BaseController {
 	private static final Logger log = LoggerFactory.getLogger(CreditCardController.class);
 
 	@GetMapping("all")
-	public ResponseEntity<List<CreditCardDto>> findAllCrediCardByUserId() {
+	public ResponseEntity<List<CreditCardDto>> findAllCreditCardByUserId() {
 		try {
 			return ResponseEntity.ok(creditCardService.findAllCreditCardsByUserId(getUserId()));
 		} catch (Exception e) {

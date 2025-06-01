@@ -1,9 +1,6 @@
 package com.finance.sugarmarket.app.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,15 +55,15 @@ public class IncomeService extends SpecificationService<Income> {
 				String crediCardName = income.getCreditCard().getBankName() + " "
 						+ income.getCreditCard().getCreditCardName() + " (XXXX" + income.getCreditCard().getLast4Digit()
 						+ ") ";
-				incomeDto.setCashFlowDetails(new CashFlowDetailDto(income.getCreditCard().getId(), crediCardName));
+				incomeDto.setCashFlowDetails(new CashFlowDetailDto(income.getCreditCard().getId(), crediCardName, income.getCreditCard().getLast4Digit()));
 			} else if (income.getBankAccount() != null) {
 				String bankAccountName = income.getBankAccount().getBankName() + " (XXXX"
 						+ income.getBankAccount().getLast4Digit() + ") ";
-				incomeDto.setCashFlowDetails(new CashFlowDetailDto(income.getBankAccount().getId(), bankAccountName));
+				incomeDto.setCashFlowDetails(new CashFlowDetailDto(income.getBankAccount().getId(), bankAccountName, income.getBankAccount().getLast4Digit()));
 			}
 			listDto.add(incomeDto);
 		}
-		return new ListViewDto<IncomeDto>(listDto, pages.getTotalElements(), pageRequest.getOffset(),
+		return new ListViewDto<>(listDto, pages.getTotalElements(), pageRequest.getOffset(),
 				pageRequest.getPageSize());
 	}
 
@@ -93,13 +90,13 @@ public class IncomeService extends SpecificationService<Income> {
 		if (cashFlowId != null) {
 			if (incomeDto.getIncomeType().equals(CashFlowType.CREDITCARD)) {
 				CreditCard creditCard = creditCardRepo.findById(cashFlowId).get();
-				if (creditCard.getUser().getId() != userId) {
+				if (!Objects.equals(creditCard.getUser().getId(), userId)) {
 					throw new Exception("user is different from the credit card.");
 				}
 				income.setCreditCard(creditCard);
 			} else if (incomeDto.getIncomeType().equals(CashFlowType.BANK)) {
 				BankAccount bankAccount = bankAccountRepo.findById(cashFlowId).get();
-				if (bankAccount.getUser().getId() != userId) {
+				if (!Objects.equals(bankAccount.getUser().getId(), userId)) {
 					throw new Exception("user is different from the Bank Account.");
 				}
 				income.setBankAccount(bankAccount);

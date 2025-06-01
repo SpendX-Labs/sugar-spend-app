@@ -12,4 +12,7 @@ public interface BankAccountRepo extends JpaRepository<BankAccount, Long>, JpaSp
 	
 	@Query("SELECT b FROM BankAccount b WHERE b.user.id = :userId")
 	public List<BankAccount> findByUserId(Long userId);
+
+	@Query("SELECT b FROM BankAccount b WHERE b.user.id = :userId AND b.last4Digit LIKE :last4Digit")
+	public BankAccount findByUserIdAndLast4Digit(Long userId, String last4Digit);
 }
