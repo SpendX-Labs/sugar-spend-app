@@ -11,8 +11,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.time.LocalTime;
+import java.util.Date;
 
 import com.finance.sugarmarket.app.enums.CashFlowType;
 import com.finance.sugarmarket.auth.model.MFUser;

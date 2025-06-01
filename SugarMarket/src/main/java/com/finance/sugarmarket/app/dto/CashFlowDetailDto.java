@@ -3,6 +3,7 @@ package com.finance.sugarmarket.app.dto;
 public class CashFlowDetailDto {
 	private Long cashFlowId;
 	private String cashFlowName;
+	private String last4Digit;
 
 	public Long getCashFlowId() {
 		return cashFlowId;
@@ -20,10 +21,19 @@ public class CashFlowDetailDto {
 		this.cashFlowName = cashFlowName;
 	}
 
-	public CashFlowDetailDto(Long cashFlowId, String cashFlowName) {
+	public String getLast4Digit() {
+		return last4Digit;
+	}
+
+	public void setLast4Digit(String last4Digit) {
+		this.last4Digit = last4Digit;
+	}
+
+	public CashFlowDetailDto(Long cashFlowId, String cashFlowName, String last4Digit) {
 		super();
 		this.cashFlowId = cashFlowId;
 		this.cashFlowName = cashFlowName;
+		this.last4Digit = last4Digit;
 	}
 
 	public CashFlowDetailDto() {

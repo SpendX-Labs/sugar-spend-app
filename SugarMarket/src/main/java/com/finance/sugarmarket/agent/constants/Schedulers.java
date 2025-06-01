@@ -13,9 +13,9 @@ public class Schedulers {
 		jobs = new HashMap<>();
 		// add jobs here
 		jobs.put("UpdateBudgetAgent", "0 0 0 ? * * *");
-		jobs.put("UpdateMutualFundAgent", "0 0 0-10/2 ? * TUE,WED,THU,FRI,SAT *");
-		jobs.put("AddIncomeEntryAgent", "0 0 1 28 * ? *");
-		jobs.put("LoanSchedulerAgent", "0 0 0 ? * * *");
+//		jobs.put("UpdateMutualFundAgent", "0 0 0-10/2 ? * TUE,WED,THU,FRI,SAT *");
+//		jobs.put("AddIncomeEntryAgent", "0 0 1 28 * ? *");
+//		jobs.put("LoanSchedulerAgent", "0 0 0 ? * * *");
 	}
 
 	public static synchronized Schedulers getInstance() {

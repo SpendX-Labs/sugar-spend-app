@@ -1,10 +1,6 @@
 package com.finance.sugarmarket.app.service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,15 +59,15 @@ public class ExpenseService extends SpecificationService<Expense> {
 				String crediCardName = expense.getCreditCard().getBankName() + " "
 						+ expense.getCreditCard().getCreditCardName() + " (XXXX"
 						+ expense.getCreditCard().getLast4Digit() + ") ";
-				expenseDto.setCashFlowDetails(new CashFlowDetailDto(expense.getCreditCard().getId(), crediCardName));
+				expenseDto.setCashFlowDetails(new CashFlowDetailDto(expense.getCreditCard().getId(), crediCardName, expense.getCreditCard().getLast4Digit()));
 			} else if (expense.getBankAccount() != null) {
 				String bankAccountName = expense.getBankAccount().getBankName() + " (XXXX"
 						+ expense.getBankAccount().getLast4Digit() + ") ";
-				expenseDto.setCashFlowDetails(new CashFlowDetailDto(expense.getBankAccount().getId(), bankAccountName));
+				expenseDto.setCashFlowDetails(new CashFlowDetailDto(expense.getBankAccount().getId(), bankAccountName, expense.getBankAccount().getLast4Digit()));
 			}
 			listDto.add(expenseDto);
 		}
-		return new ListViewDto<ExpenseDto>(listDto, pages.getTotalElements(), pageRequest.getOffset(),
+		return new ListViewDto<>(listDto, pages.getTotalElements(), pageRequest.getOffset(),
 				pageRequest.getPageSize());
 	}
 
@@ -98,13 +94,13 @@ public class ExpenseService extends SpecificationService<Expense> {
 		if (cashFlowId != null) {
 			if (expenseDto.getExpenseType().equals(CashFlowType.CREDITCARD)) {
 				CreditCard creditCard = creditCardRepo.findById(cashFlowId).get();
-				if (creditCard.getUser().getId() != userId) {
+				if (!Objects.equals(creditCard.getUser().getId(), userId)) {
 					throw new Exception("user is different from the credit card.");
 				}
 				expense.setCreditCard(creditCard);
 			} else if (expenseDto.getExpenseType().equals(CashFlowType.BANK)) {
 				BankAccount bankAccount = bankAccountRepo.findById(cashFlowId).get();
-				if (bankAccount.getUser().getId() != userId) {
+				if (!Objects.equals(bankAccount.getUser().getId(), userId)) {
 					throw new Exception("user is different from the Bank Account.");
 				}
 				expense.setBankAccount(bankAccount);

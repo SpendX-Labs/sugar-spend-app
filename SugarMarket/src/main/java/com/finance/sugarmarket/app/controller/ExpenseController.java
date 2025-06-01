@@ -66,9 +66,9 @@ public class ExpenseController extends BaseController {
 	}
 
 	@PostMapping("batch")
-	public ResponseEntity<String> saveBatchExpenses(@RequestBody List<ExpenseDto> expenseDtos) {
+	public ResponseEntity<String> saveBatchExpenses(@RequestBody List<ExpenseDto> expenseDtoList) {
 		try {
-			for (ExpenseDto expenseDto : expenseDtos) {
+			for (ExpenseDto expenseDto : expenseDtoList) {
 				expenseService.saveExpense(expenseDto, getUserId());
 			}
 		} catch (Exception e) {
