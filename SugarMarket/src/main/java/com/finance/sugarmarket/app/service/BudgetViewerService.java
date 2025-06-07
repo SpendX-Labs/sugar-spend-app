@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.finance.sugarmarket.app.enums.TransactionType;
+import com.finance.sugarmarket.app.repo.TransactionRepo;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +21,8 @@ import com.finance.sugarmarket.app.budgetview.dto.AutoDebitDto;
 import com.finance.sugarmarket.app.budgetview.dto.BudgetViewDto;
 import com.finance.sugarmarket.app.budgetview.dto.ExpenseReportDto;
 import com.finance.sugarmarket.app.budgetview.dto.TimeBasedSummary;
-import com.finance.sugarmarket.app.enums.CashFlowType;
 import com.finance.sugarmarket.app.model.BudgetView;
 import com.finance.sugarmarket.app.repo.BudgetViewRepo;
-import com.finance.sugarmarket.app.repo.ExpenseRepo;
-import com.finance.sugarmarket.app.repo.IncomeRepo;
 import com.finance.sugarmarket.base.util.DateUtil;
 
 @Service
@@ -32,9 +31,7 @@ public class BudgetViewerService {
 	@Autowired
 	private BudgetViewRepo budgetViewRepo;
 	@Autowired
-	private ExpenseRepo expenseRepo;
-	@Autowired
-	private IncomeRepo incomeRepo;
+	private TransactionRepo transactionRepo;
 	@Autowired
 	private ModelMapper modelMapper;
 
@@ -42,18 +39,18 @@ public class BudgetViewerService {
 		Date today = DateUtil.getCurrentDate();
 		ExpenseReportDto reportDto = new ExpenseReportDto();
 
-		List<Object[]> expenseList = new ArrayList<>();
-		List<BudgetView> budgetList = new ArrayList<>();
-		BigDecimal totalIncome = BigDecimal.ZERO;
+		List<Object[]> expenseList;
+		List<BudgetView> budgetList;
+		BigDecimal totalIncome;
 		if (StringUtils.isNotBlank(month)) {
-			expenseList = expenseRepo.getMonthlyExpenseSummaryWithCashFlow(year, month, userId);
+			expenseList = transactionRepo.getMonthlyExpenseSummaryWithCashFlow(year, month, userId);
 			budgetList = budgetViewRepo.findAllByMonth(year, month, userId);
-			totalIncome = incomeRepo.getTotalMonthlyIncome(year, month, userId);
+			totalIncome = transactionRepo.getTotalMonthlyIncome(year, month, userId);
 
 		} else {
-			expenseList = expenseRepo.getYearlyExpenseSummaryWithCashFlow(year, userId);
+			expenseList = transactionRepo.getYearlyExpenseSummaryWithCashFlow(year, userId);
 			budgetList = budgetViewRepo.findAllByYear(year, userId);
-			totalIncome = incomeRepo.getTotalYearlyIncome(year, userId);
+			totalIncome = transactionRepo.getTotalYearlyIncome(year, userId);
 		}
 
 		BigDecimal manualSpendAmount = BigDecimal.ZERO;
@@ -63,7 +60,7 @@ public class BudgetViewerService {
 
 		for (Object[] obj : expenseList) {
 			String key = obj[0].toString();
-			CashFlowType expenseType = CashFlowType.valueOf(obj[1].toString());
+			TransactionType transactionType = TransactionType.valueOf(obj[1].toString());
 			BigDecimal amount = (BigDecimal) obj[2];
 
 			TimeBasedSummary summary = null;
@@ -74,7 +71,7 @@ public class BudgetViewerService {
 				summary.setDataKey(key);
 			}
 
-			if (expenseType.equals(CashFlowType.CREDITCARD)) {
+			if (transactionType.equals(TransactionType.CREDITCARD)) {
 				cardSpendAmount = cardSpendAmount.add(amount);
 				summary.setCreditCardAmount(amount);
 			} else {
@@ -171,16 +168,6 @@ public class BudgetViewerService {
 
 		return getAutoDebit(budgetList);
 
-	}
-
-	@Deprecated
-	public BudgetView findBudgetById(Long id) {
-		return budgetViewRepo.findById(id).get();
-	}
-
-	@Deprecated
-	public void saveBudget(BudgetView budget) {
-		budgetViewRepo.save(budget);
 	}
 
 	public void updateBudgetView(Date date, Long userId) {

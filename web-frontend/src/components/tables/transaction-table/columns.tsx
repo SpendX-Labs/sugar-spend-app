@@ -1,7 +1,7 @@
 "use client";
 
 import { Checkbox } from "@/components/ui/checkbox";
-import { Transaction, TransactionType } from "@/lib/types";
+import { CashFlowType, Transaction, TransactionType } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { CellAction } from "./cell-action"
 import { format } from "date-fns";
@@ -29,8 +29,8 @@ export const columns: ColumnDef<Transaction>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "cashFlowType",
-    header: "CASHFLOW TYPE",
+    accessorKey: "transactionType",
+    header: "TRANSACTION TYPE",
     enableSorting: false,
   },
   {
@@ -54,10 +54,10 @@ export const columns: ColumnDef<Transaction>[] = [
     },
     cell: ({ row }) => {
         const amount = row.getValue("amount") as number;
-        const transactionType = row.original.transactionType as TransactionType;
+        const cashFlowTupe = row.original.cashFlowType as CashFlowType;
         return (
         <div className={`font-semibold px-2 py-1 rounded ${
-            transactionType === TransactionType.CREDIT
+            cashFlowTupe === CashFlowType.CREDIT
             ? 'text-green-700' 
             : 'text-red-700'
         }`}>

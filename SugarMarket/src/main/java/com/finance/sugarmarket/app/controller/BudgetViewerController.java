@@ -55,18 +55,4 @@ public class BudgetViewerController extends BaseController {
 		return ResponseEntity.ok(AppConstants.SUCCESS);
 	}
 
-	@Deprecated
-	@PostMapping("/modify-remaing-amount")
-	public ResponseEntity<String> modifyRemainingAmount(@RequestBody BudgetView budget) {
-		try {
-			BudgetView orgOBudget = budgetViewerService.findBudgetById(budget.getId());
-			orgOBudget.setRemainingAmount(budget.getRemainingAmount());
-			budgetViewerService.saveBudget(orgOBudget);
-		} catch (Exception e) {
-			log.error("error while modifying remiang amount: ", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(AppConstants.FAILED);
-		}
-		return ResponseEntity.ok(AppConstants.SUCCESS);
-	}
-
 }

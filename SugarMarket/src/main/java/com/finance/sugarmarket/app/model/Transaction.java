@@ -22,10 +22,10 @@ public class Transaction {
     private MFUser user;
 
     @Enumerated(EnumType.STRING)
-    private TransactionType transactionType;  // INCOME or EXPENSE
+    private CashFlowType cashFlowType; //DEBIT or CREDIT
 
     @Enumerated(EnumType.STRING)
-    private CashFlowType cashFlowType;
+    private TransactionType transactionType;  // CREDITCARD or BANK or CASH
 
     @ManyToOne
     @JoinColumn(name = "bankAccountId", referencedColumnName = "bankAccountId")

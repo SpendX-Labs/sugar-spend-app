@@ -3,11 +3,11 @@ package com.finance.sugarmarket.app.service;
 import com.finance.sugarmarket.app.dto.CashFlowDetailDto;
 import com.finance.sugarmarket.app.dto.TransactionDto;
 import com.finance.sugarmarket.app.dto.TransactionMobileInputDto;
-import com.finance.sugarmarket.app.enums.CashFlowType;
+import com.finance.sugarmarket.app.enums.TransactionType;
 import com.finance.sugarmarket.app.model.BankAccount;
 import com.finance.sugarmarket.app.model.CreditCard;
 import com.finance.sugarmarket.app.model.Transaction;
-import com.finance.sugarmarket.app.model.TransactionRepo;
+import com.finance.sugarmarket.app.repo.TransactionRepo;
 import com.finance.sugarmarket.app.repo.BankAccountRepo;
 import com.finance.sugarmarket.app.repo.CreditCardRepo;
 import com.finance.sugarmarket.auth.model.MFUser;
@@ -103,13 +103,13 @@ public class TransactionService extends SpecificationService<Transaction> {
     private void persistTransaction(TransactionDto transactionDto, Transaction transaction, Long userId) throws Exception {
         Long cashFlowId = transactionDto.getCashFlowDetails().getCashFlowId();
         if (cashFlowId != null) {
-            if (transactionDto.getCashFlowType().equals(CashFlowType.CREDITCARD)) {
+            if (transactionDto.getTransactionType().equals(TransactionType.CREDITCARD)) {
                 CreditCard creditCard = creditCardRepo.findById(cashFlowId).orElse(null);
                 if (creditCard == null || !Objects.equals(creditCard.getUser().getId(), userId)) {
                     throw new Exception("user is different from the credit card.");
                 }
                 transaction.setCreditCard(creditCard);
-            } else if (transactionDto.getCashFlowType().equals(CashFlowType.BANK)) {
+            } else if (transactionDto.getTransactionType().equals(TransactionType.BANK)) {
                 BankAccount bankAccount = bankAccountRepo.findById(cashFlowId).orElse(null);
                 if (bankAccount == null || !Objects.equals(bankAccount.getUser().getId(), userId)) {
                     throw new Exception("user is different from the Bank Account.");
@@ -136,20 +136,20 @@ public class TransactionService extends SpecificationService<Transaction> {
         Date date = Date.from(zonedDateTime.toInstant());
         String last4Digits = "%" + transaction.getLast4Digit();
         Transaction newTransaction = new Transaction();
-        newTransaction.setTransactionType(transaction.getTransactionType());
+        newTransaction.setCashFlowType(transaction.getCashFlowType());
         newTransaction.setAmount(transaction.getTransactionAmount());
         newTransaction.setTransactionDate(date);
         CreditCard creditCard = creditCardRepo.findByUserIdAndLast4Digit(userId, last4Digits);
         if (creditCard != null) {
             newTransaction.setUser(creditCard.getUser());
-            newTransaction.setCashFlowType(CashFlowType.CREDITCARD);
+            newTransaction.setTransactionType(TransactionType.CREDITCARD);
             newTransaction.setCreditCard(creditCard);
             transactionRepo.saveAndFlush(newTransaction);
         } else {
             BankAccount bankAccount = bankAccountRepo.findByUserIdAndLast4Digit(userId, last4Digits);
             if (bankAccount != null) {
                 newTransaction.setUser(bankAccount.getUser());
-                newTransaction.setCashFlowType(CashFlowType.BANK);
+                newTransaction.setTransactionType(TransactionType.BANK);
                 newTransaction.setBankAccount(bankAccount);
                 transactionRepo.saveAndFlush(newTransaction);
             } else {

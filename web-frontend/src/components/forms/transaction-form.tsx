@@ -99,17 +99,17 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
     limit: 10,
   });
   const creditCards: CreditCard[] = creditCardRes?.data || [];
-  const [selectedCashFlowType, setSelectedCashFlowType] = useState<CashFlowType | string>(
-    cashFlowType === CashFlowType.CREDITCARD
-      ? CashFlowType.CREDITCARD
-      : cashFlowType === CashFlowType.BANK
-      ? CashFlowType.BANK
-      : CashFlowType.CASH
+  const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType>(
+    transactionType === TransactionType.CREDITCARD
+      ? TransactionType.CREDITCARD
+      : transactionType === TransactionType.BANK
+      ? TransactionType.BANK
+      : TransactionType.CASH
   );
-const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType>(
-    transactionType === TransactionType.CREDIT
-      ? TransactionType.CREDIT
-      : TransactionType.DEBIT
+  const [selectedCashFlowType, setSelectedCashFlowType] = useState<CashFlowType>(
+    cashFlowType === CashFlowType.CREDIT
+      ? CashFlowType.CREDIT
+      : CashFlowType.DEBIT
   );
   const router = useRouter();
   const { toast } = useToast();
@@ -149,14 +149,14 @@ const [selectedTransactionType, setSelectedTransactionType] = useState<Transacti
   });
 
   const getCashFlowName = (data: TransactionFormValues): string => {
-    if (data.cashFlowType === CashFlowType.BANK) {
+    if (data.cashFlowType === TransactionType.BANK) {
       return (
         bankAccounts.filter(
           (bankAccount) => bankAccount.id === data.cashFlowId
         )?.[0]?.bankName || ""
       );
     }
-    if (data.cashFlowType === CashFlowType.CREDITCARD) {
+    if (data.cashFlowType === TransactionType.CREDITCARD) {
       return (
         creditCards.filter(
           (creditCard) => creditCard.id.toString() === data.cashFlowId
@@ -173,6 +173,7 @@ const [selectedTransactionType, setSelectedTransactionType] = useState<Transacti
         await editTransaction({
           ...data,
           id: Number(initialData.id),
+          cashFlowType: selectedCashFlowType,
           transactionType: selectedTransactionType,
           cashFlowDetails: {
             cashFlowId: Number(data.cashFlowId) || null,
@@ -256,63 +257,28 @@ const [selectedTransactionType, setSelectedTransactionType] = useState<Transacti
           <div className="gap-8 md:grid md:grid-cols-3">
             <FormField
               control={form.control}
-              name="transactionType"
+              name="cashFlowType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Transaction Type</FormLabel>
+                  <FormLabel>Cashflow Type</FormLabel>
                   <Select
                     disabled={loading}
                     onValueChange={(value) => {
                       field.onChange(value);
                       if(value === "DEBIT") {
-                        setSelectedTransactionType(TransactionType.DEBIT);
+                        setSelectedCashFlowType(CashFlowType.DEBIT);
                       } else {
-                        setSelectedTransactionType(TransactionType.CREDIT);
+                        setSelectedCashFlowType(CashFlowType.CREDIT);
                       }
                     }}
                     value={field.value}
-                    defaultValue={TransactionType.DEBIT}
+                    defaultValue={CashFlowType.DEBIT}
                   >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue
-                          defaultValue={TransactionType.DEBIT}
+                          defaultValue={CashFlowType.DEBIT}
                           placeholder="Select Transaction Type"
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {Object.values(TransactionType).map((value) => (
-                        <SelectItem key={value} value={value}>
-                          {value}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="cashFlowType"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>CashFlow Type</FormLabel>
-                  <Select
-                    disabled={loading}
-                    onValueChange={(value) => {
-                      field.onChange(value);
-                      setSelectedCashFlowType(value);
-                    }}
-                    value={field.value}
-                    defaultValue={CashFlowType.BANK}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          defaultValue={CashFlowType.BANK}
-                          placeholder="Select CashFlow Type"
                         />
                       </SelectTrigger>
                     </FormControl>
@@ -330,11 +296,52 @@ const [selectedTransactionType, setSelectedTransactionType] = useState<Transacti
             />
             <FormField
               control={form.control}
+              name="transactionType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Transaction Type</FormLabel>
+                  <Select
+                    disabled={loading}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      if(value === "BANK") {
+                        setSelectedTransactionType(TransactionType.BANK);
+                      } else if(value === "CREDITCARD") {
+                        setSelectedTransactionType(TransactionType.CREDITCARD);
+                      } else {
+                        setSelectedTransactionType(TransactionType.CASH);
+                      }
+                    }}
+                    value={field.value}
+                    defaultValue={TransactionType.BANK}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          defaultValue={TransactionType.BANK}
+                          placeholder="Select CashFlow Type"
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.values(TransactionType).map((value) => (
+                        <SelectItem key={value} value={value}>
+                          {value}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="cashFlowId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Account Name</FormLabel>
-                  {selectedCashFlowType === CashFlowType.BANK ? (
+                  {selectedTransactionType === TransactionType.BANK ? (
                     <Select
                       disabled={loading}
                       onValueChange={field.onChange}
@@ -362,7 +369,7 @@ const [selectedTransactionType, setSelectedTransactionType] = useState<Transacti
                     </Select>
                   ) : (
                     <Select
-                      disabled={loading || selectedCashFlowType === CashFlowType.CASH}
+                      disabled={loading || selectedTransactionType === TransactionType.CASH}
                       onValueChange={field.onChange}
                       value={field.value}
                       defaultValue={field.value}

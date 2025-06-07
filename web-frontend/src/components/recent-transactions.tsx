@@ -11,7 +11,7 @@ import {
 } from "./ui/card";
 import { useGetTransactionsQuery } from "@/store/apis/transaction-api";
 import { format } from "date-fns";
-import { TransactionType } from "@/lib/types";
+import { CashFlowType, TransactionType } from "@/lib/types";
 
 export function RecentTransactions() {
   const {
@@ -51,7 +51,7 @@ export function RecentTransactions() {
             </Avatar>
             <div className="ml-4 space-y-1">
               <p className="text-sm font-medium leading-none">
-                {transaction.note}
+                {transaction.note && transaction.note.trim() !== "" ? transaction.note : "Other"}
               </p>
               <p className="text-sm text-muted-foreground">
                 {format(new Date(transaction.transactionDate), "dd-MM-yyyy")}
@@ -59,12 +59,12 @@ export function RecentTransactions() {
             </div>
             <div
               className={`ml-auto font-medium ${
-                transaction.transactionType === TransactionType.CREDIT
+                transaction.cashFlowType === CashFlowType.CREDIT
                   ? "text-green-400"
                   : "text-red-400"
               }`}
             >
-              {transaction.transactionType === TransactionType.CREDIT ? "+" : "-"}
+              {transaction.cashFlowType === CashFlowType.CREDIT ? "+" : "-"}
               {CURRENCY_RUPEE_SYMBOL}
               {transaction.amount}
             </div>

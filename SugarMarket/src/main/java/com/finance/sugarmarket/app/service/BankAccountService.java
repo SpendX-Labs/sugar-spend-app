@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.finance.sugarmarket.app.repo.TransactionRepo;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service;
 import com.finance.sugarmarket.app.dto.BankAccountDto;
 import com.finance.sugarmarket.app.model.BankAccount;
 import com.finance.sugarmarket.app.repo.BankAccountRepo;
-import com.finance.sugarmarket.app.repo.ExpenseRepo;
 import com.finance.sugarmarket.auth.repo.MFUserRepo;
 import com.finance.sugarmarket.base.dto.Filter;
 import com.finance.sugarmarket.base.dto.ListViewDto;
@@ -33,13 +33,13 @@ public class BankAccountService extends SpecificationService<BankAccount> {
 	@Autowired
 	private BankAccountRepo bankAccountRepo;
 	@Autowired
-	private ExpenseRepo expenseRepo;
+	private TransactionRepo transactionRepo;
 	@Autowired
 	private MFUserRepo userRepo;
 	@Autowired
 	private ModelMapper modelMapper;
 
-	private static final String DELETE_MSG = "Can not delete";
+	private static final String CAN_NOT_DELETE = "Can not delete";
 
 	private static final Map<String, String> filterMap = new HashMap<String, String>();
 
@@ -97,8 +97,8 @@ public class BankAccountService extends SpecificationService<BankAccount> {
 			throw new Exception("You are not authorised to modify");
 		}
 		BankAccount existingBank = bankAccountList.get(0);
-		if (expenseRepo.findByBankAccountId(id).size() > 0) {
-			return DELETE_MSG;
+		if (!transactionRepo.findAllByBankAccountId(id).isEmpty()) {
+			return CAN_NOT_DELETE;
 		}
 		bankAccountRepo.deleteById(existingBank.getId());
 		evictBankAccounts(userId);

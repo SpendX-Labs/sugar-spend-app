@@ -3,10 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
 import { Transaction } from "@/lib/types";
 import { useGetTransactionsQuery } from "@/store/apis/transaction-api";
-import { Plus, Search } from "lucide-react";
+import { Plus } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { columns } from "./columns"
 import React from "react";

@@ -9,8 +9,8 @@ import java.util.Date;
 
 public class TransactionDto {
     private Long id;
-    private TransactionType transactionType;
     private CashFlowType cashFlowType;
+    private TransactionType transactionType;
     private CashFlowDetailDto cashFlowDetails;
     private BigDecimal amount;
     private Date transactionDate;

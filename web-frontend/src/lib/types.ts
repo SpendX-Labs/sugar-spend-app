@@ -11,6 +11,11 @@ export interface NavItem {
 }
 
 export enum CashFlowType {
+  DEBIT = "DEBIT",
+  CREDIT = "CREDIT"
+}
+
+export enum TransactionType {
   CASH = "CASH",
   BANK = "BANK",
   CREDITCARD = "CREDITCARD",
@@ -162,11 +167,6 @@ export type UserInfo = {
   accountNonLocked: boolean;
   credentialsNonExpired: boolean;
 };
-
-export enum TransactionType {
-  DEBIT = "DEBIT",
-  CREDIT = "CREDIT"
-}
 
 export type Transaction = {
   id?: number;
