@@ -41,7 +41,6 @@ public class BudgetViewerController extends BaseController {
 	@GetMapping("next-month-report")
 	public AutoDebitDto getNextMonthBudget() {
 		return budgetViewerService.getNextMonthBudget(getUserId());
-
 	}
 
 	@PostMapping("/update-budget-data")

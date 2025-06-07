@@ -4,8 +4,7 @@ import { authApi } from "./apis/auth-api";
 import { bankAccountApi } from "./apis/bank-account-api";
 import { budgetApi } from "./apis/budget-api";
 import { creditCardApi } from "./apis/credit-card-api";
-import { expenseApi } from "./apis/expense-api";
-import { incomeApi } from "./apis/income-api";
+import { transactionApi } from "./apis/transaction-api";
 import { authSlice } from "./slices/auth-slice";
 import { monthYearSlice } from "./slices/month-year-slice";
 import { sidebarSlice } from "./slices/sidebar-slice";
@@ -20,8 +19,7 @@ const rootReducer = combineReducers({
   [bankAccountApi.reducerPath]: bankAccountApi.reducer,
   [budgetApi.reducerPath]: budgetApi.reducer,
   [creditCardApi.reducerPath]: creditCardApi.reducer,
-  [expenseApi.reducerPath]: expenseApi.reducer,
-  [incomeApi.reducerPath]: incomeApi.reducer,
+  [transactionApi.reducerPath]: transactionApi.reducer,
   [loanApi.reducerPath]: loanApi.reducer,
   [userApi.reducerPath]: userApi.reducer,
 });
@@ -36,8 +34,7 @@ export const makeStore = () => {
         bankAccountApi.middleware,
         budgetApi.middleware,
         creditCardApi.middleware,
-        expenseApi.middleware,
-        incomeApi.middleware,
+        transactionApi.middleware,
         loanApi.middleware,
         userApi.middleware
       );

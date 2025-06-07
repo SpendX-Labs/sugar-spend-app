@@ -1,6 +1,5 @@
 package com.finance.sugarmarket.app.service;
 
-import java.util.*;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +22,14 @@ import com.finance.sugarmarket.auth.repo.MFUserRepo;
 import com.finance.sugarmarket.base.dto.Filter;
 import com.finance.sugarmarket.base.dto.ListViewDto;
 import com.finance.sugarmarket.base.service.SpecificationService;
-import com.finance.sugarmarket.constants.AppConstants;
 import com.finance.sugarmarket.constants.FieldConstant;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class ExpenseService extends SpecificationService<Expense> {
@@ -42,7 +47,7 @@ public class ExpenseService extends SpecificationService<Expense> {
 	@Autowired
 	private BudgetViewRepo budgetViewRepo;
 
-	private static final Map<String, String> filterMap = new HashMap<String, String>();
+	private static final Map<String, String> filterMap = new HashMap<>();
 
 	static {
 		filterMap.put(FieldConstant.USER_ID, "user.id");
@@ -112,7 +117,7 @@ public class ExpenseService extends SpecificationService<Expense> {
 		}
 	}
 
-	public String deleteExpense(Long id, Long userId) throws Exception {
+	public void deleteExpense(Long id, Long userId) throws Exception {
 		Specification<Expense> specificationFilters = getAuditSpecificationFilters(filterMap, id, userId);
 		List<Expense> expenseList = expenseRepo.findAll(specificationFilters);
 		if (expenseList.isEmpty()) {
@@ -120,6 +125,5 @@ public class ExpenseService extends SpecificationService<Expense> {
 		}
 		Expense existingExpense = expenseList.get(0);
 		expenseRepo.deleteById(existingExpense.getId());
-		return AppConstants.SUCCESS;
 	}
 }

@@ -13,18 +13,13 @@ import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { BankAccount, CashFlowType, CreditCard, TransactionType } from "@/lib/types";
+import { useGetCreditCardsQuery } from "@/store/apis/credit-card-api";
 import {
-  CashFlowDetails,
-  CashFlowType,
-  BankAccount,
-  CreditCard,
-} from "@/lib/types";
-import { useGetBankAccountsQuery } from "@/store/apis/bank-account-api";
-import {
-  useAddIncomeMutation,
-  useDeleteIncomeMutation,
-  useEditIncomeMutation,
-} from "@/store/apis/income-api";
+  useAddTransactionMutation,
+  useDeleteTransactionMutation,
+  useEditTransactionMutation,
+} from "@/store/apis/transaction-api";
 import { Trash } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -40,57 +35,60 @@ import {
 } from "../ui/select";
 import { useToast } from "../ui/use-toast";
 import { Textarea } from "../ui/textarea";
-import { useGetCreditCardsQuery } from "@/store/apis/credit-card-api";
+import { useGetBankAccountsQuery } from "@/store/apis/bank-account-api";
 import { mergeBankAccountDetails, mergeCreditCardDetails } from "@/lib/utils";
 
 const formSchema = z.object({
   cashFlowId: z.string().optional(),
+  transactionType: z
+    .string()
+    .refine(
+      (value) => Object.values(TransactionType).includes(value as TransactionType),
+      {
+        message: "Invalid transaction type",
+      }
+    ),
   amount: z.coerce
     .number()
     .positive({ message: "Statement Date must be greater than 0" }),
-  dateOfEvent: z.string().refine((value) => /^\d{4}-\d{2}-\d{2}$/.test(value), {
+  transactionDate: z.string().refine((value) => /^\d{4}-\d{2}-\d{2}$/.test(value), {
     message: "Start date should be in the format YYYY-MM-DD",
   }),
-  timeOfEvent: z
-    .string()
-    .refine((value) => /^([01]\d|2[0-3]):([0-5]\d)$/.test(value), {
-      message: "Time should be in the format HH:mm",
-    }),
-  incomeType: z
+  cashFlowType: z
     .string()
     .refine(
       (value) => Object.values(CashFlowType).includes(value as CashFlowType),
       {
-        message: "Invalid income type",
+        message: "Invalid cashFlow type",
       }
     ),
-  message: z.string().default(""),
+  note: z.string().default(""),
 });
 
-type IncomeFormValues = z.infer<typeof formSchema>;
+type TransactionFormValues = z.infer<typeof formSchema>;
 
-interface IncomeFormProps {
+interface TransactionFormProps {
   id: string | number;
   cashFlowId: string | null;
   amount: string | null;
-  dateOfEvent: string | null;
-  timeOfEvent: string | null;
-  incomeType: CashFlowType | null;
-  message: string | null;
+  transactionDate: string | null;
+  cashFlowType: CashFlowType | null;
+  transactionType: TransactionType | null;
+  note: string | null;
 }
 
-export const IncomeForm: React.FC<IncomeFormProps> = ({
+export const TransactionForm: React.FC<TransactionFormProps> = ({
   id,
   cashFlowId,
   amount,
-  dateOfEvent,
-  timeOfEvent,
-  incomeType,
-  message,
+  transactionDate,
+  cashFlowType,
+  transactionType,
+  note,
 }) => {
-  const [addIncome] = useAddIncomeMutation();
-  const [deleteIncome] = useDeleteIncomeMutation();
-  const [editIncome] = useEditIncomeMutation();
+  const [addTransaction] = useAddTransactionMutation();
+  const [deleteTransaction] = useDeleteTransactionMutation();
+  const [editTransaction] = useEditTransactionMutation();
   const { data: bankAccountRes } = useGetBankAccountsQuery({
     offset: 0,
     limit: 10,
@@ -101,57 +99,64 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
     limit: 10,
   });
   const creditCards: CreditCard[] = creditCardRes?.data || [];
-  const [selectedType, setSelectedType] = useState<CashFlowType | string>(
-    incomeType === CashFlowType.CREDITCARD
+  const [selectedCashFlowType, setSelectedCashFlowType] = useState<CashFlowType | string>(
+    cashFlowType === CashFlowType.CREDITCARD
       ? CashFlowType.CREDITCARD
-      : incomeType === CashFlowType.BANK
+      : cashFlowType === CashFlowType.BANK
       ? CashFlowType.BANK
       : CashFlowType.CASH
+  );
+const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType>(
+    transactionType === TransactionType.CREDIT
+      ? TransactionType.CREDIT
+      : TransactionType.DEBIT
   );
   const router = useRouter();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const initialData =
-    id && cashFlowId && amount && dateOfEvent && timeOfEvent && incomeType
+    id && cashFlowId && amount && transactionDate && cashFlowType && transactionType
       ? {
           id,
           cashFlowId,
+          transactionType,
           amount,
-          dateOfEvent,
-          timeOfEvent,
-          incomeType,
-          message,
+          transactionDate,
+          cashFlowType,
+          note,
         }
       : null;
 
-  const title = initialData ? "Edit Income" : "Add Income";
-  const description = initialData ? "Edit an income." : "Add a new income";
-  const toastMessage = initialData ? "Income updated." : "Income created.";
+  const title = initialData ? "Edit Transaction" : "Add Transaction";
+  const description = initialData ? "Edit an transaction." : "Add a new transaction";
+  const toastMessage = initialData ? "Transaction updated." : "Transaction created.";
   const action = initialData ? "Save changes" : "Add";
 
   const form = useForm<any>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
+      bankName: "",
+      transactionName: "",
+      transactionType: selectedTransactionType,
+      cashFlowType: selectedCashFlowType,
       cashFlowId: "",
-      incomeType: selectedType,
-      incomeName: "",
-      amount: null,
-      dateOfEvent: "",
-      timeOfEvent: "",
-      message: "",
+      statementDate: null,
+      dueDate: null,
+      last4Digit: "",
+      reason: "",
     },
   });
 
-  const getCashFlowName = (data: IncomeFormValues): string => {
-    if (data.incomeType === CashFlowType.BANK) {
+  const getCashFlowName = (data: TransactionFormValues): string => {
+    if (data.cashFlowType === CashFlowType.BANK) {
       return (
         bankAccounts.filter(
           (bankAccount) => bankAccount.id === data.cashFlowId
         )?.[0]?.bankName || ""
       );
     }
-    if (data.incomeType === CashFlowType.CREDITCARD) {
+    if (data.cashFlowType === CashFlowType.CREDITCARD) {
       return (
         creditCards.filter(
           (creditCard) => creditCard.id.toString() === data.cashFlowId
@@ -161,31 +166,33 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
     return "";
   };
 
-  const onSubmit = async (data: IncomeFormValues) => {
+  const onSubmit = async (data: TransactionFormValues) => {
     try {
       setLoading(true);
       if (initialData) {
-        await editIncome({
+        await editTransaction({
           ...data,
           id: Number(initialData.id),
+          transactionType: selectedTransactionType,
           cashFlowDetails: {
             cashFlowId: Number(data.cashFlowId) || null,
             cashFlowName: getCashFlowName(data),
           },
-          dateOfEvent: new Date(data.dateOfEvent).toISOString(),
+          transactionDate: new Date(data.transactionDate).toISOString(),
         }).unwrap();
       } else {
-        await addIncome({
+        await addTransaction({
           ...data,
+          transactionType: selectedTransactionType,
           cashFlowDetails: {
             cashFlowId: Number(data.cashFlowId) || null,
             cashFlowName: getCashFlowName(data),
           },
-          dateOfEvent: new Date(data.dateOfEvent).toISOString(),
+          transactionDate: new Date(data.transactionDate).toISOString(),
         }).unwrap();
       }
       router.refresh();
-      router.push(`/income`);
+      router.push(`/transaction`);
       toast({
         variant: "default",
         title: toastMessage,
@@ -204,9 +211,9 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await deleteIncome(initialData?.id ? Number(initialData.id) : 0);
+      await deleteTransaction(initialData?.id ? Number(initialData.id) : 0);
       router.refresh();
-      router.push(`/income`);
+      router.push(`/transaction`);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -249,15 +256,54 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
           <div className="gap-8 md:grid md:grid-cols-3">
             <FormField
               control={form.control}
-              name="incomeType"
+              name="transactionType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Income Type</FormLabel>
+                  <FormLabel>Transaction Type</FormLabel>
                   <Select
                     disabled={loading}
                     onValueChange={(value) => {
                       field.onChange(value);
-                      setSelectedType(value);
+                      if(value === "DEBIT") {
+                        setSelectedTransactionType(TransactionType.DEBIT);
+                      } else {
+                        setSelectedTransactionType(TransactionType.CREDIT);
+                      }
+                    }}
+                    value={field.value}
+                    defaultValue={TransactionType.DEBIT}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          defaultValue={TransactionType.DEBIT}
+                          placeholder="Select Transaction Type"
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.values(TransactionType).map((value) => (
+                        <SelectItem key={value} value={value}>
+                          {value}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="cashFlowType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>CashFlow Type</FormLabel>
+                  <Select
+                    disabled={loading}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      setSelectedCashFlowType(value);
                     }}
                     value={field.value}
                     defaultValue={CashFlowType.BANK}
@@ -266,7 +312,7 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
                       <SelectTrigger>
                         <SelectValue
                           defaultValue={CashFlowType.BANK}
-                          placeholder="Select Income Type"
+                          placeholder="Select CashFlow Type"
                         />
                       </SelectTrigger>
                     </FormControl>
@@ -285,11 +331,10 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
             <FormField
               control={form.control}
               name="cashFlowId"
-              disabled={selectedType === CashFlowType.CASH}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Account Name</FormLabel>
-                  {selectedType === CashFlowType.BANK ? (
+                  {selectedCashFlowType === CashFlowType.BANK ? (
                     <Select
                       disabled={loading}
                       onValueChange={field.onChange}
@@ -317,7 +362,7 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
                     </Select>
                   ) : (
                     <Select
-                      disabled={loading || selectedType === CashFlowType.CASH}
+                      disabled={loading || selectedCashFlowType === CashFlowType.CASH}
                       onValueChange={field.onChange}
                       value={field.value}
                       defaultValue={field.value}
@@ -334,7 +379,7 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
                         {creditCards.map((creditCard) => (
                           <SelectItem
                             key={creditCard.id}
-                            value={creditCard.id.toString()}
+                            value={creditCard.id.toString() || ""}
                           >
                             {mergeCreditCardDetails(creditCard)}
                           </SelectItem>
@@ -361,10 +406,10 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
             />
             <FormField
               control={form.control}
-              name="dateOfEvent"
+              name="transactionDate"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Income date</FormLabel>
+                  <FormLabel>Transaction date</FormLabel>
                   <FormControl>
                     <Input type="date" disabled={loading} {...field} />
                   </FormControl>
@@ -374,20 +419,7 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
             />
             <FormField
               control={form.control}
-              name="timeOfEvent"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Income Time</FormLabel>
-                  <FormControl>
-                    <Input type="time" disabled={loading} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="message"
+              name="note"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Reason</FormLabel>

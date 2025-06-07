@@ -48,22 +48,19 @@ abstract public class SpecificationService<T> {
 
 			for (int i = 0; i < parts.length; i++) {
 				if (i < parts.length - 1) {
-					path = ((From<?, ?>) path).join(parts[i]);
+					path = ((From<?, ?>) path).join(parts[i], operand.getJoinType());
 				} else {
 					path = path.get(parts[i]);
 				}
 			}
 
-			switch (operand.getOperation()) {
-			case LIKE:
-				return builder.like(path.as(String.class), "%" + operand.getValue() + "%");
-			case EQUAL:
-				return builder.equal(path, operand.getValue());
-			case NOT_EQUAL:
-				return builder.notEqual(path, operand.getValue());
-			default:
-				throw new UnsupportedOperationException("Operation not supported: " + operand.getOperation());
-			}
+            return switch (operand.getOperation()) {
+                case LIKE -> builder.like(path.as(String.class), "%" + operand.getValue() + "%");
+                case EQUAL -> builder.equal(path, operand.getValue());
+                case NOT_EQUAL -> builder.notEqual(path, operand.getValue());
+                default ->
+                        throw new UnsupportedOperationException("Operation not supported: " + operand.getOperation());
+            };
 		};
 	}
 

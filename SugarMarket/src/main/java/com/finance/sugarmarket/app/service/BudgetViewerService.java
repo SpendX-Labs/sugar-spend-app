@@ -104,7 +104,7 @@ public class BudgetViewerService {
 		if (dueDateIndex < 0) {
 			reportDto.setAutoDebitAmount(BigDecimal.ZERO);
 			reportDto.setRemainingAutoDebit(getAutoDebit(budgetList));
-		} else if (0 <= dueDateIndex && dueDateIndex < budgetList.size()) {
+		} else if (dueDateIndex < budgetList.size()) {
 			reportDto.setAutoDebitAmount(budgetList.subList(0, dueDateIndex + 1).stream()
 					.map(BudgetView::getActualAmount).reduce(BigDecimal.ZERO, BigDecimal::add));
 			if (dueDateIndex + 1 < budgetList.size()) {

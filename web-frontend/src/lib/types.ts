@@ -162,3 +162,18 @@ export type UserInfo = {
   accountNonLocked: boolean;
   credentialsNonExpired: boolean;
 };
+
+export enum TransactionType {
+  DEBIT = "DEBIT",
+  CREDIT = "CREDIT"
+}
+
+export type Transaction = {
+  id?: number;
+  transactionType: TransactionType,
+  cashFlowDetails: CashFlowDetails;
+  amount: number;
+  transactionDate: string;
+  cashFlowType: CashFlowType | string;
+  note?: string;
+};

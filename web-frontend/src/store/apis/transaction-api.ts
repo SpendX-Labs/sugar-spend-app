@@ -1,25 +1,16 @@
 import { authBaseQuery } from "@/lib/api-queries";
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { CreditCard } from "@/lib/types";
+import { Transaction } from "@/lib/types";
 import { createQueryString } from "@/lib/utils";
 
-type CreditCardRequestBody = {
-  id?: number;
-  bankName: string;
-  creditCardName: string;
-  statementDate: number;
-  dueDate: number;
-  last4Digit: string;
-};
-
-export type CreditCardsResponse = {
+type TransactionResponse = {
   total: number;
   offset: number;
   limit: number;
-  data: CreditCard[];
+  data: Transaction[];
 };
 
-type GetCreditCardsParams = {
+type GetTransactionsParams = {
   offset: number;
   limit: number;
   sortBy?: string;
@@ -27,52 +18,59 @@ type GetCreditCardsParams = {
   searchBy?: string;
 };
 
-const creditCardUrl = "/app/credit-card";
+const transactionUrl = "/app/transaction";
 
-export const creditCardApi = createApi({
-  reducerPath: "creditCardApi",
+export const transactionApi = createApi({
+  reducerPath: "transactionApi",
   baseQuery: authBaseQuery,
-  tagTypes: ["CreditCard"],
+  tagTypes: ["Transaction"],
   endpoints: (builder) => ({
-    addCreditCard: builder.mutation<any, CreditCardRequestBody>({
+    addTransaction: builder.mutation<any, Transaction>({
       query: (data) => ({
-        url: creditCardUrl,
+        url: transactionUrl,
         method: "POST",
         body: data,
         responseHandler: "text",
       }),
-      invalidatesTags: ["CreditCard"],
+      invalidatesTags: ["Transaction"],
     }),
-    deleteCreditCard: builder.mutation<any, number>({
+    deleteTransaction: builder.mutation<any, number>({
       query: (id) => ({
-        url: `${creditCardUrl}/${id}`,
+        url: `${transactionUrl}/${id}`,
         method: "DELETE",
         responseHandler: "text",
       }),
-      invalidatesTags: ["CreditCard"],
+      invalidatesTags: ["Transaction"],
     }),
-    editCreditCard: builder.mutation<any, CreditCardRequestBody>({
+    editTransaction: builder.mutation<any, Transaction>({
       query: (data) => ({
-        url: `${creditCardUrl}/${data.id}`,
+        url: `${transactionUrl}/${data.id}`,
         method: "PATCH",
         body: data,
         responseHandler: "text",
       }),
-      invalidatesTags: ["CreditCard"],
+      invalidatesTags: ["Transaction"],
     }),
-    getCreditCards: builder.query<CreditCardsResponse, GetCreditCardsParams>({
+    getTransactions: builder.query<TransactionResponse, GetTransactionsParams>({
       query: ({ 
         offset, 
         limit, 
+        sortBy = "transactionDate", 
+        sortOrder = "desc",
         searchBy 
       }) => {
         // Convert offset to page number (assuming page starts from 0)
         const page = Math.floor(offset / limit);
         
+        // Convert sortOrder to uppercase to match your API format
+        const orderBy = sortOrder.toUpperCase();
+        
         // Build query parameters object
         const queryParamsObj: Record<string, any> = {
           page,
           size: limit,
+          sortColumn: sortBy,
+          orderBy,
         };
 
         // Only add searchBy if it has a value
@@ -83,18 +81,18 @@ export const creditCardApi = createApi({
         const queryParams = createQueryString(queryParamsObj);
         
         return {
-          url: `${creditCardUrl}?${queryParams}`,
+          url: `${transactionUrl}?${queryParams}`,
           method: "GET",
         };
       },
-      providesTags: ["CreditCard"],
+      providesTags: ["Transaction"],
     }),
   }),
 });
 
 export const {
-  useAddCreditCardMutation,
-  useDeleteCreditCardMutation,
-  useEditCreditCardMutation,
-  useGetCreditCardsQuery,
-} = creditCardApi;
+  useAddTransactionMutation,
+  useDeleteTransactionMutation,
+  useEditTransactionMutation,
+  useGetTransactionsQuery,
+} = transactionApi;

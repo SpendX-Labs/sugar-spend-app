@@ -3,14 +3,16 @@
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
-import { CreditCard } from "@/lib/types";
-import { useGetCreditCardsQuery } from "@/store/apis/credit-card-api";
-import { Plus } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Transaction } from "@/lib/types";
+import { useGetTransactionsQuery } from "@/store/apis/transaction-api";
+import { Plus, Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { columns } from "./columns";
+import { columns } from "./columns"
 import React from "react";
 import {
   PaginationState,
+  SortingState,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
@@ -37,12 +39,14 @@ function useDebounce<T>(value: T, delay: number): T {
   return debouncedValue;
 }
 
-export const CreditCardTable = () => {
+export const TransactionTable = () => {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
   const offset = Number(searchParams.get("offset")) || 0;
   const limit = Number(searchParams.get("limit")) || 10;
+  const sortBy = searchParams.get("sortBy") || "transactionDate";
+  const sortOrder = searchParams.get("sortOrder") || "desc";
   const initialSearchBy = searchParams.get("searchBy") || "";
 
   // Search state and debounced search
@@ -50,19 +54,21 @@ export const CreditCardTable = () => {
   const debouncedSearchValue = useDebounce(searchValue, 500); // 500ms delay
 
   const {
-    data: creditCardRes,
+    data: transactionRes,
     error,
     isLoading,
     refetch,
-  } = useGetCreditCardsQuery({
+  } = useGetTransactionsQuery({
     offset,
     limit,
+    sortBy,
+    sortOrder,
     searchBy: debouncedSearchValue,
   });
   
-  const totalCreditCards = creditCardRes?.total || 0;
-  const pageCount = Math.ceil(totalCreditCards / limit);
-  const creditCards: CreditCard[] = creditCardRes?.data || [];
+  const totalTransactions = transactionRes?.total || 0;
+  const pageCount = Math.ceil(totalTransactions / limit);
+  const transactions: Transaction[] = transactionRes?.data || [];
 
   const createQueryString = React.useCallback(
     (params: Record<string, string | number | null>) => {
@@ -85,10 +91,17 @@ export const CreditCardTable = () => {
     React.useState<PaginationState>({
       pageIndex: offset,
       pageSize: limit,
-    });
+  });
+
+  const [sorting, setSorting] = React.useState<SortingState>([
+    {
+      id: sortBy,
+      desc: sortOrder === "desc",
+    },
+  ]);
 
   const table = useReactTable({
-    data: creditCards,
+    data: transactions,
     columns,
     pageCount,
     getCoreRowModel: getCoreRowModel(),
@@ -96,8 +109,10 @@ export const CreditCardTable = () => {
     getSortedRowModel: getSortedRowModel(),
     state: {
       pagination: { pageIndex, pageSize },
+      sorting,
     },
     onPaginationChange: setPagination,
+    onSortingChange: setSorting,
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true,
     manualFiltering: true,
@@ -120,11 +135,16 @@ export const CreditCardTable = () => {
 
   // Update URL when debounced search value changes
   React.useEffect(() => {
+    const currentSort = sorting[0];
+    const newSortBy = currentSort?.id || "transactionDate";
+    const newSortOrder = currentSort?.desc ? "desc" : "asc";
 
     router.push(
       `${pathname}?${createQueryString({
         offset: pageIndex,
         limit: pageSize,
+        sortBy: newSortBy,
+        sortOrder: newSortOrder,
         searchBy: debouncedSearchValue || null,
       })}`,
       {
@@ -132,23 +152,23 @@ export const CreditCardTable = () => {
       }
     );
     refetch();
-  }, [pageIndex, pageSize, debouncedSearchValue, refetch]);
+  }, [pageIndex, pageSize, sorting, debouncedSearchValue, refetch]);
 
   if (isLoading) return <DataTableSkeleton columns={columns.length} />;
-  if (error) return <div>Error fetching credit cards</div>;
+  if (error) return <div>Error fetching transactions</div>;
 
   return (
     <>
       <div className="flex items-start justify-between">
         <Heading
           title={
-            "Credit Cards" + (creditCardRes?.total ? `(${creditCardRes.total})` : "")
+            "Transactions" + (transactionRes?.total ? `(${transactionRes.total})` : "")
           }
-          description="Manage your credit cards"
+          description="Manage your transactions"
         />
         <Button
           className="text-xs md:text-sm"
-          onClick={() => router.push(`/credit-card/add`)}
+          onClick={() => router.push(`/transaction/add`)}
         >
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
@@ -158,11 +178,11 @@ export const CreditCardTable = () => {
       <DataPaginationTable
         table={table}
         pageSizeOptions={[10, 20, 30, 40, 50]}
-        searchKey="creditCard"
+        searchKey="transaction"
         searchValue={searchValue}
         onSearchChange={handleSearchChange}
         onClearSearch={handleClearSearch}
-        searchPlaceholder="Search credit cards by bank or card name..."
+        searchPlaceholder="Search transactions by account..."
         debouncedSearchValue={debouncedSearchValue}
         showSearchIndicator={true}
       />

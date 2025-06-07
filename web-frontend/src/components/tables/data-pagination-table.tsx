@@ -15,7 +15,7 @@ import {
   DoubleArrowRightIcon,
 } from "@radix-ui/react-icons";
 import { flexRender, useReactTable } from "@tanstack/react-table";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon, Search } from "lucide-react";
 import React from "react";
 import {
   Table,
@@ -30,23 +30,56 @@ interface DataPaginationTableProps<TData, TValue> {
   pageSizeOptions: number[];
   searchKey: string;
   table: ReturnType<typeof useReactTable<TData>>;
+  // New props for search functionality
+  searchValue: string;
+  onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onClearSearch: () => void;
+  searchPlaceholder?: string;
+  debouncedSearchValue?: string;
+  showSearchIndicator?: boolean;
 }
 
 export function DataPaginationTable<TData, TValue>({
   pageSizeOptions,
   searchKey,
   table,
+  searchValue,
+  onSearchChange,
+  onClearSearch,
+  searchPlaceholder = "Search...",
+  debouncedSearchValue,
+  showSearchIndicator = true,
 }: DataPaginationTableProps<TData, TValue>) {
   return (
     <>
-      <Input
-        placeholder={`Search Card...`}
-        value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
-        onChange={(event) =>
-          table.getColumn(searchKey)?.setFilterValue(event.target.value)
-        }
-        className="w-full md:max-w-sm"
-      />
+      {/* Search Input */}
+      <div className="flex items-center space-x-2 py-4">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder={searchPlaceholder}
+            value={searchValue}
+            onChange={onSearchChange}
+            className="pl-8"
+          />
+          {searchValue && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="absolute right-1 top-1 h-6 w-6 p-0 hover:bg-transparent"
+              onClick={onClearSearch}
+            >
+              ×
+            </Button>
+          )}
+        </div>
+        {showSearchIndicator && debouncedSearchValue && (
+          <div className="text-sm text-muted-foreground">
+            Searching for: "{debouncedSearchValue}"
+          </div>
+        )}
+      </div>
+
       <ScrollArea className="h-[calc(80vh-220px)] rounded-md border">
         <Table className="relative">
           <TableHeader>

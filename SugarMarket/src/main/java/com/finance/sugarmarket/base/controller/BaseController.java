@@ -123,8 +123,8 @@ abstract public class BaseController {
 		Map<String, Sort.Direction> map = new HashMap<>();
 		if (StringUtils.isEmpty(orderByColumn))
 			return map;
-		String orderby = request.getParameter(QueryParamConstants.ORDER_BY);
-		Sort.Direction direction = (orderby != null && orderby.equalsIgnoreCase(QueryParamConstants.DESC))
+		String orderBy = request.getParameter(QueryParamConstants.ORDER_BY);
+		Sort.Direction direction = (orderBy != null && orderBy.equalsIgnoreCase(QueryParamConstants.DESC))
 				? Sort.Direction.DESC
 				: Sort.Direction.ASC;
 		map.put(orderByColumn, direction);
@@ -137,7 +137,7 @@ abstract public class BaseController {
 		String filtersParam = request.getParameter(QueryParamConstants.FILTERS);
 		if (StringUtils.isNotEmpty(filtersParam)) {
 			try {
-				filters = objectMapper.readValue(filtersParam, new TypeReference<List<Filter>>() {
+				filters = objectMapper.readValue(filtersParam, new TypeReference<>() {
 				});
 			} catch (Exception e) {
 				filters = new ArrayList<>();

@@ -1,7 +1,5 @@
 package com.finance.sugarmarket.app.service;
 
-import java.util.*;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,8 +20,13 @@ import com.finance.sugarmarket.auth.repo.MFUserRepo;
 import com.finance.sugarmarket.base.dto.Filter;
 import com.finance.sugarmarket.base.dto.ListViewDto;
 import com.finance.sugarmarket.base.service.SpecificationService;
-import com.finance.sugarmarket.constants.AppConstants;
 import com.finance.sugarmarket.constants.FieldConstant;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class IncomeService extends SpecificationService<Income> {
@@ -38,7 +41,7 @@ public class IncomeService extends SpecificationService<Income> {
 	@Autowired
 	private ModelMapper modelMapper;
 
-	private static final Map<String, String> filterMap = new HashMap<String, String>();
+	private static final Map<String, String> filterMap = new HashMap<>();
 
 	static {
 		filterMap.put(FieldConstant.USER_ID, "user.id");
@@ -105,7 +108,7 @@ public class IncomeService extends SpecificationService<Income> {
 		incomeRepo.save(income);
 	}
 
-	public String deleteIncome(Long id, Long userId) throws Exception {
+	public void deleteIncome(Long id, Long userId) throws Exception {
 		Specification<Income> specificationFilters = getAuditSpecificationFilters(filterMap, id, userId);
 		List<Income> incomeList = incomeRepo.findAll(specificationFilters);
 		if (incomeList.isEmpty()) {
@@ -113,6 +116,5 @@ public class IncomeService extends SpecificationService<Income> {
 		}
 		Income existingIncome = incomeList.get(0);
 		incomeRepo.deleteById(existingIncome.getId());
-		return AppConstants.SUCCESS;
 	}
 }

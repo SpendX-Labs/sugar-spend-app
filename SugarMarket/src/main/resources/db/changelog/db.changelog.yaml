@@ -1108,6 +1108,103 @@ databaseChangeLog:
             constraintName: fk_MapUserProperties_userPropertiesId
             onDelete: CASCADE
 
+  - changeSet:
+      id: CreateTableTransaction
+      author: subham.biswas
+      changes:
+      - createTable:
+          tableName: Transaction
+          columns:
+          - column:
+              name: transactionId
+              type: BIGINT
+              autoIncrement: true
+              constraints:
+                primaryKey: true
+                nullable: false
+
+          - column:
+              name: userId
+              type: BIGINT
+              constraints:
+                nullable: false
+
+          - column:
+              name: transactionType
+              type: ENUM('DEBIT', 'CREDIT')
+              constraints:
+                nullable: false
+
+          - column:
+              name: cashFlowType
+              type: ENUM('CASH', 'BANK', 'CREDITCARD')
+              constraints:
+                nullable: false
+
+          - column:
+              name: bankAccountId
+              type: BIGINT
+              constraints:
+                nullable: true
+
+          - column:
+              name: creditCardId
+              type: BIGINT
+              constraints:
+                nullable: true
+
+          - column:
+              name: amount
+              type: DECIMAL(19, 4)
+              constraints:
+                nullable: false
+
+          - column:
+              name: transactionDate
+              type: TIMESTAMP
+              constraints:
+                nullable: false
+
+          - column:
+              name: note
+              type: VARCHAR(255)
+
+  - changeSet:
+      id: AddUserForeignKeyToTransaction
+      author: subham.biswas
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: Transaction
+            baseColumnNames: userId
+            referencedTableName: MFUser
+            referencedColumnNames: userId
+            constraintName: transactionUserIdFk
+            onDelete: CASCADE
+
+  - changeSet:
+      id: AddBankAccountForeignKeyToTransaction
+      author: subham.biswas
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: Transaction
+            baseColumnNames: bankAccountId
+            referencedTableName: BankAccount
+            referencedColumnNames: bankAccountId
+            constraintName: transactionBankAccountIddFk
+            onDelete: CASCADE
+
+  - changeSet:
+      id: AddCreditCardForeignKeyToTransaction
+      author: subham.biswas
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: Transaction
+            baseColumnNames: creditCardId
+            referencedTableName: CreditCard
+            referencedColumnNames: creditCardId
+            constraintName: transactionCreditCardIdFk
+            onDelete: CASCADE
+
   - include:
       file: classpath:/db/changelog/db.changelog-store-procedure.yaml
 

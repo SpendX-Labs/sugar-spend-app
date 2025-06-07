@@ -13,8 +13,8 @@ public class FieldConstant {
 	public static String CREDIT_CARD_NAME = "creditCardName";
 	public static String LAST_4_DIGIT = "last4Digit";
 	public static String DEBIT_CARD_LAST_4_DIGIT = "debitCardLast4Digit";
-	public static String EXPENSE_TYPE = "expenseType";
-	public static String INCOME_TYPE = "incomeType";
-	public static String MESSAGE = "message";
-	public static String REASON = "reason";
+	public static String BANK_ACCOUNT_NAME = "bankAccountName";
+	public static String BANK_LAST_4_DIGIT = "bankLast4Digit";
+	public static String CARD_LAST_4_DIGIT = "cardLast4Digit";
+	public static String BANK_NAME_FOR_CARD = "bankName";
 }
