@@ -7,8 +7,8 @@ type BankAccountRequestBody = {
   id?: number;
   bankName: string;
   accountType: string;
-  accountNumber: string;
-  balance: number;
+  last4Digit: string;
+  debitCardLast4Digit: string;
 };
 
 export type BankAccountsResponse = {
