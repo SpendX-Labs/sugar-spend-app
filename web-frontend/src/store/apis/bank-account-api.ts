@@ -86,6 +86,15 @@ export const bankAccountApi = createApi({
       },
       providesTags: ["BankAccount"],
     }),
+    getAllBankAccounts: builder.query<BankAccount[], void>({
+      query: () => {
+        return {
+          url: `${bankAccountUrl}/all`,
+          method: "GET",
+        };
+      },
+      providesTags: ["BankAccount"],
+    }),
   }),
 });
 
@@ -94,4 +103,5 @@ export const {
   useDeleteBankAccountMutation,
   useEditBankAccountMutation,
   useGetBankAccountsQuery,
+  useGetAllBankAccountsQuery
 } = bankAccountApi;

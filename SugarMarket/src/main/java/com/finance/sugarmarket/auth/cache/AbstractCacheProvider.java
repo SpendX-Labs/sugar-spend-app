@@ -27,7 +27,7 @@ public abstract class AbstractCacheProvider<T> implements ICacheProvider<T> {
 
     @Override
     public void put(String key, T value) {
-        if(getExpire() == null) {
+        if (getExpire() == null) {
             redisTemplate.opsForValue().set(key, value);
         } else {
             redisTemplate.opsForValue().set(key, value, getExpire());

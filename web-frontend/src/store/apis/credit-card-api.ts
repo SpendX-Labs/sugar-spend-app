@@ -87,6 +87,15 @@ export const creditCardApi = createApi({
       },
       providesTags: ["CreditCard"],
     }),
+    getAllCreditCards: builder.query<CreditCard[], void>({
+      query: () => {
+        return {
+          url: `${creditCardUrl}/all`,
+          method: "GET",
+        };
+      },
+      providesTags: ["CreditCard"],
+    }),
   }),
 });
 
@@ -95,4 +104,5 @@ export const {
   useDeleteCreditCardMutation,
   useEditCreditCardMutation,
   useGetCreditCardsQuery,
+  useGetAllCreditCardsQuery
 } = creditCardApi;

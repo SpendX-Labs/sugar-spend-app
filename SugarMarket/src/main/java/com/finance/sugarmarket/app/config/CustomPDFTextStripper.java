@@ -1,10 +1,10 @@
 package com.finance.sugarmarket.app.config;
 
-import java.io.IOException;
-import java.util.List;
-
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.TextPosition;
+
+import java.io.IOException;
+import java.util.List;
 
 public class CustomPDFTextStripper extends PDFTextStripper {
     private boolean headerFound = false;

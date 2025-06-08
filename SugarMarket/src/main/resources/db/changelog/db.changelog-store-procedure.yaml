@@ -20,7 +20,7 @@ databaseChangeLog:
                 DECLARE yearOfBudget INT;
                 DECLARE lowerDate DATE;
                 DECLARE tempDueDate DATE;
-                
+              
                 DECLARE creditCardCursor CURSOR FOR 
                   SELECT creditCardId FROM CreditCard WHERE userId = mfUserId;
 

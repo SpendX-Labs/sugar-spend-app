@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class AddIncomeEntryAgent implements Job {
 
-	@Override
-	public void execute(JobExecutionContext context) throws JobExecutionException {
-		
+    @Override
+    public void execute(JobExecutionContext context) throws JobExecutionException {
 
-	}
+
+    }
 
 }

@@ -1,12 +1,11 @@
 package com.finance.sugarmarket.base.config;
 
-import javax.sql.DataSource;
-
+import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
-import liquibase.integration.spring.SpringLiquibase;
+import javax.sql.DataSource;
 
 @Configuration
 public class LiquibaseConfig {

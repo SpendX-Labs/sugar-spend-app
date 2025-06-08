@@ -6,13 +6,13 @@ public class SignUpResponseDTO extends GenericResponse {
     private String emailId;
 
     public SignUpResponseDTO(String username, String emailId, String message, Boolean status) {
-    	super(message, status);
+        super(message, status);
         this.username = username;
         this.emailId = emailId;
     }
-    
+
     public SignUpResponseDTO(String message, Boolean status) {
-    	super(message, status);
+        super(message, status);
     }
 
     public String getUsername() {

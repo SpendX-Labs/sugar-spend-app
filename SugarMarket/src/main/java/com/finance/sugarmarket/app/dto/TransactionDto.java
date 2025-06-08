@@ -4,7 +4,6 @@ import com.finance.sugarmarket.app.enums.CashFlowType;
 import com.finance.sugarmarket.app.enums.TransactionType;
 
 import java.math.BigDecimal;
-import java.time.LocalTime;
 import java.util.Date;
 
 public class TransactionDto {

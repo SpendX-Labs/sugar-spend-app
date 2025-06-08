@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public enum BudgetCalendar {
-	JANUARY(1, "January"),
+    JANUARY(1, "January"),
     FEBRUARY(2, "February"),
     MARCH(3, "March"),
     APRIL(4, "April"),
@@ -37,44 +37,44 @@ public enum BudgetCalendar {
     public String getMonthName() {
         return monthName;
     }
-    
+
     public static BudgetCalendar getBudgetMonth(Date date) {
-    	if (date == null) {
+        if (date == null) {
             throw new IllegalArgumentException("Date cannot be null");
         }
-    	Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         int monthNumber = calendar.get(Calendar.MONTH) + 1;
-    	for(BudgetCalendar month : values()) {
-    		if(month.getMonthNumber() == monthNumber) {
-    			return month;
-    		}
-    	}
-    	return null;
+        for (BudgetCalendar month : values()) {
+            if (month.getMonthNumber() == monthNumber) {
+                return month;
+            }
+        }
+        return null;
     }
-    
+
     public static Integer getBudgetYear(Date date) {
-    	if (date == null) {
+        if (date == null) {
             throw new IllegalArgumentException("Date cannot be null");
         }
-    	Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         return calendar.get(Calendar.YEAR);
     }
-    
+
     public static List<String> getMonths() {
-    	return Arrays.asList(BudgetCalendar.values()).stream().map(BudgetCalendar::getMonthName)
-    			.collect(Collectors.toList());
+        return Arrays.asList(BudgetCalendar.values()).stream().map(BudgetCalendar::getMonthName)
+                .collect(Collectors.toList());
     }
-    
+
     public static int getDaysInMonth(String monthName, int year) {
         Month month = Month.valueOf(monthName.toUpperCase());
         YearMonth yearMonth = YearMonth.of(year, month);
         return yearMonth.lengthOfMonth();
     }
-    
+
     public static Date constructDate(int day, String month, int year) {
-    	BudgetCalendar budgetMonth = BudgetCalendar.valueOf(month.toUpperCase());
+        BudgetCalendar budgetMonth = BudgetCalendar.valueOf(month.toUpperCase());
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, budgetMonth.getMonthNumber() - 1); // Adjust for zero-based month
@@ -82,5 +82,5 @@ public enum BudgetCalendar {
 
         return calendar.getTime();
     }
-	
+
 }

@@ -1,11 +1,7 @@
 package com.finance.sugarmarket.app.model;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 import com.finance.sugarmarket.app.enums.LoanType;
 import com.finance.sugarmarket.auth.model.MFUser;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -18,217 +14,220 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 @Entity
 public class Loan {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "loanId")
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "loanId")
+    private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "userId")
-	private MFUser user;
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private MFUser user;
 
-	@ManyToOne
-	@JoinColumn(name = "creditCardId")
-	private CreditCard creditCard;
+    @ManyToOne
+    @JoinColumn(name = "creditCardId")
+    private CreditCard creditCard;
 
-	private String lenderName;
+    private String lenderName;
 
-	@Size(min = 4, max = 4, message = "Last 4 digits must be exactly 4 characters")
-	@Pattern(regexp = "\\d{4}", message = "Last 4 digits must be numeric")
-	private String last4Digit;
+    @Size(min = 4, max = 4, message = "Last 4 digits must be exactly 4 characters")
+    @Pattern(regexp = "\\d{4}", message = "Last 4 digits must be numeric")
+    private String last4Digit;
 
-	private BigDecimal totalAmount;
+    private BigDecimal totalAmount;
 
-	@Enumerated(EnumType.STRING)
-	private LoanType loanType;
+    @Enumerated(EnumType.STRING)
+    private LoanType loanType;
 
-	private BigDecimal interestRate;
+    private BigDecimal interestRate;
 
-	private boolean noCostEmi = false;
+    private boolean noCostEmi = false;
 
-	private BigDecimal principalAmount;
+    private BigDecimal principalAmount;
 
-	private BigDecimal interestAmount;
+    private BigDecimal interestAmount;
 
-	private BigDecimal remainingAmount;
+    private BigDecimal remainingAmount;
 
-	private BigDecimal remainingPrincipalAmount;
+    private BigDecimal remainingPrincipalAmount;
 
-	private BigDecimal remainingInterestAmount;
+    private BigDecimal remainingInterestAmount;
 
-	private Integer tenure;
+    private Integer tenure;
 
-	private Integer remainingTenure;
+    private Integer remainingTenure;
 
-	private Date loanStartDate;
+    private Date loanStartDate;
 
-	private Integer emiDateOfMonth;
+    private Integer emiDateOfMonth;
 
-	private BigDecimal emiAmount;
+    private BigDecimal emiAmount;
 
-	private boolean updateLock = false;
+    private boolean updateLock = false;
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public MFUser getUser() {
-		return user;
-	}
+    public MFUser getUser() {
+        return user;
+    }
 
-	public void setUser(MFUser user) {
-		this.user = user;
-	}
+    public void setUser(MFUser user) {
+        this.user = user;
+    }
 
-	public CreditCard getCreditCard() {
-		return creditCard;
-	}
+    public CreditCard getCreditCard() {
+        return creditCard;
+    }
 
-	public void setCreditCard(CreditCard creditCard) {
-		this.creditCard = creditCard;
-	}
+    public void setCreditCard(CreditCard creditCard) {
+        this.creditCard = creditCard;
+    }
 
-	public String getLenderName() {
-		return lenderName;
-	}
+    public String getLenderName() {
+        return lenderName;
+    }
 
-	public void setLenderName(String lenderName) {
-		this.lenderName = lenderName;
-	}
+    public void setLenderName(String lenderName) {
+        this.lenderName = lenderName;
+    }
 
-	public String getLast4Digit() {
-		return last4Digit;
-	}
+    public String getLast4Digit() {
+        return last4Digit;
+    }
 
-	public void setLast4Digit(String last4Digit) {
-		this.last4Digit = last4Digit;
-	}
+    public void setLast4Digit(String last4Digit) {
+        this.last4Digit = last4Digit;
+    }
 
-	public BigDecimal getTotalAmount() {
-		return totalAmount;
-	}
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
 
-	public void setTotalAmount(BigDecimal totalAmount) {
-		this.totalAmount = totalAmount;
-	}
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
+    }
 
-	public LoanType getLoanType() {
-		return loanType;
-	}
+    public LoanType getLoanType() {
+        return loanType;
+    }
 
-	public void setLoanType(LoanType loanType) {
-		this.loanType = loanType;
-	}
+    public void setLoanType(LoanType loanType) {
+        this.loanType = loanType;
+    }
 
-	public BigDecimal getInterestRate() {
-		return interestRate;
-	}
+    public BigDecimal getInterestRate() {
+        return interestRate;
+    }
 
-	public void setInterestRate(BigDecimal interestRate) {
-		this.interestRate = interestRate;
-	}
+    public void setInterestRate(BigDecimal interestRate) {
+        this.interestRate = interestRate;
+    }
 
-	public boolean isNoCostEmi() {
-		return noCostEmi;
-	}
+    public boolean isNoCostEmi() {
+        return noCostEmi;
+    }
 
-	public void setNoCostEmi(boolean noCostEmi) {
-		this.noCostEmi = noCostEmi;
-	}
+    public void setNoCostEmi(boolean noCostEmi) {
+        this.noCostEmi = noCostEmi;
+    }
 
-	public BigDecimal getPrincipalAmount() {
-		return principalAmount;
-	}
+    public BigDecimal getPrincipalAmount() {
+        return principalAmount;
+    }
 
-	public void setPrincipalAmount(BigDecimal principalAmount) {
-		this.principalAmount = principalAmount;
-	}
+    public void setPrincipalAmount(BigDecimal principalAmount) {
+        this.principalAmount = principalAmount;
+    }
 
-	public BigDecimal getInterestAmount() {
-		return interestAmount;
-	}
+    public BigDecimal getInterestAmount() {
+        return interestAmount;
+    }
 
-	public void setInterestAmount(BigDecimal interestAmount) {
-		this.interestAmount = interestAmount;
-	}
+    public void setInterestAmount(BigDecimal interestAmount) {
+        this.interestAmount = interestAmount;
+    }
 
-	public BigDecimal getRemainingAmount() {
-		return remainingAmount;
-	}
+    public BigDecimal getRemainingAmount() {
+        return remainingAmount;
+    }
 
-	public void setRemainingAmount(BigDecimal remainingAmount) {
-		this.remainingAmount = remainingAmount;
-	}
+    public void setRemainingAmount(BigDecimal remainingAmount) {
+        this.remainingAmount = remainingAmount;
+    }
 
-	public BigDecimal getRemainingPrincipalAmount() {
-		return remainingPrincipalAmount;
-	}
+    public BigDecimal getRemainingPrincipalAmount() {
+        return remainingPrincipalAmount;
+    }
 
-	public void setRemainingPrincipalAmount(BigDecimal remainingPrincipalAmount) {
-		this.remainingPrincipalAmount = remainingPrincipalAmount;
-	}
+    public void setRemainingPrincipalAmount(BigDecimal remainingPrincipalAmount) {
+        this.remainingPrincipalAmount = remainingPrincipalAmount;
+    }
 
-	public BigDecimal getRemainingInterestAmount() {
-		return remainingInterestAmount;
-	}
+    public BigDecimal getRemainingInterestAmount() {
+        return remainingInterestAmount;
+    }
 
-	public void setRemainingInterestAmount(BigDecimal remainingInterestAmount) {
-		this.remainingInterestAmount = remainingInterestAmount;
-	}
+    public void setRemainingInterestAmount(BigDecimal remainingInterestAmount) {
+        this.remainingInterestAmount = remainingInterestAmount;
+    }
 
-	public Integer getTenure() {
-		return tenure;
-	}
+    public Integer getTenure() {
+        return tenure;
+    }
 
-	public void setTenure(Integer tenure) {
-		this.tenure = tenure;
-	}
+    public void setTenure(Integer tenure) {
+        this.tenure = tenure;
+    }
 
-	public Integer getRemainingTenure() {
-		return remainingTenure;
-	}
+    public Integer getRemainingTenure() {
+        return remainingTenure;
+    }
 
-	public void setRemainingTenure(Integer remainingTenure) {
-		this.remainingTenure = remainingTenure;
-	}
+    public void setRemainingTenure(Integer remainingTenure) {
+        this.remainingTenure = remainingTenure;
+    }
 
-	public Date getLoanStartDate() {
-		return loanStartDate;
-	}
+    public Date getLoanStartDate() {
+        return loanStartDate;
+    }
 
-	public void setLoanStartDate(Date loanStartDate) {
-		this.loanStartDate = loanStartDate;
-	}
+    public void setLoanStartDate(Date loanStartDate) {
+        this.loanStartDate = loanStartDate;
+    }
 
-	public Integer getEmiDateOfMonth() {
-		return emiDateOfMonth;
-	}
+    public Integer getEmiDateOfMonth() {
+        return emiDateOfMonth;
+    }
 
-	public void setEmiDateOfMonth(Integer emiDateOfMonth) {
-		this.emiDateOfMonth = emiDateOfMonth;
-	}
+    public void setEmiDateOfMonth(Integer emiDateOfMonth) {
+        this.emiDateOfMonth = emiDateOfMonth;
+    }
 
-	public BigDecimal getEmiAmount() {
-		return emiAmount;
-	}
+    public BigDecimal getEmiAmount() {
+        return emiAmount;
+    }
 
-	public void setEmiAmount(BigDecimal emiAmount) {
-		this.emiAmount = emiAmount;
-	}
+    public void setEmiAmount(BigDecimal emiAmount) {
+        this.emiAmount = emiAmount;
+    }
 
-	public boolean isUpdateLock() {
-		return updateLock;
-	}
+    public boolean isUpdateLock() {
+        return updateLock;
+    }
 
-	public void setUpdateLock(boolean updateLock) {
-		this.updateLock = updateLock;
-	}
+    public void setUpdateLock(boolean updateLock) {
+        this.updateLock = updateLock;
+    }
 
 }

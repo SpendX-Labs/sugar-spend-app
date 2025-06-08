@@ -4,8 +4,10 @@ import com.finance.sugarmarket.app.model.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 public interface TransactionRepo extends JpaRepository<Transaction, Long>, JpaSpecificationExecutor<Transaction> {
@@ -28,4 +30,7 @@ public interface TransactionRepo extends JpaRepository<Transaction, Long>, JpaSp
 
     @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t WHERE t.user.id = :userId AND YEAR(t.transactionDate) = :year AND t.cashFlowType = 'CREDIT'")
     BigDecimal getTotalYearlyIncome(Integer year, Long userId);
+
+    @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t WHERE t.creditCard.id = :creditCardId AND t.transactionDate BETWEEN :startDate AND :endDate")
+    BigDecimal getTotalExpenseOfCreditCardByDateRange(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("creditCardId") Long creditCardId);
 }

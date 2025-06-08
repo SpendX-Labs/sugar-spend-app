@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BankAccount, CashFlowType, CreditCard, TransactionType } from "@/lib/types";
-import { useGetCreditCardsQuery } from "@/store/apis/credit-card-api";
+import { useGetAllCreditCardsQuery } from "@/store/apis/credit-card-api";
 import {
   useAddTransactionMutation,
   useDeleteTransactionMutation,
@@ -35,7 +35,7 @@ import {
 } from "../ui/select";
 import { useToast } from "../ui/use-toast";
 import { Textarea } from "../ui/textarea";
-import { useGetBankAccountsQuery } from "@/store/apis/bank-account-api";
+import { useGetAllBankAccountsQuery } from "@/store/apis/bank-account-api";
 import { mergeBankAccountDetails, mergeCreditCardDetails } from "@/lib/utils";
 
 const formSchema = z.object({
@@ -89,16 +89,10 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
   const [addTransaction] = useAddTransactionMutation();
   const [deleteTransaction] = useDeleteTransactionMutation();
   const [editTransaction] = useEditTransactionMutation();
-  const { data: bankAccountRes } = useGetBankAccountsQuery({
-    offset: 0,
-    limit: 10,
-  });
-  const bankAccounts: BankAccount[] = bankAccountRes?.data || [];
-  const { data: creditCardRes } = useGetCreditCardsQuery({
-    offset: 0,
-    limit: 10,
-  });
-  const creditCards: CreditCard[] = creditCardRes?.data || [];
+  const { data: bankAccountRes } = useGetAllBankAccountsQuery();
+  const bankAccounts: BankAccount[] = bankAccountRes || [];
+  const { data: creditCardRes } = useGetAllCreditCardsQuery();
+  const creditCards: CreditCard[] = creditCardRes || [];
   const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType>(
     transactionType === TransactionType.CREDITCARD
       ? TransactionType.CREDITCARD

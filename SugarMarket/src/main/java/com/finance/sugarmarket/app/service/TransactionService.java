@@ -1,20 +1,24 @@
 package com.finance.sugarmarket.app.service;
 
+import com.finance.sugarmarket.agent.constants.ScheduledJob;
+import com.finance.sugarmarket.agent.service.SchedulerService;
 import com.finance.sugarmarket.app.dto.CashFlowDetailDto;
 import com.finance.sugarmarket.app.dto.TransactionDto;
 import com.finance.sugarmarket.app.dto.TransactionMobileInputDto;
+import com.finance.sugarmarket.app.enums.CashFlowType;
 import com.finance.sugarmarket.app.enums.TransactionType;
 import com.finance.sugarmarket.app.model.BankAccount;
 import com.finance.sugarmarket.app.model.CreditCard;
 import com.finance.sugarmarket.app.model.Transaction;
-import com.finance.sugarmarket.app.repo.TransactionRepo;
 import com.finance.sugarmarket.app.repo.BankAccountRepo;
 import com.finance.sugarmarket.app.repo.CreditCardRepo;
+import com.finance.sugarmarket.app.repo.TransactionRepo;
 import com.finance.sugarmarket.auth.model.MFUser;
 import com.finance.sugarmarket.auth.repo.MFUserRepo;
 import com.finance.sugarmarket.base.dto.Filter;
 import com.finance.sugarmarket.base.dto.ListViewDto;
 import com.finance.sugarmarket.base.service.SpecificationService;
+import com.finance.sugarmarket.constants.AppConstants;
 import com.finance.sugarmarket.constants.FieldConstant;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +49,8 @@ public class TransactionService extends SpecificationService<Transaction> {
     private MFUserRepo userRepo;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private SchedulerService schedulerService;
 
     private static final Map<String, String> filterMap = new HashMap<>();
 
@@ -82,7 +88,7 @@ public class TransactionService extends SpecificationService<Transaction> {
     public void saveTransaction(TransactionDto transactionDto, Long userId) throws Exception {
         Transaction transaction = modelMapper.map(transactionDto, Transaction.class);
         MFUser user = userRepo.findById(userId).orElse(null);
-        if(user != null) {
+        if (user != null) {
             transaction.setUser(user);
             persistTransaction(transactionDto, transaction, userId);
         }
@@ -118,6 +124,16 @@ public class TransactionService extends SpecificationService<Transaction> {
             }
         }
         transactionRepo.saveAndFlush(transaction);
+
+        //post persist trigger agent to update budget view
+        if (transaction.getTransactionType().equals(TransactionType.CREDITCARD) && transaction.getCashFlowType().equals(CashFlowType.DEBIT)) {
+            Map<String, Object> dataMap = new HashMap<>();
+            dataMap.put(AppConstants.DATE, transaction.getTransactionDate());
+            dataMap.put(AppConstants.CREDIT_CARD_ID, transaction.getCreditCard().getId());
+            schedulerService.triggerAgentByClass(ScheduledJob.UPDATE_BUDGET_AGENT, dataMap);
+        }
+
+
     }
 
     public void deleteTransaction(Long id, Long userId) throws Exception {

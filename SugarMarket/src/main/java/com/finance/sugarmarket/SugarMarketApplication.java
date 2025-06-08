@@ -8,8 +8,8 @@ import org.springframework.cache.annotation.EnableCaching;
 @EnableCaching
 public class SugarMarketApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SugarMarketApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SugarMarketApplication.class, args);
+    }
 
 }

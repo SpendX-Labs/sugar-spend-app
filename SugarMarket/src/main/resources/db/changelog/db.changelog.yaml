@@ -906,62 +906,62 @@ databaseChangeLog:
       id: CreateTableTransaction
       author: subham.biswas
       changes:
-      - createTable:
-          tableName: Transaction
-          columns:
-          - column:
-              name: transactionId
-              type: BIGINT
-              autoIncrement: true
-              constraints:
-                primaryKey: true
-                nullable: false
+        - createTable:
+            tableName: Transaction
+            columns:
+              - column:
+                  name: transactionId
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
 
-          - column:
-              name: userId
-              type: BIGINT
-              constraints:
-                nullable: false
+              - column:
+                  name: userId
+                  type: BIGINT
+                  constraints:
+                    nullable: false
 
-          - column:
-              name: cashFlowType
-              type: ENUM('DEBIT', 'CREDIT')
-              constraints:
-                nullable: false
+              - column:
+                  name: cashFlowType
+                  type: ENUM('DEBIT', 'CREDIT')
+                  constraints:
+                    nullable: false
 
-          - column:
-              name: transactionType
-              type: ENUM('CASH', 'BANK', 'CREDITCARD')
-              constraints:
-                nullable: false
+              - column:
+                  name: transactionType
+                  type: ENUM('CASH', 'BANK', 'CREDITCARD')
+                  constraints:
+                    nullable: false
 
-          - column:
-              name: bankAccountId
-              type: BIGINT
-              constraints:
-                nullable: true
+              - column:
+                  name: bankAccountId
+                  type: BIGINT
+                  constraints:
+                    nullable: true
 
-          - column:
-              name: creditCardId
-              type: BIGINT
-              constraints:
-                nullable: true
+              - column:
+                  name: creditCardId
+                  type: BIGINT
+                  constraints:
+                    nullable: true
 
-          - column:
-              name: amount
-              type: DECIMAL(19, 4)
-              constraints:
-                nullable: false
+              - column:
+                  name: amount
+                  type: DECIMAL(19, 4)
+                  constraints:
+                    nullable: false
 
-          - column:
-              name: transactionDate
-              type: TIMESTAMP
-              constraints:
-                nullable: false
+              - column:
+                  name: transactionDate
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
 
-          - column:
-              name: note
-              type: VARCHAR(255)
+              - column:
+                  name: note
+                  type: VARCHAR(255)
 
   - changeSet:
       id: AddUserForeignKeyToTransaction
