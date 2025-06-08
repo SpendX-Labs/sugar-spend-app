@@ -66,13 +66,11 @@ export const creditCardApi = createApi({
         limit, 
         searchBy 
       }) => {
-        // Convert offset to page number (assuming page starts from 0)
-        const page = Math.floor(offset / limit);
         
         // Build query parameters object
         const queryParamsObj: Record<string, any> = {
-          page,
-          size: limit,
+          offset,
+          limit,
         };
 
         // Only add searchBy if it has a value

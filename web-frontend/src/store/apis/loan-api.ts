@@ -74,16 +74,14 @@ export const loanApi = createApi({
         sortOrder = "desc",
         searchBy 
       }) => {
-        // Convert offset to page number (assuming page starts from 0)
-        const page = Math.floor(offset / limit);
         
         // Convert sortOrder to uppercase to match your API format
         const orderBy = sortOrder.toUpperCase();
         
         // Build query parameters object
         const queryParamsObj: Record<string, any> = {
-          page,
-          size: limit,
+          offset,
+          limit,
           sortColumn: sortBy,
           orderBy,
         };
