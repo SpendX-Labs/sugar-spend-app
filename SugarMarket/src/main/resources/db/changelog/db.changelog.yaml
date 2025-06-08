@@ -1000,9 +1000,6 @@ databaseChangeLog:
             onDelete: CASCADE
 
   - include:
-      file: classpath:/db/changelog/db.changelog-store-procedure.yaml
-
-  - include:
       file: classpath:/db/changelog/db.changelog-mutual-funds.yaml
 
   - include:
