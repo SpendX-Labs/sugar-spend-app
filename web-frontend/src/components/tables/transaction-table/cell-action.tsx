@@ -9,19 +9,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "@/components/ui/use-toast";
-import { Expense } from "@/lib/types";
+import { Transaction } from "@/lib/types";
 import { createQueryString } from "@/lib/utils";
-import { useDeleteExpenseMutation } from "@/store/apis/expense-api";
+import { useDeleteTransactionMutation } from "@/store/apis/transaction-api";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface CellActionProps {
-  data: Expense;
+  data: Transaction;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
-  const [deleteExpense] = useDeleteExpenseMutation();
+  const [deleteTransaction] = useDeleteTransactionMutation();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -30,7 +30,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     try {
       setLoading(true);
       if (!data.id) return;
-      await deleteExpense(data.id);
+      await deleteTransaction(data.id);
       router.refresh();
     } catch (error: any) {
       toast({
@@ -65,7 +65,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuItem
             onClick={() =>
               router.push(
-                `/expense/${data.id}?${createQueryString(
+                `/transaction/${data.id}?${createQueryString(
                   data
                 )}&${createQueryString(data.cashFlowDetails)}`
               )

@@ -1,17 +1,17 @@
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import PageContainer from "@/components/layout/page-container";
-import { ExpenseTable } from "@/components/tables/expense-table";
+import { TransactionTable } from "@/components/tables/transaction-table";
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/" },
-  { title: "Expense", link: "/expense" },
+  { title: "Transaction", link: "/transaction" },
 ];
 export default function page() {
   return (
     <PageContainer>
       <div className="space-y-4">
         <Breadcrumbs items={breadcrumbItems} />
-        <ExpenseTable />
+        <TransactionTable />
       </div>
     </PageContainer>
   );

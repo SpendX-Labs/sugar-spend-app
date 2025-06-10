@@ -12,7 +12,6 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { Income } from "@/lib/types";
 import { createQueryString } from "@/lib/utils";
-import { useDeleteIncomeMutation } from "@/store/apis/income-api";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -22,7 +21,6 @@ interface CellActionProps {
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
-  const [deleteIncome] = useDeleteIncomeMutation();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -31,7 +29,6 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     try {
       setLoading(true);
       if (!data.id) return;
-      await deleteIncome(data.id);
       router.refresh();
     } catch (error: any) {
       toast({

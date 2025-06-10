@@ -10,6 +10,14 @@ type LoansResponse = {
   data: Loan[];
 };
 
+type GetLoansParams = {
+  offset: number;
+  limit: number;
+  sortBy?: string;
+  sortOrder?: string;
+  searchBy?: string;
+};
+
 type LoanPayload = {
   id?: number;
   creditCardId?: number | null;
@@ -58,11 +66,38 @@ export const loanApi = createApi({
       }),
       invalidatesTags: ["Loan"],
     }),
-    getLoans: builder.query<LoansResponse, { offset: number; limit: number }>({
-      query: ({ offset, limit }) => ({
-        url: `${loanUrl}?${createQueryString({ offset, limit })}`,
-        method: "GET",
-      }),
+    getLoans: builder.query<LoansResponse, GetLoansParams>({
+      query: ({ 
+        offset, 
+        limit, 
+        sortBy = "createdAt", 
+        sortOrder = "desc",
+        searchBy 
+      }) => {
+        
+        // Convert sortOrder to uppercase to match your API format
+        const orderBy = sortOrder.toUpperCase();
+        
+        // Build query parameters object
+        const queryParamsObj: Record<string, any> = {
+          offset,
+          limit,
+          sortColumn: sortBy,
+          orderBy,
+        };
+
+        // Only add searchBy if it has a value
+        if (searchBy && searchBy.trim() !== "") {
+          queryParamsObj.searchBy = searchBy.trim();
+        }
+        
+        const queryParams = createQueryString(queryParamsObj);
+        
+        return {
+          url: `${loanUrl}?${queryParams}`,
+          method: "GET",
+        };
+      },
       providesTags: ["Loan"],
     }),
   }),

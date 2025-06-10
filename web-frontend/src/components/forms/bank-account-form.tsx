@@ -35,7 +35,7 @@ import {
 import { useToast } from "../ui/use-toast";
 
 const formSchema = z.object({
-  bankName: z.string().min(1, { message: "Please select a credit card" }),
+  bankName: z.string().min(1, { message: "Please select a Bank Account" }),
   accountType: z.nativeEnum(BankAccountType, {
     errorMap: () => ({
       message: "Invalid bank account type",

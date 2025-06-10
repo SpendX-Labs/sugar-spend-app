@@ -16,10 +16,10 @@ public class EmailService implements SMSService {
     private JavaMailSender mailSender;
 
     @Override
-    public void sendSMS(String toEmail, String subject, String body)  throws Exception {
+    public void sendSMS(String toEmail, String subject, String body) throws Exception {
         log.info("Sending email to: " + toEmail);
         try {
-        	SimpleMailMessage message = new SimpleMailMessage();
+            SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom("fromemail@gmail.com");
             message.setTo(toEmail);
             message.setText(body);

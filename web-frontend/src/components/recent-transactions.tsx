@@ -9,66 +9,34 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { useGetExpensesQuery } from "@/store/apis/expense-api";
+import { useGetTransactionsQuery } from "@/store/apis/transaction-api";
 import { format } from "date-fns";
-import { useGetIncomesQuery } from "@/store/apis/income-api";
+import { CashFlowType, TransactionType } from "@/lib/types";
 
 export function RecentTransactions() {
   const {
-    data: expenseRes,
-    error: expenseError,
-    isLoading: isExpenseLoading,
-  } = useGetExpensesQuery({
+    data: transactionRes,
+    error: transactionError,
+    isLoading: isTransactionLoading,
+  } = useGetTransactionsQuery({
     offset: 0,
-    limit: 10,
-  });
-  const {
-    data: incomeRes,
-    error: incomeError,
-    isLoading: isIncomeLoading,
-  } = useGetIncomesQuery({
-    offset: 0,
-    limit: 10,
+    limit: 5,
   });
 
-  if (isExpenseLoading || isIncomeLoading) return <div>Loading...</div>;
-  if (expenseError || incomeError) return <div>Error Occured</div>;
+  if (isTransactionLoading) return <div>Loading...</div>;
+  if (transactionError) return <div>Error Occured</div>;
 
-  const expenses = expenseRes?.data || [];
-  const incomes = incomeRes?.data || [];
-
-  const totalTransactions = (expenseRes?.total || 0) + (incomeRes?.total || 0);
-  const transactions = expenses
-    .map((expense) => ({
-      amount: expense.amount,
-      cashFlowType: expense.expenseType,
-      date: expense.expenseDate,
-      time: expense.expenseTime,
-      message: expense.reason,
-      transactionType: "EXPENSE",
-    }))
-    .concat(
-      incomes.map((income) => ({
-        amount: income.amount,
-        cashFlowType: income.incomeType,
-        date: income.dateOfEvent,
-        time: income.timeOfEvent,
-        message: income.message,
-        transactionType: "INCOME",
-      }))
-    )
-    .sort((a, b) => {
-      if (a.date == b.date ? a.time < b.time : a.date < b.date) return 1;
-      return -1;
-    })
-    .slice(0, 5);
+  const transactions = transactionRes?.data || [];
+  const recentTransactionCount = transactionRes?.total 
+  ? (transactionRes.total > 5 ? 5 : transactionRes.total)
+  : 0;
 
   return (
     <Card className="h-full">
       <CardHeader>
-        <CardTitle>Recent Transactions(Expense)</CardTitle>
+        <CardTitle>Recent Transactions(Transaction)</CardTitle>
         <CardDescription>
-          You made {totalTransactions} transactions(expenses) this month.
+          You made {recentTransactionCount} transactions this month.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-8">
@@ -83,20 +51,20 @@ export function RecentTransactions() {
             </Avatar>
             <div className="ml-4 space-y-1">
               <p className="text-sm font-medium leading-none">
-                {transaction.message}
+                {transaction.note && transaction.note.trim() !== "" ? transaction.note : "Other"}
               </p>
               <p className="text-sm text-muted-foreground">
-                {format(new Date(transaction.date), "dd-MM-yyyy")}
+                {format(new Date(transaction.transactionDate), "dd-MM-yyyy")}
               </p>
             </div>
             <div
               className={`ml-auto font-medium ${
-                transaction.transactionType === "INCOME"
+                transaction.cashFlowType === CashFlowType.CREDIT
                   ? "text-green-400"
                   : "text-red-400"
               }`}
             >
-              {transaction.transactionType === "INCOME" ? "+" : "-"}
+              {transaction.cashFlowType === CashFlowType.CREDIT ? "+" : "-"}
               {CURRENCY_RUPEE_SYMBOL}
               {transaction.amount}
             </div>

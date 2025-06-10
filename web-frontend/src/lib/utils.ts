@@ -149,7 +149,7 @@ export const mergeBankAccountDetails = (bankAccount: BankAccount) => {
 };
 
 export const mergeCreditCardDetails = (creditCard: CreditCard) => {
-  return creditCard.bankName + " (XXXX " + creditCard.last4Digit + ")";
+  return creditCard.bankName + " " + creditCard.creditCardName + " (XXXX " + creditCard.last4Digit + ")";
 };
 
 export const convertMonthsToYearsMonths = (totalMonths: number) => {

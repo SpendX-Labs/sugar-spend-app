@@ -9,9 +9,9 @@ public class SignUpRequestDTO {
     private String password;
 
     private String phoneNumber;
-    
+
     private String fullName;
-    
+
     private String otp;
 
     // Getters and Setters
@@ -47,19 +47,19 @@ public class SignUpRequestDTO {
         this.phoneNumber = phoneNumber;
     }
 
-	public String getFullName() {
-		return fullName;
-	}
+    public String getFullName() {
+        return fullName;
+    }
 
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
 
-	public String getOtp() {
-		return otp;
-	}
+    public String getOtp() {
+        return otp;
+    }
 
-	public void setOtp(String otp) {
-		this.otp = otp;
-	}
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
 }

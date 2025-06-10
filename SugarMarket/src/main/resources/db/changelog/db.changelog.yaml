@@ -502,187 +502,6 @@ databaseChangeLog:
             onDelete: CASCADE
 
   - changeSet:
-      id: CreateIncomeTable
-      author: subham.biswas
-      changes:
-        - createTable:
-            tableName: Income
-            columns:
-              - column:
-                  name: incomeId
-                  type: BIGINT
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
-                  name: userId
-                  type: BIGINT
-                  constraints:
-                    nullable: false
-              - column:
-                  name: incomeType
-                  type: ENUM('CASH', 'BANK', 'CREDITCARD')
-                  constraints:
-                    nullable: false
-              - column:
-                  name: bankAccountId
-                  type: BIGINT
-                  constraints:
-                    nullable: true
-              - column:
-                  name: creditCardId
-                  type: BIGINT
-                  constraints:
-                    nullable: true
-              - column:
-                  name: amount
-                  type: DECIMAL(10, 2)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: dateOfEvent
-                  type: DATE
-                  constraints:
-                    nullable: false
-              - column:
-                  name: timeOfEvent
-                  type: TIME
-                  constraints:
-                    nullable: false
-              - column:
-                  name: message
-                  type: VARCHAR(255)
-                  constraints:
-                    nullable: true
-
-  - changeSet:
-      id: AddUserForeignKeyToIncome
-      author: subham.biswas
-      changes:
-        - addForeignKeyConstraint:
-            baseTableName: Income
-            baseColumnNames: userId
-            referencedTableName: MFUser
-            referencedColumnNames: userId
-            constraintName: incomeUserIdFk
-            onDelete: CASCADE
-
-  - changeSet:
-      id: AddBankAccountForeignKeyToIncome
-      author: subham.biswas
-      changes:
-        - addForeignKeyConstraint:
-            baseTableName: Income
-            baseColumnNames: bankAccountId
-            referencedTableName: BankAccount
-            referencedColumnNames: bankAccountId
-            constraintName: incomeBankAccountIddFk
-            onDelete: CASCADE
-
-  - changeSet:
-      id: AddCreditCardForeignKeyToIncome
-      author: subham.biswas
-      changes:
-        - addForeignKeyConstraint:
-            baseTableName: Income
-            baseColumnNames: creditCardId
-            referencedTableName: CreditCard
-            referencedColumnNames: creditCardId
-            constraintName: incomecreditCardIdddFk
-            onDelete: CASCADE
-
-  - changeSet:
-      id: CreateExpenseTable
-      author: subham.biswas
-      changes:
-        - createTable:
-            tableName: Expense
-            columns:
-              - column:
-                  name: expenseId
-                  type: BIGINT
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-              - column:
-                  name: userId
-                  type: BIGINT
-                  constraints:
-                    nullable: false
-              - column:
-                  name: expenseType
-                  type: ENUM('CASH', 'BANK', 'CREDITCARD')
-                  constraints:
-                    nullable: false
-              - column:
-                  name: bankAccountId
-                  type: BIGINT
-                  constraints:
-                    nullable: true
-              - column:
-                  name: creditCardId
-                  type: BIGINT
-                  constraints:
-                    nullable: true
-              - column:
-                  name: amount
-                  type: DECIMAL(10, 2)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: expenseDate
-                  type: DATE
-                  constraints:
-                    nullable: false
-              - column:
-                  name: expenseTime
-                  type: TIME
-                  constraints:
-                    nullable: true
-              - column:
-                  name: reason
-                  type: VARCHAR(255)
-                  constraints:
-                    nullable: true
-
-  - changeSet:
-      id: AddUserForeignKeyToExpense
-      author: subham.biswas
-      changes:
-        - addForeignKeyConstraint:
-            baseTableName: Expense
-            baseColumnNames: userId
-            referencedTableName: MFUser
-            referencedColumnNames: userId
-            constraintName: expenseUserIdFk
-            onDelete: CASCADE
-
-  - changeSet:
-      id: AddBankAccountForeignKeyToExpense
-      author: subham.biswas
-      changes:
-        - addForeignKeyConstraint:
-            baseTableName: Expense
-            baseColumnNames: bankAccountId
-            referencedTableName: BankAccount
-            referencedColumnNames: bankAccountId
-            constraintName: expenseBankAccountIdFk
-            onDelete: CASCADE
-
-  - changeSet:
-      id: AddCreditCardForeignKeyToExpense
-      author: subham.biswas
-      changes:
-        - addForeignKeyConstraint:
-            baseTableName: Expense
-            baseColumnNames: creditCardId
-            referencedTableName: CreditCard
-            referencedColumnNames: creditCardId
-            constraintName: expenseCreditCardIdFk
-            onDelete: CASCADE
-
-  - changeSet:
       id: CreateLoanTable
       author: subham.biswas
       changes:
@@ -1010,31 +829,6 @@ databaseChangeLog:
                   value: "5678"
 
   - changeSet:
-      id: "AddLoanIdInExpense"
-      author: subham.biswas
-      changes:
-        - addColumn:
-            tableName: Expense
-            columns:
-              - column:
-                  name: loanId
-                  type: BIGINT
-                  constraints:
-                    nullable: true
-
-  - changeSet:
-      id: "AddForeignKeyExpenseLoanId"
-      author: subham.biswas
-      changes:
-        - addForeignKeyConstraint:
-            baseTableName: Expense
-            baseColumnNames: loanId
-            referencedTableName: Loan
-            referencedColumnNames: loanId
-            constraintName: fk_Expense_loanId
-            onDelete: CASCADE
-
-  - changeSet:
       id: "createUserProperties"
       author: subham.biswas
       changes:
@@ -1108,8 +902,102 @@ databaseChangeLog:
             constraintName: fk_MapUserProperties_userPropertiesId
             onDelete: CASCADE
 
-  - include:
-      file: classpath:/db/changelog/db.changelog-store-procedure.yaml
+  - changeSet:
+      id: CreateTableTransaction
+      author: subham.biswas
+      changes:
+        - createTable:
+            tableName: Transaction
+            columns:
+              - column:
+                  name: transactionId
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: userId
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: cashFlowType
+                  type: ENUM('DEBIT', 'CREDIT')
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: transactionType
+                  type: ENUM('CASH', 'BANK', 'CREDITCARD')
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: bankAccountId
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: creditCardId
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: amount
+                  type: DECIMAL(19, 4)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: transactionDate
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: note
+                  type: VARCHAR(255)
+
+  - changeSet:
+      id: AddUserForeignKeyToTransaction
+      author: subham.biswas
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: Transaction
+            baseColumnNames: userId
+            referencedTableName: MFUser
+            referencedColumnNames: userId
+            constraintName: transactionUserIdFk
+            onDelete: CASCADE
+
+  - changeSet:
+      id: AddBankAccountForeignKeyToTransaction
+      author: subham.biswas
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: Transaction
+            baseColumnNames: bankAccountId
+            referencedTableName: BankAccount
+            referencedColumnNames: bankAccountId
+            constraintName: transactionBankAccountIddFk
+            onDelete: CASCADE
+
+  - changeSet:
+      id: AddCreditCardForeignKeyToTransaction
+      author: subham.biswas
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: Transaction
+            baseColumnNames: creditCardId
+            referencedTableName: CreditCard
+            referencedColumnNames: creditCardId
+            constraintName: transactionCreditCardIdFk
+            onDelete: CASCADE
 
   - include:
       file: classpath:/db/changelog/db.changelog-mutual-funds.yaml

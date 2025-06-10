@@ -18,6 +18,7 @@ export const authBaseQuery = async (
   const headers = {
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
     "Content-Type": "application/json",
+    'ngrok-skip-browser-warning': 'true'
   };
 
   const controller = new AbortController();

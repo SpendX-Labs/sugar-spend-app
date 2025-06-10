@@ -19,6 +19,14 @@ export type CreditCardsResponse = {
   data: CreditCard[];
 };
 
+type GetCreditCardsParams = {
+  offset: number;
+  limit: number;
+  sortBy?: string;
+  sortOrder?: string;
+  searchBy?: string;
+};
+
 const creditCardUrl = "/app/credit-card";
 
 export const creditCardApi = createApi({
@@ -52,14 +60,40 @@ export const creditCardApi = createApi({
       }),
       invalidatesTags: ["CreditCard"],
     }),
-    getCreditCards: builder.query<
-      CreditCardsResponse,
-      { offset: number; limit: number }
-    >({
-      query: ({ offset, limit }) => ({
-        url: `${creditCardUrl}?${createQueryString({ offset, limit })}`,
-        method: "GET",
-      }),
+    getCreditCards: builder.query<CreditCardsResponse, GetCreditCardsParams>({
+      query: ({ 
+        offset, 
+        limit, 
+        searchBy 
+      }) => {
+        
+        // Build query parameters object
+        const queryParamsObj: Record<string, any> = {
+          offset,
+          limit,
+        };
+
+        // Only add searchBy if it has a value
+        if (searchBy && searchBy.trim() !== "") {
+          queryParamsObj.searchBy = searchBy.trim();
+        }
+        
+        const queryParams = createQueryString(queryParamsObj);
+        
+        return {
+          url: `${creditCardUrl}?${queryParams}`,
+          method: "GET",
+        };
+      },
+      providesTags: ["CreditCard"],
+    }),
+    getAllCreditCards: builder.query<CreditCard[], void>({
+      query: () => {
+        return {
+          url: `${creditCardUrl}/all`,
+          method: "GET",
+        };
+      },
       providesTags: ["CreditCard"],
     }),
   }),
@@ -70,4 +104,5 @@ export const {
   useDeleteCreditCardMutation,
   useEditCreditCardMutation,
   useGetCreditCardsQuery,
+  useGetAllCreditCardsQuery
 } = creditCardApi;

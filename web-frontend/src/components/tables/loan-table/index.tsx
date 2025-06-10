@@ -11,13 +11,32 @@ import { columns } from "./columns";
 import React from "react";
 import {
   PaginationState,
+  SortingState,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import { DataPaginationTable } from "../data-pagination-table";
 import DataTableSkeleton from "@/components/skeletons/data-table-skeleton";
+
+// Custom hook for debounced value
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = React.useState<T>(value);
+
+  React.useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
 
 export const LoanTable = () => {
   const pathname = usePathname();
@@ -25,6 +44,13 @@ export const LoanTable = () => {
   const searchParams = useSearchParams();
   const offset = Number(searchParams.get("offset")) || 0;
   const limit = Number(searchParams.get("limit")) || 10;
+  const sortBy = searchParams.get("sortBy") || "createdAt";
+  const sortOrder = searchParams.get("sortOrder") || "desc";
+  const initialSearchBy = searchParams.get("searchBy") || "";
+
+  // Search state and debounced search
+  const [searchValue, setSearchValue] = React.useState(initialSearchBy);
+  const debouncedSearchValue = useDebounce(searchValue, 500); // 500ms delay
 
   const {
     data: loanRes,
@@ -34,7 +60,11 @@ export const LoanTable = () => {
   } = useGetLoansQuery({
     offset,
     limit,
+    sortBy,
+    sortOrder,
+    searchBy: debouncedSearchValue,
   });
+  
   const totalLoans = loanRes?.total || 0;
   const pageCount = Math.ceil(totalLoans / limit);
   const loans: Loan[] = loanRes?.data || [];
@@ -44,7 +74,7 @@ export const LoanTable = () => {
       const newSearchParams = new URLSearchParams(searchParams?.toString());
 
       for (const [key, value] of Object.entries(params)) {
-        if (value === null) {
+        if (value === null || value === "") {
           newSearchParams.delete(key);
         } else {
           newSearchParams.set(key, String(value));
@@ -62,42 +92,77 @@ export const LoanTable = () => {
       pageSize: limit,
     });
 
+  const [sorting, setSorting] = React.useState<SortingState>([
+    {
+      id: sortBy,
+      desc: sortOrder === "desc",
+    },
+  ]);
+
   const table = useReactTable({
-    data: loanRes?.data || [],
+    data: loans,
     columns,
     pageCount,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     state: {
       pagination: { pageIndex, pageSize },
+      sorting,
     },
     onPaginationChange: setPagination,
+    onSortingChange: setSorting,
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true,
     manualFiltering: true,
+    manualSorting: true,
   });
 
+  // Handle search input change
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setSearchValue(value);
+    
+    // Reset to first page when searching
+    setPagination(prev => ({ ...prev, pageIndex: 0 }));
+  };
+
+  // Clear search
+  const handleClearSearch = () => {
+    setSearchValue("");
+  };
+
+  // Update URL when debounced search value changes
   React.useEffect(() => {
+    const currentSort = sorting[0];
+    const newSortBy = currentSort?.id || "createdAt";
+    const newSortOrder = currentSort?.desc ? "desc" : "asc";
+
     router.push(
       `${pathname}?${createQueryString({
         offset: pageIndex,
         limit: pageSize,
+        sortBy: newSortBy,
+        sortOrder: newSortOrder,
+        searchBy: debouncedSearchValue || null,
       })}`,
       {
         scroll: false,
       }
     );
     refetch();
-  }, [pageIndex, pageSize, refetch]);
+  }, [pageIndex, pageSize, sorting, debouncedSearchValue, refetch]);
 
   if (isLoading) return <DataTableSkeleton columns={columns.length} />;
-  if (error) return <div>Error fetching credit cards</div>;
+  if (error) return <div>Error fetching loans</div>;
 
   return (
     <>
       <div className="flex items-start justify-between">
         <Heading
-          title={"Loans" + (loans.length ? `(${loans.length})` : "")}
+          title={
+            "Loans" + (loanRes?.total ? `(${loanRes.total})` : "")
+          }
           description="Manage your loans"
         />
         <Button
@@ -108,10 +173,17 @@ export const LoanTable = () => {
         </Button>
       </div>
       <Separator />
+      
       <DataPaginationTable
         table={table}
         pageSizeOptions={[10, 20, 30, 40, 50]}
         searchKey="loan"
+        searchValue={searchValue}
+        onSearchChange={handleSearchChange}
+        onClearSearch={handleClearSearch}
+        searchPlaceholder="Search loans by name or description..."
+        debouncedSearchValue={debouncedSearchValue}
+        showSearchIndicator={true}
       />
     </>
   );
