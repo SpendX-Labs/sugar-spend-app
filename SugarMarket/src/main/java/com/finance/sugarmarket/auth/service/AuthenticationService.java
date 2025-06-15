@@ -69,16 +69,27 @@ public class AuthenticationService {
     private static final int OTP_LENGTH = 6;
 
     public AuthenticationResponse authenticate(AuthenticationRequest request, String loggedInBy) {
+        return authenticateInternal(request.getUsername(), request.getPassword(), loggedInBy);
+    }
+
+    public AuthenticationResponse authenticateAfterSignup(SignUpRequestDTO request, String loggedInBy) {
+        return authenticateInternal(request.getUsername(), request.getPassword(), loggedInBy);
+    }
+
+    private AuthenticationResponse authenticateInternal(String username, String password, String loggedInBy) {
         Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+                .authenticate(new UsernamePasswordAuthenticationToken(username, password));
+
         Long userId = ((UserPrincipal) authentication.getPrincipal()).getId();
         UserDetailsDTO userDto = userCacheProvider.getUserDetails(userId);
         String jwtToken = jwtService.generateToken(userDto);
-        if (!AppConstants.MOBILE.equals(loggedInBy)) {
-            webJwtCacheProvider.saveTokenVsUserId(userId, jwtToken);
-        } else {
+
+        if (AppConstants.MOBILE.equals(loggedInBy)) {
             mobileJWTCacheProvider.saveTokenVsUserId(userId, jwtToken);
+        } else {
+            webJwtCacheProvider.saveTokenVsUserId(userId, jwtToken);
         }
+
         return new AuthenticationResponse(jwtToken, userDto, true);
     }
 
@@ -144,7 +155,8 @@ public class AuthenticationService {
             MFUser user = userTempData.getUser();
             user = userRepo.save(user);
             saveMapRoleUser(user);
-            return new SignUpResponseDTO(request.getUsername(), request.getEmailId(), "Signup successful please login",
+            return new SignUpResponseDTO(request.getUsername(), request.getEmailId(),
+                    "Signup successful redirecting to dashboard",
                     true);
         } else if (userTempData != null && userTempData.getOtp() != null
                 && !userTempData.getOtp().equals(request.getOtp())) {

@@ -34,7 +34,7 @@ public class AuthenticationController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request,
-                                                               @RequestHeader(value = AppConstants.LOGGED_IN_BY, required = false) String loggedInBy) {
+            @RequestHeader(value = AppConstants.LOGGED_IN_BY, required = false) String loggedInBy) {
         try {
             return ResponseEntity.ok(authenticationService.authenticate(request, loggedInBy));
         } catch (Exception e) {
@@ -70,18 +70,17 @@ public class AuthenticationController {
     }
 
     @PostMapping("/verifyotp")
-    public ResponseEntity<SignUpResponseDTO> verifyotp(@RequestBody SignUpRequestDTO request) {
+    public ResponseEntity<AuthenticationResponse> verifyotp(@RequestBody SignUpRequestDTO request) {
         try {
             SignUpResponseDTO signUpDto = authenticationService.verifyOtp(request);
             if (signUpDto.getStatus()) {
-                return ResponseEntity.ok(signUpDto);
+                return ResponseEntity.ok(authenticationService.authenticateAfterSignup(request, ""));
             }
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(signUpDto);
         } catch (Exception e) {
             log.error("getUserDetailsByJWT failed", e);
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(new SignUpResponseDTO("There are some internal error", false));
+                .body(new AuthenticationResponse("Failed to verify OTP", false));
     }
 
     @PostMapping("forget-password")
