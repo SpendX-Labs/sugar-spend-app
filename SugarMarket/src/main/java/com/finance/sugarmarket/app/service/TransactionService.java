@@ -169,7 +169,7 @@ public class TransactionService extends SpecificationService<Transaction> {
     private void postCreditCardTransaction(Transaction transaction) throws Exception {
         //post persist trigger agent to update budget view
         if (transaction.getTransactionType().equals(TransactionType.CREDITCARD) && transaction.getCashFlowType().equals(CashFlowType.DEBIT)) {
-            postCreditCardTransaction(transaction);
+            postTransactionUpdateUpdateBudget(transaction);
         }
     }
 
