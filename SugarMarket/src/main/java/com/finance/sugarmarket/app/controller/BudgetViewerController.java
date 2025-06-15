@@ -44,7 +44,7 @@ public class BudgetViewerController extends BaseController {
         return budgetViewerService.getNextMonthBudget(getUserId());
     }
 
-    @PostMapping("/update-budget-data/{userId}")
+    @PostMapping("update-budget-data/{userId}")
     public ResponseEntity<String> updateBudgetData(@PathVariable("userId") Long userId) {
         try {
             checkAdminRole();

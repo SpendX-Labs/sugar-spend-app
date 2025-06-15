@@ -7,4 +7,5 @@ public class RedisConstants {
     public final static String CREDIT_CARDS = "credit_cards";
     public final static String BANK_ACCOUNTS = "bank_accounts";
     public final static String USER_DETAIL = "user_detail";
+    public final static String PREVIOUS_DETAIL = "pv_dt";
 }

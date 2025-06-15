@@ -5,7 +5,9 @@ import java.util.List;
 
 public class AutoDebitDto {
     private BigDecimal totalAmount;
+    private BigDecimal previousTotalAmount;
     private BigDecimal remainingAmount;
+    private BigDecimal previousRemainingAmount;
     private List<BudgetViewDto> details;
 
     public AutoDebitDto() {
@@ -16,6 +18,15 @@ public class AutoDebitDto {
         super();
         this.totalAmount = totalAmount;
         this.remainingAmount = remainingAmount;
+        this.details = details;
+    }
+
+    public AutoDebitDto(BigDecimal totalAmount, BigDecimal previousTotalAmount, BigDecimal remainingAmount, BigDecimal previousRemainingAmount, List<BudgetViewDto> details) {
+        super();
+        this.totalAmount = totalAmount;
+        this.previousTotalAmount = previousTotalAmount;
+        this.remainingAmount = remainingAmount;
+        this.previousRemainingAmount = previousRemainingAmount;
         this.details = details;
     }
 
@@ -43,4 +54,19 @@ public class AutoDebitDto {
         this.details = details;
     }
 
+    public BigDecimal getPreviousTotalAmount() {
+        return previousTotalAmount;
+    }
+
+    public void setPreviousTotalAmount(BigDecimal previousTotalAmount) {
+        this.previousTotalAmount = previousTotalAmount;
+    }
+
+    public BigDecimal getPreviousRemainingAmount() {
+        return previousRemainingAmount;
+    }
+
+    public void setPreviousRemainingAmount(BigDecimal previousRemainingAmount) {
+        this.previousRemainingAmount = previousRemainingAmount;
+    }
 }

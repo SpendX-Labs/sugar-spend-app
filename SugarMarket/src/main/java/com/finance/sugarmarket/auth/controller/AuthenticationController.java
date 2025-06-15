@@ -34,7 +34,7 @@ public class AuthenticationController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request,
-            @RequestHeader(value = AppConstants.LOGGED_IN_BY, required = false) String loggedInBy) {
+                                                               @RequestHeader(value = AppConstants.LOGGED_IN_BY, required = false) String loggedInBy) {
         try {
             return ResponseEntity.ok(authenticationService.authenticate(request, loggedInBy));
         } catch (Exception e) {

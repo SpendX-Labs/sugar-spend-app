@@ -5,11 +5,17 @@ import java.util.List;
 
 public class ExpenseReportDto {
     private BigDecimal totalExpense;
+    private BigDecimal previousExpense;
     private BigDecimal autoDebitAmount;
+    private BigDecimal previousAutoDebitAmount;
     private BigDecimal manualSpendAmount;
+    private BigDecimal previousManualSpendAmount;
     private BigDecimal cardSpendAmount;
+    private BigDecimal previousCardSpendAmount;
     private BigDecimal totalIncome;
+    private BigDecimal previousTotalIncome;
     private BigDecimal availableAmount;
+    private BigDecimal previousAvailableAmount;
     private AutoDebitDto remainingAutoDebit;
     private List<TimeBasedSummary> timeBasedSummary;
 
@@ -27,6 +33,28 @@ public class ExpenseReportDto {
         this.cardSpendAmount = cardSpendAmount;
         this.totalIncome = totalIncome;
         this.availableAmount = availableAmount;
+        this.remainingAutoDebit = remainingAutoDebit;
+        this.timeBasedSummary = timeBasedSummary;
+    }
+
+    public ExpenseReportDto(BigDecimal totalExpense, BigDecimal previousExpense, BigDecimal autoDebitAmount,
+                            BigDecimal previousAutoDebitAmount, BigDecimal manualSpendAmount, BigDecimal previousManualSpendAmount,
+                            BigDecimal cardSpendAmount, BigDecimal previousCardSpendAmount, BigDecimal totalIncome,
+                            BigDecimal previousTotalIncome, BigDecimal availableAmount, BigDecimal previousAvailableAmount,
+                            AutoDebitDto remainingAutoDebit, List<TimeBasedSummary> timeBasedSummary) {
+        super();
+        this.totalExpense = totalExpense;
+        this.previousExpense = previousExpense;
+        this.autoDebitAmount = autoDebitAmount;
+        this.previousAutoDebitAmount = previousAutoDebitAmount;
+        this.manualSpendAmount = manualSpendAmount;
+        this.previousManualSpendAmount = previousManualSpendAmount;
+        this.cardSpendAmount = cardSpendAmount;
+        this.previousCardSpendAmount = previousCardSpendAmount;
+        this.totalIncome = totalIncome;
+        this.previousTotalIncome = previousTotalIncome;
+        this.availableAmount = availableAmount;
+        this.previousAvailableAmount = previousAvailableAmount;
         this.remainingAutoDebit = remainingAutoDebit;
         this.timeBasedSummary = timeBasedSummary;
     }
@@ -95,4 +123,51 @@ public class ExpenseReportDto {
         this.timeBasedSummary = timeBasedSummary;
     }
 
+    public BigDecimal getPreviousExpense() {
+        return previousExpense;
+    }
+
+    public void setPreviousExpense(BigDecimal previousExpense) {
+        this.previousExpense = previousExpense;
+    }
+
+    public BigDecimal getPreviousAutoDebitAmount() {
+        return previousAutoDebitAmount;
+    }
+
+    public void setPreviousAutoDebitAmount(BigDecimal previousAutoDebitAmount) {
+        this.previousAutoDebitAmount = previousAutoDebitAmount;
+    }
+
+    public BigDecimal getPreviousManualSpendAmount() {
+        return previousManualSpendAmount;
+    }
+
+    public void setPreviousManualSpendAmount(BigDecimal previousManualSpendAmount) {
+        this.previousManualSpendAmount = previousManualSpendAmount;
+    }
+
+    public BigDecimal getPreviousCardSpendAmount() {
+        return previousCardSpendAmount;
+    }
+
+    public void setPreviousCardSpendAmount(BigDecimal previousCardSpendAmount) {
+        this.previousCardSpendAmount = previousCardSpendAmount;
+    }
+
+    public BigDecimal getPreviousTotalIncome() {
+        return previousTotalIncome;
+    }
+
+    public void setPreviousTotalIncome(BigDecimal previousTotalIncome) {
+        this.previousTotalIncome = previousTotalIncome;
+    }
+
+    public BigDecimal getPreviousAvailableAmount() {
+        return previousAvailableAmount;
+    }
+
+    public void setPreviousAvailableAmount(BigDecimal previousAvailableAmount) {
+        this.previousAvailableAmount = previousAvailableAmount;
+    }
 }
