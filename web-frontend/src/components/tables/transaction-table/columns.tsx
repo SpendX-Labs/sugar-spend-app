@@ -80,7 +80,10 @@ export const columns: ColumnDef<Transaction>[] = [
         </Button>
       )
     },
-    cell: (info) => format(new Date(info.getValue() as string), "dd-MM-yyyy"),
+    cell: (info) => {
+      const isoDate = (info.getValue() as string).substring(0, 10);
+      return format(new Date(isoDate), "dd-MM-yyyy");
+    }
   },
   {
     accessorKey: "note",
