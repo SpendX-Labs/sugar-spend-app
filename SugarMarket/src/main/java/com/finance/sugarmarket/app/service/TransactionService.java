@@ -124,16 +124,7 @@ public class TransactionService extends SpecificationService<Transaction> {
             }
         }
         transactionRepo.saveAndFlush(transaction);
-
-        //post persist trigger agent to update budget view
-        if (transaction.getTransactionType().equals(TransactionType.CREDITCARD) && transaction.getCashFlowType().equals(CashFlowType.DEBIT)) {
-            Map<String, Object> dataMap = new HashMap<>();
-            dataMap.put(AppConstants.DATE, transaction.getTransactionDate());
-            dataMap.put(AppConstants.CREDIT_CARD_ID, transaction.getCreditCard().getId());
-            schedulerService.triggerAgentByClass(ScheduledJob.UPDATE_BUDGET_AGENT, dataMap);
-        }
-
-
+        postCreditCardTransaction(transaction);
     }
 
     public void deleteTransaction(Long id, Long userId) throws Exception {
@@ -144,6 +135,7 @@ public class TransactionService extends SpecificationService<Transaction> {
         }
         Transaction existingTransaction = transactionList.get(0);
         transactionRepo.deleteById(existingTransaction.getId());
+        postCreditCardTransaction(existingTransaction);
     }
 
     public void saveTransactionForMobile(TransactionMobileInputDto transaction, Long userId) throws Exception {
@@ -160,17 +152,31 @@ public class TransactionService extends SpecificationService<Transaction> {
             newTransaction.setUser(creditCard.getUser());
             newTransaction.setTransactionType(TransactionType.CREDITCARD);
             newTransaction.setCreditCard(creditCard);
-            transactionRepo.saveAndFlush(newTransaction);
         } else {
             BankAccount bankAccount = bankAccountRepo.findByUserIdAndLast4Digit(userId, last4Digits);
             if (bankAccount != null) {
                 newTransaction.setUser(bankAccount.getUser());
                 newTransaction.setTransactionType(TransactionType.BANK);
                 newTransaction.setBankAccount(bankAccount);
-                transactionRepo.saveAndFlush(newTransaction);
             } else {
                 throw new Exception("Please add that card ending with: " + transaction.getLast4Digit());
             }
         }
+        transactionRepo.saveAndFlush(newTransaction);
+        postCreditCardTransaction(newTransaction);
+    }
+
+    private void postCreditCardTransaction(Transaction transaction) throws Exception {
+        //post persist trigger agent to update budget view
+        if (transaction.getTransactionType().equals(TransactionType.CREDITCARD) && transaction.getCashFlowType().equals(CashFlowType.DEBIT)) {
+            postCreditCardTransaction(transaction);
+        }
+    }
+
+    private void postTransactionUpdateUpdateBudget(Transaction transaction) throws Exception {
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put(AppConstants.DATE, transaction.getTransactionDate());
+        dataMap.put(AppConstants.CREDIT_CARD_ID, transaction.getCreditCard().getId());
+        schedulerService.triggerAgentByClass(ScheduledJob.UPDATE_BUDGET_AGENT, dataMap);
     }
 }
