@@ -10,13 +10,16 @@ export type AuthState = {
 
 const initialState: Partial<AuthState> = {};
 
-const setAuthCookie = (token: string, name: string) => {
+const handleAuthSuccess = (_state: any, { payload }: any) => {
+  const token = payload.token;
   const toBase64 = Buffer.from(token).toString("base64");
 
-  setCookie(name, toBase64, {
+  setCookie(COOKIES_TOKEN_NAME, toBase64, {
     maxAge: 30 * 24 * 60 * 60,
     path: "/",
   });
+
+  return payload;
 };
 
 export const authSlice = createSlice({
@@ -29,13 +32,12 @@ export const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addMatcher(
-      authApi.endpoints.login.matchFulfilled,
-      (_state, { payload }) => {
-        setAuthCookie(payload.token, COOKIES_TOKEN_NAME);
-        return payload;
-      }
-    );
+    builder
+      .addMatcher(authApi.endpoints.login.matchFulfilled, handleAuthSuccess)
+      .addMatcher(
+        authApi.endpoints.verifyOtp.matchFulfilled,
+        handleAuthSuccess
+      );
   },
   selectors: {
     selectUserName: (auth) => auth.username,
