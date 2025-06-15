@@ -20,6 +20,7 @@ import com.finance.sugarmarket.auth.repo.MapRoleUserRepo;
 import com.finance.sugarmarket.auth.repo.RoleRepo;
 import com.finance.sugarmarket.auth.util.AuthenticationUtil;
 import com.finance.sugarmarket.base.enums.SignUpPrefixType;
+import com.finance.sugarmarket.base.util.EmailTemplateUtil;
 import com.finance.sugarmarket.constants.AppConstants;
 import com.finance.sugarmarket.sms.service.EmailService;
 import org.apache.commons.lang3.StringUtils;
@@ -129,13 +130,32 @@ public class AuthenticationService {
     private String sendOTPEmailAndSave(String emailId, String username, String fullName) {
         String otp = null;
         try {
-            log.info("sending otp for " + username);
+            log.info("Sending OTP for user: {}", username);
             otp = generateOTP();
-            String subject = fullName + "! Here is your OTP";
-            String body = otp + " is your OTP for Sugar Spend. Please do not share to anyone.\nArigato";
-            emailService.sendSMS(emailId, subject, body);
+
+            String subject = fullName + "! Here is your OTP for Sugar Spend";
+
+            // HTML Email Body
+            String htmlBody = EmailTemplateUtil.createSimpleOTPHtmlTemplate(fullName, otp);
+
+            // Plain text fallback
+            String textBody = String.format(
+                    "Hi %s,\n\n" +
+                            "%s is your OTP for Sugar Spend.\n\n" +
+                            "This OTP is valid for 10 minutes. Please do not share with anyone.\n\n" +
+                            "If you didn't request this, please ignore this email.\n\n" +
+                            "Thanks,\n" +
+                            "Sugar Spend Team",
+                    fullName, otp
+            );
+
+            // Use the HTML email method from your EmailService
+            emailService.sendHtmlEmail(emailId, subject, htmlBody, textBody);
+
+            log.info("OTP sent successfully to: {}", emailId);
+
         } catch (Exception e) {
-            log.error("Error while sending OTP.", e);
+            log.error("Error while sending OTP to user: {}. Error: {}", username, e.getMessage(), e);
         }
         return otp;
     }

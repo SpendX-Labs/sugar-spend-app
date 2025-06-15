@@ -34,8 +34,6 @@ public class RedisCacheConfig {
     private String redisUsername;
     @Value("${env.redis.password:}")
     private String redisPassword;
-    @Value("${env.namespace:local}")
-    private String cacheNamespace;
 
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
