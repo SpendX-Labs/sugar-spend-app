@@ -7,6 +7,11 @@ import java.util.Date;
 
 public final class BillingCycleUtils {
 
+    private static final String[] monthNames = {
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+    };
+
     private BillingCycleUtils() {
         throw new UnsupportedOperationException("Utility class cannot be instantiated");
     }
@@ -94,12 +99,6 @@ public final class BillingCycleUtils {
     public static String getMonthByDate(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-
-        String[] monthNames = {
-                "January", "February", "March", "April", "May", "June",
-                "July", "August", "September", "October", "November", "December"
-        };
-
         return monthNames[cal.get(Calendar.MONTH)];
     }
 
@@ -150,5 +149,26 @@ public final class BillingCycleUtils {
         cal.set(Calendar.MINUTE, 59);
         cal.set(Calendar.SECOND, 59);
         cal.set(Calendar.MILLISECOND, 999);
+    }
+
+    public static Pair<String, Integer> getPreviousMonthByMonthAndYear(String month, Integer year) {
+        int monthIndex = -1;
+
+        for (int i = 0; i < monthNames.length; i++) {
+            if (monthNames[i].equalsIgnoreCase(month)) {
+                monthIndex = i;
+                break;
+            }
+        }
+
+        if (monthIndex == -1) {
+            throw new IllegalArgumentException("Invalid month name: " + month);
+        }
+
+        if (monthIndex == 0) {
+            return Pair.of("December", year - 1);
+        } else {
+            return Pair.of(monthNames[monthIndex - 1], year);
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.finance.sugarmarket.auth.cache;
+package com.finance.sugarmarket.base.cache;
 
 import java.time.Duration;
 

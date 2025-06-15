@@ -1,5 +1,6 @@
 package com.finance.sugarmarket.app.repo;
 
+import com.finance.sugarmarket.app.enums.TransactionType;
 import com.finance.sugarmarket.app.model.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -33,4 +34,12 @@ public interface TransactionRepo extends JpaRepository<Transaction, Long>, JpaSp
 
     @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t WHERE t.creditCard.id = :creditCardId AND t.transactionDate BETWEEN :startDate AND :endDate")
     BigDecimal getTotalExpenseOfCreditCardByDateRange(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("creditCardId") Long creditCardId);
+
+    @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t WHERE t.user.id = :userId AND YEAR(t.transactionDate) = :year" +
+            " AND MONTHNAME(t.transactionDate) = :month AND t.cashFlowType = 'DEBIT' AND t.transactionType in (:transactionTypes)")
+    BigDecimal getTotalMonthlyExpenseByTransactionType(Integer year, String month, List<TransactionType> transactionTypes, Long userId);
+
+    @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t WHERE t.user.id = :userId AND YEAR(t.transactionDate) = :year" +
+            " AND t.cashFlowType = 'DEBIT' AND t.transactionType in (:transactionTypes)")
+    BigDecimal getTotalYearlyExpenseByTransactionType(Integer year, List<TransactionType> transactionTypes, Long userId);
 }

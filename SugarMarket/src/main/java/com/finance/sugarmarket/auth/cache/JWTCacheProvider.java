@@ -1,5 +1,6 @@
 package com.finance.sugarmarket.auth.cache;
 
+import com.finance.sugarmarket.base.cache.AbstractCacheProvider;
 import com.finance.sugarmarket.constants.AppConstants;
 import com.finance.sugarmarket.constants.RedisConstants;
 

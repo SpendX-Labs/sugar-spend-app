@@ -5,6 +5,7 @@ import com.finance.sugarmarket.auth.model.MFUser;
 import com.finance.sugarmarket.auth.model.MapRoleUser;
 import com.finance.sugarmarket.auth.repo.MFUserRepo;
 import com.finance.sugarmarket.auth.repo.MapRoleUserRepo;
+import com.finance.sugarmarket.base.cache.AbstractCacheProvider;
 import com.finance.sugarmarket.constants.AppConstants;
 import com.finance.sugarmarket.constants.RedisConstants;
 import org.modelmapper.ModelMapper;
